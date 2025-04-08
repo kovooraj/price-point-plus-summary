@@ -2,12 +2,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2 } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Plus, Trash2, Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
 import PriceMarkup from "./PriceMarkup";
@@ -48,6 +44,7 @@ export interface ProductConfig {
 
 const PrintCalculator: React.FC = () => {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("commercial");
   const [productConfig, setProductConfig] = useState<ProductConfig>({
     productType: "Flyers",
     option: "None",
@@ -57,7 +54,7 @@ const PrintCalculator: React.FC = () => {
     sidesPrinted: "4/4",
     pmsColors: "0",
     coating: "No_Coating",
-    thickness: "1mil", // Changed from empty string to a valid value
+    thickness: "1mil", 
     sidesCoated: "0",
     coverage: "100%",
     lamination: "Matte_Lamination",
@@ -82,6 +79,25 @@ const PrintCalculator: React.FC = () => {
     toast({
       title: "Added to order summary",
       description: `Quantity: ${item.quantity} - Price: ${item.currency} ${item.totalPrice.toFixed(2)}`,
+    });
+  };
+
+  const handleAddCustomQty = () => {
+    if (markup.customQuantity <= 0) {
+      toast({
+        title: "Invalid quantity",
+        description: "Please enter a valid quantity greater than 0",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    handleAddToSummary({
+      id: `custom-${Date.now()}`,
+      quantity: markup.customQuantity,
+      totalCost: markup.customCost,
+      totalPrice: markup.customPrice,
+      currency: "USD"
     });
   };
 
@@ -110,37 +126,81 @@ const PrintCalculator: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-print-primary mb-6">Print Product Calculator</h1>
+      <h1 className="text-3xl font-bold text-print-primary mb-4">Print Product Calculator</h1>
       
-      <div className="print-calculator-layout">
-        <div className="main-content space-y-6">
-          <ProductForm 
-            productConfig={productConfig} 
-            onConfigChange={handleConfigChange}
-          />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
+        <TabsList className="w-full border-b justify-start overflow-x-auto">
+          <TabsTrigger value="commercial" className="px-6 py-2">Commercial Printing</TabsTrigger>
+          <TabsTrigger value="largeformat" className="px-6 py-2">Large Format</TabsTrigger>
+          <TabsTrigger value="rolllabels" className="px-6 py-2">Roll Labels</TabsTrigger>
+          <TabsTrigger value="foldingcartons" className="px-6 py-2">Folding Cartons</TabsTrigger>
+          <TabsTrigger value="flexiblepackaging" className="px-6 py-2">Flexible Packaging</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="commercial" className="mt-4">
+          <div className="print-calculator-layout">
+            <div className="main-content space-y-6">
+              <ProductForm 
+                productConfig={productConfig} 
+                onConfigChange={handleConfigChange}
+              />
 
-          <Card className="p-4">
-            <h2 className="section-title">Markup & Pricing</h2>
-            <PriceMarkup 
-              markup={markup} 
-              onMarkupChange={handleMarkupChange}
-            />
-          </Card>
+              <Card className="p-4">
+                <h2 className="section-title">Markup & Pricing</h2>
+                <PriceMarkup 
+                  markup={markup} 
+                  onMarkupChange={handleMarkupChange}
+                />
+                <div className="flex justify-end mt-4">
+                  <Button 
+                    onClick={handleAddCustomQty}
+                    className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
+                  >
+                    <Plus className="h-4 w-4" /> Add Custom Quantity to Summary
+                  </Button>
+                </div>
+              </Card>
 
-          <Card className="p-4">
-            <h2 className="section-title">Quantity Variations</h2>
-            <QuantityTable onAddToSummary={handleAddToSummary} />
-          </Card>
-        </div>
+              <Card className="p-4">
+                <h2 className="section-title">Quantity Variations</h2>
+                <QuantityTable onAddToSummary={handleAddToSummary} />
+              </Card>
+            </div>
 
-        <div className="summary-content">
-          <OrderSummary 
-            productConfig={productConfig}
-            orderItems={orderSummary}
-            onRemoveItem={handleRemoveFromSummary}
-          />
-        </div>
-      </div>
+            <div className="summary-content">
+              <OrderSummary 
+                productConfig={productConfig}
+                orderItems={orderSummary}
+                onRemoveItem={handleRemoveFromSummary}
+              />
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="largeformat" className="mt-4">
+          <div className="p-8 text-center text-muted-foreground">
+            Large Format Calculator coming soon
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="rolllabels" className="mt-4">
+          <div className="p-8 text-center text-muted-foreground">
+            Roll Labels Calculator coming soon
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="foldingcartons" className="mt-4">
+          <div className="p-8 text-center text-muted-foreground">
+            Folding Cartons Calculator coming soon
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="flexiblepackaging" className="mt-4">
+          <div className="p-8 text-center text-muted-foreground">
+            Flexible Packaging Calculator coming soon
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
