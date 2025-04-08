@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import ProductForm from "./ProductForm";
 import PriceMarkup from "./PriceMarkup";
 import QuantityTable from "./QuantityTable";
 import OrderSummary from "./OrderSummary";
+import RollLabelsCalculator from "./RollLabelsCalculator";
 
 export interface ProductOption {
   id: string;
@@ -76,7 +76,6 @@ const PrintCalculator: React.FC = () => {
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
 
   const handleAddToSummary = (item: OrderItem) => {
-    // Use current currency from markup state when adding items
     const newItem = { 
       ...item, 
       id: Date.now().toString(),
@@ -139,10 +138,10 @@ const PrintCalculator: React.FC = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
         <TabsList className="w-full border-b justify-start overflow-x-auto">
           <TabsTrigger value="commercial" className="px-6 py-2">Commercial Printing</TabsTrigger>
-          <TabsTrigger value="largeformat" className="px-6 py-2">Large Format</TabsTrigger>
           <TabsTrigger value="rolllabels" className="px-6 py-2">Roll Labels</TabsTrigger>
           <TabsTrigger value="foldingcartons" className="px-6 py-2">Folding Cartons</TabsTrigger>
           <TabsTrigger value="flexiblepackaging" className="px-6 py-2">Flexible Packaging</TabsTrigger>
+          <TabsTrigger value="custom" className="px-6 py-2">Custom</TabsTrigger>
         </TabsList>
         
         <TabsContent value="commercial" className="mt-4">
@@ -185,16 +184,8 @@ const PrintCalculator: React.FC = () => {
           </div>
         </TabsContent>
         
-        <TabsContent value="largeformat" className="mt-4">
-          <div className="p-8 text-center text-muted-foreground">
-            Large Format Calculator coming soon
-          </div>
-        </TabsContent>
-        
         <TabsContent value="rolllabels" className="mt-4">
-          <div className="p-8 text-center text-muted-foreground">
-            Roll Labels Calculator coming soon
-          </div>
+          <RollLabelsCalculator />
         </TabsContent>
         
         <TabsContent value="foldingcartons" className="mt-4">
@@ -206,6 +197,12 @@ const PrintCalculator: React.FC = () => {
         <TabsContent value="flexiblepackaging" className="mt-4">
           <div className="p-8 text-center text-muted-foreground">
             Flexible Packaging Calculator coming soon
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="custom" className="mt-4">
+          <div className="p-8 text-center text-muted-foreground">
+            Custom Calculator coming soon
           </div>
         </TabsContent>
       </Tabs>
