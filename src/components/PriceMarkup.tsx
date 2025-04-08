@@ -12,7 +12,7 @@ interface PriceMarkupProps {
     customCost: number;
     customPrice: number;
   };
-  onMarkupChange: (field: keyof typeof markup, value: number) => void;
+  onMarkupChange: (field: keyof PriceMarkupProps["markup"], value: number) => void;
 }
 
 const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange }) => {

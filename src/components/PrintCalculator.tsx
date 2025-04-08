@@ -57,7 +57,7 @@ const PrintCalculator: React.FC = () => {
     sidesPrinted: "4/4",
     pmsColors: "0",
     coating: "No_Coating",
-    thickness: "",
+    thickness: "1mil", // Changed from empty string to a valid value
     sidesCoated: "0",
     coverage: "100%",
     lamination: "Matte_Lamination",
