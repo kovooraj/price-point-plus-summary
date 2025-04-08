@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Plus } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface RollLabelsState {
   productType: string;
@@ -18,7 +19,7 @@ interface RollLabelsState {
   coverage: string;
   lamination: string;
   windDirection: string;
-  labelsPerCoreOption: string; // Renamed to avoid conflict
+  labelsPerCoreOption: string;
   perforation: string;
   freeShipping: string;
   cutMethod: string;
@@ -29,7 +30,7 @@ interface RollLabelsState {
   coreDiameter: number;
   coreChangeovers: number;
   across: number;
-  labelsPerCore: number; // Only one definition, as a number
+  labelsPerCore: number;
   printTime: string;
   finishTime: string;
   feet: number;
@@ -44,6 +45,7 @@ interface RollLabelsState {
 }
 
 const RollLabelsCalculator: React.FC = () => {
+  const { toast } = useToast();
   const [state, setState] = useState<RollLabelsState>({
     productType: "BOPP",
     material: "White Gloss BOPP Freezer",
@@ -54,7 +56,7 @@ const RollLabelsCalculator: React.FC = () => {
     coverage: "",
     lamination: "Matte_Lamination",
     windDirection: "WD 2 = Bottom off First",
-    labelsPerCoreOption: "Does Not Matter", // Renamed to avoid conflict
+    labelsPerCoreOption: "Does Not Matter",
     perforation: "No",
     freeShipping: "No",
     cutMethod: "Does_Not_M",
@@ -92,10 +94,18 @@ const RollLabelsCalculator: React.FC = () => {
       currency: state.currency === "CAD" ? "USD" : "CAD"
     });
   };
+
+  const handleAddCustomQty = () => {
+    toast({
+      title: "Item added",
+      description: `Added ${state.quantity} labels to order summary`,
+    });
+  };
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-      <div className="md:col-span-5">
+    <div className="print-calculator-layout">
+      <div className="main-content space-y-6">
+        {/* Product Configuration Card */}
         <Card className="p-4">
           <h2 className="text-xl font-bold text-print-primary mb-4">Product Configuration</h2>
           
@@ -287,9 +297,8 @@ const RollLabelsCalculator: React.FC = () => {
             </div>
           </div>
         </Card>
-      </div>
-      
-      <div className="md:col-span-7">
+
+        {/* Production Details Card */}
         <Card className="p-4 mb-6">
           <h2 className="text-xl font-bold text-print-primary mb-4">Production Details</h2>
           
@@ -340,111 +349,12 @@ const RollLabelsCalculator: React.FC = () => {
               />
               <div className="text-xs text-gray-500 mt-1">inch</div>
             </div>
-            
-            <div className="form-group">
-              <Label htmlFor="coreChangeovers">Core Changeovers</Label>
-              <Input 
-                id="coreChangeovers"
-                type="number" 
-                value={state.coreChangeovers} 
-                onChange={(e) => handleInputChange("coreChangeovers", parseInt(e.target.value))}
-              />
-              <div className="text-xs text-gray-500 mt-1">changeovers</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="across">Across</Label>
-              <Input 
-                id="across"
-                type="number" 
-                value={state.across} 
-                onChange={(e) => handleInputChange("across", parseInt(e.target.value))}
-              />
-              <div className="text-xs text-gray-500 mt-1">label(s) across</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="labelsPerCore">Labels Per Core</Label>
-              <Input 
-                id="labelsPerCore"
-                type="number" 
-                value={state.labelsPerCore} 
-                onChange={(e) => handleInputChange("labelsPerCore", parseInt(e.target.value))}
-              />
-              <div className="text-xs text-gray-500 mt-1">est. labels/core</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="printTime">Print Time</Label>
-              <Input 
-                id="printTime"
-                type="text" 
-                value={state.printTime} 
-                onChange={(e) => handleInputChange("printTime", e.target.value)}
-              />
-              <div className="text-xs text-gray-500 mt-1">hh:mm:ss</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="finishTime">Finish Time</Label>
-              <Input 
-                id="finishTime"
-                type="text" 
-                value={state.finishTime} 
-                onChange={(e) => handleInputChange("finishTime", e.target.value)}
-              />
-              <div className="text-xs text-gray-500 mt-1">hh:mm:ss</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="feet">Feet</Label>
-              <Input 
-                id="feet"
-                type="number" 
-                step="0.01"
-                value={state.feet} 
-                onChange={(e) => handleInputChange("feet", parseFloat(e.target.value))}
-              />
-              <div className="text-xs text-gray-500 mt-1">feet length</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="boxes">Boxes</Label>
-              <Input 
-                id="boxes"
-                type="number" 
-                value={state.boxes} 
-                onChange={(e) => handleInputChange("boxes", parseInt(e.target.value))}
-              />
-              <div className="text-xs text-gray-500 mt-1">boxes</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="boxSize">Box Size</Label>
-              <Input 
-                id="boxSize"
-                type="text" 
-                value={state.boxSize} 
-                onChange={(e) => handleInputChange("boxSize", e.target.value)}
-              />
-              <div className="text-xs text-gray-500 mt-1">size</div>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="cuttingMethod">Cutting Method</Label>
-              <Input 
-                id="cuttingMethod"
-                type="text" 
-                value={state.cuttingMethod} 
-                onChange={(e) => handleInputChange("cuttingMethod", e.target.value)}
-              />
-              <div className="text-xs text-gray-500 mt-1">-ing</div>
-            </div>
           </div>
         </Card>
         
+        {/* Pricing Card */}
         <Card className="p-4">
-          <h2 className="text-xl font-bold text-print-primary mb-4">Pricing</h2>
+          <h2 className="text-xl font-bold text-print-primary mb-4">Markup & Pricing</h2>
           
           <div className="mb-4 flex items-center justify-between">
             <Label className="text-print-primary font-medium">Currency</Label>
@@ -495,7 +405,9 @@ const RollLabelsCalculator: React.FC = () => {
                 onChange={(e) => handleInputChange("hpAbgRolls", parseFloat(e.target.value))}
               />
             </div>
-            
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="form-group">
               <Label htmlFor="cost">Cost ({state.currency})</Label>
               <Input 
@@ -523,7 +435,7 @@ const RollLabelsCalculator: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-amber-100 p-4 rounded-md">
@@ -534,7 +446,7 @@ const RollLabelsCalculator: React.FC = () => {
               </div>
               
               <div className="bg-blue-50 p-4 rounded-md">
-                <h3 className="font-medium mb-2">Versions & Quantities</h3>
+                <h3 className="font-medium mb-2">Quantity Options</h3>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="bg-yellow-300 p-2 font-medium">8</div>
                   <div className="bg-yellow-300 p-2 font-medium">108,000</div>
@@ -542,31 +454,102 @@ const RollLabelsCalculator: React.FC = () => {
                 </div>
               </div>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-              <div className="bg-white border border-gray-200 p-2 text-center">
-                <div className="font-medium">Cost</div>
-                <div className="text-lg">${state.cost.toFixed(2)}</div>
-              </div>
-              <div className="bg-white border border-gray-200 p-2 text-center">
-                <div className="font-medium">Price</div>
-                <div className="text-lg">${state.price.toFixed(2)}</div>
-              </div>
-              <div className="bg-white border border-gray-200 p-2 text-center">
-                <div className="font-medium">Cost / Label</div>
-                <div className="text-lg">${(state.cost / state.quantity).toFixed(5)}</div>
-              </div>
-              <div className="bg-white border border-gray-200 p-2 text-center">
-                <div className="font-medium">Price / Label</div>
-                <div className="text-lg">${(state.price / state.quantity).toFixed(5)}</div>
-              </div>
-            </div>
+          </div>
 
-            <div className="flex justify-end mt-6">
-              <Button className="bg-print-success hover:bg-print-success/90 text-white">
-                Download Price List
-              </Button>
+          <div className="flex justify-end mt-6">
+            <Button 
+              onClick={handleAddCustomQty}
+              className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
+            >
+              <Plus className="h-4 w-4" /> Add to Order Summary
+            </Button>
+          </div>
+        </Card>
+
+        {/* Quantity Variations Card */}
+        <Card className="p-4">
+          <h2 className="text-xl font-bold text-print-primary mb-4">Quantity Variations</h2>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="p-2 text-left">Quantity</th>
+                  <th className="p-2 text-left">Cost</th>
+                  <th className="p-2 text-left">Price</th>
+                  <th className="p-2 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1000, 2500, 5000, 10000, 25000].map(qty => (
+                  <tr key={qty} className="border-t">
+                    <td className="p-2">{qty.toLocaleString()}</td>
+                    <td className="p-2">${(state.cost * qty / state.quantity).toFixed(2)}</td>
+                    <td className="p-2">${(state.price * qty / state.quantity).toFixed(2)}</td>
+                    <td className="p-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="text-xs"
+                        onClick={() => {
+                          handleInputChange("quantity", qty);
+                          toast({
+                            title: "Quantity updated",
+                            description: `Updated quantity to ${qty}`,
+                          });
+                        }}
+                      >
+                        <Plus className="h-3 w-3 mr-1" /> Select
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
+
+      <div className="summary-content">
+        <Card className="p-4">
+          <h2 className="text-xl font-bold text-print-primary mb-4">Order Summary</h2>
+          
+          <div className="space-y-4">
+            <div className="p-4 bg-blue-50 rounded-md">
+              <h3 className="font-medium mb-2">Product Details</h3>
+              <p>Roll Labels - {state.productType}</p>
+              <p>{state.shape} - {state.size}</p>
+              <p>{state.material}</p>
+              <p>Ink: {state.ink}</p>
+              {state.lamination !== "No_Lamination" && <p>Lamination: {state.lamination.replace("_", " ")}</p>}
             </div>
+            
+            <div>
+              <div className="flex justify-between py-2 border-b">
+                <span>Quantity:</span>
+                <span>{state.quantity.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span>Cores:</span>
+                <span>{state.cores}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b">
+                <span>Cost ({state.currency}):</span>
+                <span>${state.cost.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between py-2 border-b font-medium">
+                <span>Price ({state.currency}):</span>
+                <span>${state.price.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between py-2 text-sm text-gray-500">
+                <span>Unit Price:</span>
+                <span>${(state.price / state.quantity).toFixed(5)} each</span>
+              </div>
+            </div>
+            
+            <Button className="w-full bg-print-primary hover:bg-print-primary/90">
+              Download Quote
+            </Button>
           </div>
         </Card>
       </div>
@@ -575,4 +558,3 @@ const RollLabelsCalculator: React.FC = () => {
 };
 
 export default RollLabelsCalculator;
-

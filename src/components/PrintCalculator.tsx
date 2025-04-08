@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -206,6 +207,38 @@ const PrintCalculator: React.FC = () => {
           </div>
         </TabsContent>
       </Tabs>
+
+      <style jsx global>{`
+        .print-calculator-layout {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+          .print-calculator-layout {
+            grid-template-columns: 2fr 1fr;
+          }
+        }
+        
+        .main-content {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .summary-content {
+          align-self: start;
+          position: sticky;
+          top: 1rem;
+        }
+        
+        .section-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--print-primary);
+          margin-bottom: 1rem;
+        }
+      `}</style>
     </div>
   );
 };
