@@ -70,15 +70,23 @@ const PrintCalculator: React.FC = () => {
     customQuantity: 0,
     customCost: 400.73,
     customPrice: 562.63,
+    currency: "CAD",
   });
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
 
   const handleAddToSummary = (item: OrderItem) => {
-    setOrderSummary([...orderSummary, { ...item, id: Date.now().toString() }]);
+    // Use current currency from markup state when adding items
+    const newItem = { 
+      ...item, 
+      id: Date.now().toString(),
+      currency: markup.currency
+    };
+    
+    setOrderSummary([...orderSummary, newItem]);
     toast({
       title: "Added to order summary",
-      description: `Quantity: ${item.quantity} - Price: ${item.currency} ${item.totalPrice.toFixed(2)}`,
+      description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`,
     });
   };
 
@@ -97,7 +105,7 @@ const PrintCalculator: React.FC = () => {
       quantity: markup.customQuantity,
       totalCost: markup.customCost,
       totalPrice: markup.customPrice,
-      currency: "USD"
+      currency: markup.currency
     });
   };
 
@@ -117,7 +125,7 @@ const PrintCalculator: React.FC = () => {
     });
   };
 
-  const handleMarkupChange = (field: keyof typeof markup, value: number) => {
+  const handleMarkupChange = (field: keyof typeof markup, value: number | string) => {
     setMarkup({
       ...markup,
       [field]: value,
@@ -163,7 +171,7 @@ const PrintCalculator: React.FC = () => {
 
               <Card className="p-4">
                 <h2 className="section-title">Quantity Variations</h2>
-                <QuantityTable onAddToSummary={handleAddToSummary} />
+                <QuantityTable onAddToSummary={handleAddToSummary} currency={markup.currency} />
               </Card>
             </div>
 
