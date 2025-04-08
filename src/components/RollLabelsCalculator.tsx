@@ -18,7 +18,7 @@ interface RollLabelsState {
   coverage: string;
   lamination: string;
   windDirection: string;
-  labelsPerCore: string;
+  labelsPerCoreOption: string; // Renamed to avoid conflict
   perforation: string;
   freeShipping: string;
   cutMethod: string;
@@ -29,7 +29,7 @@ interface RollLabelsState {
   coreDiameter: number;
   coreChangeovers: number;
   across: number;
-  labelsPerCore: number;
+  labelsPerCore: number; // Only one definition, as a number
   printTime: string;
   finishTime: string;
   feet: number;
@@ -54,7 +54,7 @@ const RollLabelsCalculator: React.FC = () => {
     coverage: "",
     lamination: "Matte_Lamination",
     windDirection: "WD 2 = Bottom off First",
-    labelsPerCore: "Does Not Matter",
+    labelsPerCoreOption: "Does Not Matter", // Renamed to avoid conflict
     perforation: "No",
     freeShipping: "No",
     cutMethod: "Does_Not_M",
@@ -234,6 +234,22 @@ const RollLabelsCalculator: React.FC = () => {
                   <SelectItem value="WD 1 = Top off First">WD 1 = Top off First</SelectItem>
                   <SelectItem value="WD 3 = Left off First">WD 3 = Left off First</SelectItem>
                   <SelectItem value="WD 4 = Right off First">WD 4 = Right off First</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="form-group">
+              <Label htmlFor="labelsPerCoreOption">Labels Per Core</Label>
+              <Select 
+                value={state.labelsPerCoreOption} 
+                onValueChange={(value) => handleInputChange("labelsPerCoreOption", value)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select Labels Per Core" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Does Not Matter">Does Not Matter</SelectItem>
+                  <SelectItem value="Specific">Specific</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -559,3 +575,4 @@ const RollLabelsCalculator: React.FC = () => {
 };
 
 export default RollLabelsCalculator;
+
