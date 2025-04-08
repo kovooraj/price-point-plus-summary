@@ -3,7 +3,7 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { CAD, USD } from "lucide-react";
+import { DollarSign, PoundSterling } from "lucide-react";
 
 interface PriceMarkupProps {
   markup: {
@@ -34,7 +34,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange }) => 
         <Label className="text-print-primary font-medium">Currency</Label>
         <div className="flex items-center space-x-2">
           <div className={`flex items-center ${markup.currency === "CAD" ? "font-bold text-print-primary" : "text-gray-500"}`}>
-            <CAD className="h-4 w-4 mr-1" />
+            <DollarSign className="h-4 w-4 mr-1" />
             <span>CAD</span>
           </div>
           
@@ -44,7 +44,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange }) => 
           />
           
           <div className={`flex items-center ${markup.currency === "USD" ? "font-bold text-print-primary" : "text-gray-500"}`}>
-            <USD className="h-4 w-4 mr-1" />
+            <DollarSign className="h-4 w-4 mr-1" />
             <span>USD</span>
           </div>
         </div>
