@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import PriceMarkup from "./PriceMarkup";
 import QuantityTable from "./QuantityTable";
 import OrderSummary from "./OrderSummary";
 import RollLabelsCalculator from "./RollLabelsCalculator";
+import FoldingCartonsCalculator from "./FoldingCartonsCalculator";
 
 export interface ProductOption {
   id: string;
@@ -190,9 +190,7 @@ const PrintCalculator: React.FC = () => {
         </TabsContent>
         
         <TabsContent value="foldingcartons" className="mt-4">
-          <div className="p-8 text-center text-muted-foreground">
-            Folding Cartons Calculator coming soon
-          </div>
+          <FoldingCartonsCalculator />
         </TabsContent>
         
         <TabsContent value="flexiblepackaging" className="mt-4">
