@@ -16,9 +16,11 @@ interface PriceMarkupProps {
     currency: string;
   };
   onMarkupChange: (field: keyof PriceMarkupProps["markup"], value: number | string) => void;
+  isSets?: boolean;
+  onSetsChange?: (value: boolean) => void;
 }
 
-const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange }) => {
+const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSets, onSetsChange }) => {
   const handleInputChange = (field: keyof typeof markup) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value) || 0;
     onMarkupChange(field, value);
@@ -49,6 +51,21 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange }) => 
           </div>
         </div>
       </div>
+      
+      {/* Add Sets option if onSetsChange is provided */}
+      {onSetsChange && (
+        <div className="flex items-center justify-between mb-4">
+          <Label className="text-print-primary font-medium">Sets</Label>
+          <div className="flex items-center space-x-2">
+            <span className={`${!isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>No</span>
+            <Switch 
+              checked={!!isSets}
+              onCheckedChange={onSetsChange}
+            />
+            <span className={`${isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>Yes</span>
+          </div>
+        </div>
+      )}
       
       <div>
         <div className="mb-4">
