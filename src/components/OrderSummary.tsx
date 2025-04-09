@@ -24,7 +24,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   orderItems, 
   onRemoveItem,
   isSets = false,
-  showSpecSheet = false
+  showSpecSheet = true
 }) => {
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
   const [specSheetDialogOpen, setSpecSheetDialogOpen] = useState(false);
@@ -50,7 +50,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       orderItems,
       customerDetails,
       notes: isSets ? notes : undefined,
-      date: new Date().toLocaleDateString()
+      date: new Date().toLocaleDateString(),
+      isSpecSheet: true
     });
   };
 
@@ -154,6 +155,17 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
             }
           </span>
         </div>
+        {orderItems.length > 0 && (
+          <div className="flex justify-between items-center">
+            <span className="font-semibold">Unit Price:</span>
+            <span className="text-sm text-gray-600">
+              {orderItems.length > 0 && totalPrice > 0 ? 
+                `${orderItems[0].currency} ${(totalPrice / orderItems.reduce((sum, item) => sum + item.quantity, 0)).toFixed(5)} each` : 
+                "CAD 0.00"
+              }
+            </span>
+          </div>
+        )}
       </div>
       
       <div className="mt-6 space-y-2">

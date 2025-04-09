@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { DollarSign, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import OrderSummary from "./OrderSummary";
+import { OrderItem, ProductConfig } from "./PrintCalculator";
 
 interface RollLabelsState {
   productType: string;
@@ -84,6 +86,8 @@ const RollLabelsCalculator: React.FC = () => {
     versions: 1
   });
   
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  
   const handleInputChange = (field: keyof RollLabelsState, value: string | number | boolean) => {
     setState({
       ...state,
@@ -99,10 +103,48 @@ const RollLabelsCalculator: React.FC = () => {
   };
 
   const handleAddCustomQty = () => {
+    const newItem: OrderItem = {
+      id: `custom-${Date.now()}`,
+      quantity: state.quantity,
+      totalCost: state.cost,
+      totalPrice: state.price,
+      currency: state.currency
+    };
+    
+    setOrderItems([...orderItems, newItem]);
+    
     toast({
       title: "Item added",
       description: `Added ${state.quantity} labels to order summary`,
     });
+  };
+  
+  const handleRemoveItem = (id: string) => {
+    setOrderItems(orderItems.filter(item => item.id !== id));
+    toast({
+      title: "Item removed",
+      description: "Item removed from order summary",
+      variant: "destructive"
+    });
+  };
+
+  // Create a product config object for the OrderSummary component
+  const productConfig: ProductConfig = {
+    productType: "Roll Labels",
+    option: state.shape,
+    itemSize: state.size,
+    shippedSize: state.size,
+    material: state.material,
+    sidesPrinted: "1/0",
+    pmsColors: "0",
+    coating: state.coating,
+    thickness: "", 
+    sidesCoated: "1",
+    coverage: state.coverage || "100%",
+    lamination: state.lamination,
+    sidesLaminated: "1",
+    ganging: "Yes",
+    paperCost: "Current Price",
   };
   
   return (
@@ -477,49 +519,13 @@ const RollLabelsCalculator: React.FC = () => {
       </div>
 
       <div className="summary-content">
-        <Card className="p-4">
-          <h2 className="section-title">Order Summary</h2>
-          
-          <div className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-md">
-              <h3 className="font-medium mb-2">Product Details</h3>
-              <p>Roll Labels - {state.productType}</p>
-              <p>{state.shape} - {state.size}</p>
-              <p>{state.material}</p>
-              <p>Ink: {state.ink}</p>
-              {state.lamination !== "No_Lamination" && <p>Lamination: {state.lamination.replace("_", " ")}</p>}
-            </div>
-            
-            <div>
-              <div className="flex justify-between py-2 border-b">
-                <span>Quantity:</span>
-                <span>{state.quantity.toLocaleString()}</span>
-              </div>
-              {state.isSets && (
-                <div className="flex justify-between py-2 border-b">
-                  <span>Versions:</span>
-                  <span>{state.versions}</span>
-                </div>
-              )}
-              <div className="flex justify-between py-2 border-b">
-                <span>Cost ({state.currency}):</span>
-                <span>${state.cost.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between py-2 border-b font-medium">
-                <span>Price ({state.currency}):</span>
-                <span>${state.price.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between py-2 text-sm text-gray-500">
-                <span>Unit Price:</span>
-                <span>${(state.price / state.quantity).toFixed(5)} each</span>
-              </div>
-            </div>
-            
-            <Button className="w-full bg-print-primary hover:bg-print-primary/90">
-              Download Quote
-            </Button>
-          </div>
-        </Card>
+        <OrderSummary
+          productConfig={productConfig}
+          orderItems={orderItems}
+          onRemoveItem={handleRemoveItem}
+          isSets={state.isSets}
+          showSpecSheet={true}
+        />
       </div>
     </div>
   );
