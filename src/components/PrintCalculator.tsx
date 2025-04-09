@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import OrderSummary from "./OrderSummary";
 import RollLabelsCalculator from "./RollLabelsCalculator";
 import FoldingCartonsCalculator from "./FoldingCartonsCalculator";
 import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
+import QuotesTab from "./QuotesTab";
 
 export interface ProductOption {
   id: string;
@@ -76,6 +78,8 @@ const PrintCalculator: React.FC = () => {
   });
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
+
+  const [isSets, setIsSets] = useState(false);
 
   const handleAddToSummary = (item: OrderItem) => {
     const newItem = { 
@@ -143,6 +147,7 @@ const PrintCalculator: React.FC = () => {
           <TabsTrigger value="rolllabels" className="px-6 py-2">Roll Labels</TabsTrigger>
           <TabsTrigger value="foldingcartons" className="px-6 py-2">Folding Cartons</TabsTrigger>
           <TabsTrigger value="flexiblepackaging" className="px-6 py-2">Flexible Packaging</TabsTrigger>
+          <TabsTrigger value="quotes" className="px-6 py-2">Quotes</TabsTrigger>
           <TabsTrigger value="custom" className="px-6 py-2">Custom</TabsTrigger>
         </TabsList>
         
@@ -159,6 +164,8 @@ const PrintCalculator: React.FC = () => {
                 <PriceMarkup 
                   markup={markup} 
                   onMarkupChange={handleMarkupChange}
+                  isSets={isSets}
+                  onSetsChange={setIsSets}
                 />
                 <div className="flex justify-end mt-4">
                   <Button 
@@ -181,6 +188,7 @@ const PrintCalculator: React.FC = () => {
                 productConfig={productConfig}
                 orderItems={orderSummary}
                 onRemoveItem={handleRemoveFromSummary}
+                isSets={isSets}
               />
             </div>
           </div>
@@ -196,6 +204,10 @@ const PrintCalculator: React.FC = () => {
         
         <TabsContent value="flexiblepackaging" className="mt-4">
           <FlexiblePackagingCalculator />
+        </TabsContent>
+        
+        <TabsContent value="quotes" className="mt-4">
+          <QuotesTab />
         </TabsContent>
         
         <TabsContent value="custom" className="mt-4">

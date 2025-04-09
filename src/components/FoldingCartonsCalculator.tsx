@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { DollarSign, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import OrderSummary from "./OrderSummary";
+import { OrderItem, ProductConfig } from "./PrintCalculator";
 
 interface FoldingCartonsState {
   productType: string;
@@ -68,6 +70,8 @@ const FoldingCartonsCalculator: React.FC = () => {
     isSets: false
   });
   
+  const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  
   const handleInputChange = (field: keyof FoldingCartonsState, value: any) => {
     setState({
       ...state,
@@ -93,10 +97,69 @@ const FoldingCartonsCalculator: React.FC = () => {
   };
 
   const handleAddCustomQty = () => {
+    const newItem: OrderItem = {
+      id: Date.now().toString(),
+      quantity: state.quantity,
+      totalCost: state.cost,
+      totalPrice: state.price,
+      currency: state.currency
+    };
+    
+    setOrderItems([...orderItems, newItem]);
+    
     toast({
       title: "Item added",
       description: `Added ${state.quantity} folding cartons to order summary`,
     });
+  };
+
+  const handleAddFromTable = (quantity: number) => {
+    const cost = state.cost * quantity / state.quantity;
+    const price = state.price * quantity / state.quantity;
+    
+    const newItem: OrderItem = {
+      id: Date.now().toString(),
+      quantity: quantity,
+      totalCost: cost,
+      totalPrice: price,
+      currency: state.currency
+    };
+    
+    setOrderItems([...orderItems, newItem]);
+    
+    toast({
+      title: "Item added",
+      description: `Added ${quantity} folding cartons to order summary`,
+    });
+  };
+  
+  const handleRemoveItem = (id: string) => {
+    setOrderItems(orderItems.filter(item => item.id !== id));
+    
+    toast({
+      title: "Item removed",
+      description: "Item removed from order summary",
+      variant: "destructive"
+    });
+  };
+  
+  // Convert state to ProductConfig format for OrderSummary
+  const productConfig: ProductConfig = {
+    productType: state.productType,
+    option: "",
+    itemSize: `${state.flatSize.length}" × ${state.flatSize.height}"`,
+    shippedSize: "",
+    material: state.material,
+    sidesPrinted: state.sidesPrinted,
+    pmsColors: state.pmsColors,
+    coating: state.coating,
+    thickness: "",
+    sidesCoated: state.sidesCoated,
+    coverage: "",
+    lamination: state.lamination,
+    sidesLaminated: state.sidesLaminated,
+    ganging: state.ganging,
+    paperCost: "",
   };
   
   return (
@@ -480,8 +543,9 @@ const FoldingCartonsCalculator: React.FC = () => {
                 className="bg-blue-50"
                 readOnly
               />
-              <div className="text-xs text-right mt-1">
-                @ {state.markup}% markup
+              <div className="flex justify-between text-xs mt-1">
+                <span>@ {state.markup}% markup</span>
+                <span>Unit price: {(state.price / state.quantity).toFixed(5)}</span>
               </div>
             </div>
           </div>
@@ -506,84 +570,47 @@ const FoldingCartonsCalculator: React.FC = () => {
                 <TableHead>Quantity</TableHead>
                 <TableHead>Cost</TableHead>
                 <TableHead>Price</TableHead>
+                <TableHead>Unit Price</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[500, 1000, 2500, 5000, 10000].map(qty => (
-                <TableRow key={qty}>
-                  <TableCell>{qty.toLocaleString()}</TableCell>
-                  <TableCell>${(state.cost * qty / state.quantity).toFixed(2)}</TableCell>
-                  <TableCell>${(state.price * qty / state.quantity).toFixed(2)}</TableCell>
-                  <TableCell className="text-right">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      className="text-xs"
-                      onClick={() => {
-                        handleInputChange("quantity", qty);
-                        toast({
-                          title: "Quantity updated",
-                          description: `Updated quantity to ${qty}`,
-                        });
-                      }}
-                    >
-                      <Plus className="h-3 w-3 mr-1" /> Select
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {[500, 1000, 2500, 5000, 10000].map(qty => {
+                const cost = (state.cost * qty / state.quantity).toFixed(2);
+                const price = (state.price * qty / state.quantity).toFixed(2);
+                const unitPrice = (state.price * qty / state.quantity / qty).toFixed(5);
+                
+                return (
+                  <TableRow key={qty}>
+                    <TableCell>{qty.toLocaleString()}</TableCell>
+                    <TableCell>{state.currency} {cost}</TableCell>
+                    <TableCell>{state.currency} {price}</TableCell>
+                    <TableCell>{state.currency} {unitPrice}</TableCell>
+                    <TableCell className="text-right">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="text-xs"
+                        onClick={() => handleAddFromTable(qty)}
+                      >
+                        <Plus className="h-3 w-3 mr-1" /> Add
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </Card>
       </div>
 
       <div className="summary-content">
-        <Card className="p-4">
-          <h2 className="section-title">Order Summary</h2>
-          
-          <div className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-md">
-              <h3 className="font-medium mb-2">Product Details</h3>
-              <p>{state.productType}</p>
-              <p>Size: {state.flatSize.length}" × {state.flatSize.height}"</p>
-              <p>{state.material}</p>
-              <p>Print: {state.sidesPrinted}, {state.printMethod}</p>
-              {state.pmsColors !== "0" && <p>PMS Colors: {state.pmsColors}</p>}
-              {state.coating !== "No_Coating" && <p>Coating: {state.coating.replace("_", " ")}</p>}
-              {state.lamination !== "No_Coating" && <p>Lamination: {state.lamination.replace("_", " ")}</p>}
-            </div>
-            
-            <div>
-              <div className="flex justify-between py-2 border-b">
-                <span>Quantity:</span>
-                <span>{state.quantity.toLocaleString()}</span>
-              </div>
-              {state.isSets && (
-                <div className="flex justify-between py-2 border-b">
-                  <span>Versions:</span>
-                  <span>{state.versions}</span>
-                </div>
-              )}
-              <div className="flex justify-between py-2 border-b">
-                <span>Cost ({state.currency}):</span>
-                <span>${state.cost.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between py-2 border-b font-medium">
-                <span>Price ({state.currency}):</span>
-                <span>${state.price.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between py-2 text-sm text-gray-500">
-                <span>Unit Price:</span>
-                <span>${(state.price / state.quantity).toFixed(5)} each</span>
-              </div>
-            </div>
-            
-            <Button className="w-full bg-print-primary hover:bg-print-primary/90">
-              Download Quote
-            </Button>
-          </div>
-        </Card>
+        <OrderSummary
+          productConfig={productConfig}
+          orderItems={orderItems}
+          onRemoveItem={handleRemoveItem}
+          isSets={state.isSets}
+        />
       </div>
     </div>
   );

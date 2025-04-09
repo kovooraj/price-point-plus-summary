@@ -1,55 +1,57 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Download, Trash2 } from "lucide-react";
+import { Download, FileSpreadsheet, Trash2 } from "lucide-react";
 import { OrderItem, ProductConfig } from "./PrintCalculator";
 import { formatProductSpec } from "../utils/formatters";
+import QuotePopupDialog, { CustomerDetails } from "./QuotePopupDialog";
+import { generateQuotePDF } from "../utils/generateQuote";
+import OrderNotes from "./OrderNotes";
 
 interface OrderSummaryProps {
   productConfig: ProductConfig;
   orderItems: OrderItem[];
   onRemoveItem: (id: string) => void;
+  isSets?: boolean;
+  showSpecSheet?: boolean;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ productConfig, orderItems, onRemoveItem }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ 
+  productConfig, 
+  orderItems, 
+  onRemoveItem,
+  isSets = false,
+  showSpecSheet = false
+}) => {
+  const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
+  const [specSheetDialogOpen, setSpecSheetDialogOpen] = useState(false);
+  const [notes, setNotes] = useState("");
+
   // Calculate total price for all items
   const totalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
 
-  const handleDownload = () => {
-    // Create content for the price list
-    const fileName = "price-list.csv";
-    let content = "Product Specifications\n";
-    content += `Product Type: ${productConfig.productType}\n`;
-    content += `Size: ${productConfig.itemSize}\n`;
-    content += `Material: ${productConfig.material}\n`;
-    content += `Printing: ${productConfig.sidesPrinted} Sides\n`;
-    if (productConfig.coating !== "No_Coating") {
-      content += `Coating: ${productConfig.coating.replace("_", " ")}\n`;
-    }
-    if (productConfig.lamination !== "None") {
-      content += `Lamination: ${productConfig.lamination.replace("_", " ")}\n`;
-    }
-    content += "\nSelected Quantities\n";
-    content += "Quantity,Total Price,Currency\n";
-    
-    orderItems.forEach(item => {
-      content += `${item.quantity},${item.totalPrice.toFixed(2)},${item.currency}\n`;
+  const handleDownloadQuote = (customerDetails: CustomerDetails) => {
+    generateQuotePDF({
+      productConfig,
+      orderItems,
+      customerDetails,
+      notes: isSets ? notes : undefined,
+      date: new Date().toLocaleDateString()
     });
-    content += `\nTotal Items: ${orderItems.length}\n`;
-    content += `Total Price: ${orderItems.length > 0 ? `${orderItems[0].currency} ${totalPrice.toFixed(2)}` : "CAD 0.00"}\n`;
-    
-    // Create a blob and download
-    const blob = new Blob([content], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  };
+
+  const handleDownloadSpecSheet = (customerDetails: CustomerDetails) => {
+    // Spec sheet is similar to quote but focused on specifications
+    generateQuotePDF({
+      productConfig,
+      orderItems,
+      customerDetails,
+      notes: isSets ? notes : undefined,
+      date: new Date().toLocaleDateString()
+    });
   };
 
   return (
@@ -104,6 +106,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ productConfig, orderItems, 
                     <div className="mt-1.5 text-sm font-medium">
                       {item.currency} {item.totalPrice.toFixed(2)}
                     </div>
+                    <div className="text-xs text-gray-500">
+                      {item.currency} {(item.totalPrice / item.quantity).toFixed(5)} each
+                    </div>
                   </div>
                   <Button 
                     size="sm" 
@@ -127,6 +132,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ productConfig, orderItems, 
         </div>
       )}
       
+      <OrderNotes 
+        notes={notes} 
+        onNotesChange={setNotes} 
+        showNotes={isSets} 
+      />
+      
       <Separator className="my-4" />
       
       <div className="space-y-2">
@@ -145,12 +156,35 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ productConfig, orderItems, 
         </div>
       </div>
       
-      <Button 
-        className="w-full mt-6 bg-print-accent hover:bg-print-accent/90 text-print-primary font-bold flex items-center justify-center gap-2"
-        onClick={handleDownload}
-      >
-        <Download className="h-4 w-4" /> Download Price List
-      </Button>
+      <div className="mt-6 space-y-2">
+        <Button 
+          className="w-full bg-amber-400 hover:bg-amber-500 text-print-primary font-bold flex items-center justify-center gap-2"
+          onClick={() => setQuoteDialogOpen(true)}
+        >
+          <Download className="h-4 w-4" /> Download Quote
+        </Button>
+        
+        {showSpecSheet && (
+          <Button 
+            className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-print-primary font-bold flex items-center justify-center gap-2"
+            onClick={() => setSpecSheetDialogOpen(true)}
+          >
+            <FileSpreadsheet className="h-4 w-4" /> Download Spec Sheet
+          </Button>
+        )}
+      </div>
+
+      <QuotePopupDialog 
+        open={quoteDialogOpen} 
+        onOpenChange={setQuoteDialogOpen}
+        onSubmit={handleDownloadQuote}
+      />
+
+      <QuotePopupDialog 
+        open={specSheetDialogOpen} 
+        onOpenChange={setSpecSheetDialogOpen}
+        onSubmit={handleDownloadSpecSheet}
+      />
     </Card>
   );
 };
