@@ -10,6 +10,7 @@ import QuantityTable from "./QuantityTable";
 import OrderSummary from "./OrderSummary";
 import RollLabelsCalculator from "./RollLabelsCalculator";
 import FoldingCartonsCalculator from "./FoldingCartonsCalculator";
+import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
 
 export interface ProductOption {
   id: string;
@@ -34,7 +35,7 @@ export interface ProductConfig {
   sidesPrinted: string;
   pmsColors: string;
   coating: string;
-  thickness: string;
+  thickness: string; 
   sidesCoated: string;
   coverage: string;
   lamination: string;
@@ -194,9 +195,7 @@ const PrintCalculator: React.FC = () => {
         </TabsContent>
         
         <TabsContent value="flexiblepackaging" className="mt-4">
-          <div className="p-8 text-center text-muted-foreground">
-            Flexible Packaging Calculator coming soon
-          </div>
+          <FlexiblePackagingCalculator />
         </TabsContent>
         
         <TabsContent value="custom" className="mt-4">
