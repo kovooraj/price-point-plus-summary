@@ -208,7 +208,7 @@ const PrintCalculator: React.FC = () => {
         </TabsContent>
       </Tabs>
 
-      <style jsx global>{`
+      <style>{`
         .print-calculator-layout {
           display: grid;
           grid-template-columns: 1fr;
