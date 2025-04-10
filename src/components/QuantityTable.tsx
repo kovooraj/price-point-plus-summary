@@ -60,11 +60,6 @@ const QuantityTable: React.FC<QuantityTableProps> = ({ onAddToSummary, currency 
           <TableHeader className="bg-print-primary text-white">
             <TableRow>
               <TableHead className="border-r text-white">QTY</TableHead>
-              <TableHead className="border-r text-white hidden md:table-cell">Prepress ($)</TableHead>
-              <TableHead className="border-r text-white hidden lg:table-cell">Plate Cost ($)</TableHead>
-              <TableHead className="border-r text-white hidden lg:table-cell">Print Cost ($)</TableHead>
-              <TableHead className="border-r text-white hidden lg:table-cell">Paper ($)</TableHead>
-              <TableHead className="border-r text-white hidden lg:table-cell">Laminate ($)</TableHead>
               <TableHead className="border-r text-white">Total Cost ($)</TableHead>
               <TableHead className="border-r text-white">Total Price ($)</TableHead>
               <TableHead className="border-r text-white">Unit Price ($)</TableHead>
@@ -78,11 +73,6 @@ const QuantityTable: React.FC<QuantityTableProps> = ({ onAddToSummary, currency 
               return (
                 <TableRow key={index} className={index % 2 === 0 ? "bg-muted/30" : ""}>
                   <TableCell className="font-medium border-r">{row.qty.toLocaleString()}</TableCell>
-                  <TableCell className="border-r hidden md:table-cell">1.30</TableCell>
-                  <TableCell className="border-r hidden lg:table-cell">4.16</TableCell>
-                  <TableCell className="border-r hidden lg:table-cell">16.70</TableCell>
-                  <TableCell className="border-r hidden lg:table-cell">{(row.qty * 0.02259).toFixed(2)}</TableCell>
-                  <TableCell className="border-r hidden lg:table-cell">{(row.qty * 0.0112).toFixed(2)}</TableCell>
                   <TableCell className="border-r font-medium">{row.totalCost.toFixed(2)}</TableCell>
                   <TableCell className="border-r font-semibold text-print-primary">{row.totalPrice.toFixed(2)} {currency}</TableCell>
                   <TableCell className="border-r">{unitPrice}</TableCell>
