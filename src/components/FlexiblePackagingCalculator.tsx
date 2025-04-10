@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -11,6 +10,7 @@ import { Plus, Package, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "../utils/formatters";
 import { Badge } from "@/components/ui/badge";
+import QuantityTable from "./QuantityTable";
 
 interface FlexiblePackagingConfig {
   product: string;
@@ -74,10 +74,8 @@ const FlexiblePackagingCalculator: React.FC = () => {
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
 
-  // Effect to update fields based on product selection
   useEffect(() => {
     if (config.product === "Roll_Stock") {
-      // Reset pouch-specific fields
       setConfig(prev => ({
         ...prev,
         height: undefined,
@@ -92,7 +90,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
         repeatsPerRoll: prev.repeatsPerRoll || "1000",
       }));
     } else if (config.product === "Flat_Lay_Pouches") {
-      // Reset roll stock fields and set pouch fields
       setConfig(prev => ({
         ...prev,
         rollWidth: undefined,
@@ -107,7 +104,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
         holePunch: prev.holePunch || "No",
       }));
     } else if (config.product === "Stand_Up_Pouches") {
-      // Reset roll stock fields and set stand-up pouch fields
       setConfig(prev => ({
         ...prev,
         rollWidth: undefined,
@@ -137,26 +133,17 @@ const FlexiblePackagingCalculator: React.FC = () => {
       [field]: value,
     });
 
-    // If changing markup percentage, recalculate price
     if (field === "markupPercent" && typeof value === "number") {
       const newPrice = markup.baseCost * (1 + value / 100);
       setMarkup(prev => ({ ...prev, basePrice: newPrice }));
     }
   };
 
-  const handleAddToSummary = (quantity: number, cost: number, price: number) => {
-    const newItem = {
-      id: Date.now().toString(),
-      quantity,
-      totalCost: cost,
-      totalPrice: price,
-      currency: markup.currency,
-    };
-
-    setOrderSummary([...orderSummary, newItem]);
+  const handleAddToSummary = (item: OrderItem) => {
+    setOrderSummary([...orderSummary, item]);
     toast({
       title: "Added to order summary",
-      description: `Quantity: ${quantity} - Price: ${markup.currency} ${price.toFixed(2)}`,
+      description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`,
     });
   };
 
@@ -170,12 +157,10 @@ const FlexiblePackagingCalculator: React.FC = () => {
   };
 
   const handleDownloadSpecSheet = () => {
-    // Prepare the content for the spec sheet
     const fileName = "flexible-packaging-spec-sheet.csv";
     let content = "Flexible Packaging Specifications\n";
     content += `Product Type: ${config.product.replace(/_/g, " ")}\n`;
     
-    // Add size information based on product type
     if (config.product === "Roll_Stock") {
       content += `Roll Width: ${config.rollWidth}\n`;
       content += `Repeat Length: ${config.repeatLength}\n`;
@@ -190,20 +175,17 @@ const FlexiblePackagingCalculator: React.FC = () => {
       content += `Gusset: ${config.gusset}\n`;
     }
     
-    // Add common specifications
     content += `Lamination: ${config.lamination}\n`;
     content += `Main Structure: ${config.mainStructure.replace(/_/g, " ")}\n`;
     content += `Barrier: ${config.barrier}\n`;
     content += `Ink: ${config.ink}\n`;
     
-    // Add pouch-specific information if applicable
     if (config.product !== "Roll_Stock") {
       content += `Zipper: ${config.zipper}\n`;
       content += `Tear Notch: ${config.tearNotch}\n`;
       content += `Hole Punch: ${config.holePunch}\n`;
     }
     
-    // Create a blob and download
     const blob = new Blob([content], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -238,7 +220,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
               </Select>
             </div>
 
-            {/* Size fields - conditional based on product type */}
             {config.product === "Roll_Stock" && (
               <>
                 <div>
@@ -392,7 +373,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
               </Select>
             </div>
             
-            {/* Conditional fields for pouches */}
             {config.product !== "Roll_Stock" && (
               <>
                 <div>
@@ -446,7 +426,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
               </>
             )}
             
-            {/* Conditional fields for roll stock */}
             {config.product === "Roll_Stock" && (
               <>
                 <div>
@@ -502,7 +481,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
               </div>
             </div>
             
-            {/* Sets toggle - only for pouches */}
             {config.product !== "Roll_Stock" && (
               <div className="flex items-center justify-between">
                 <Label className="text-print-primary font-medium">Sets</Label>
@@ -523,10 +501,9 @@ const FlexiblePackagingCalculator: React.FC = () => {
               </div>
             )}
             
-            {/* Quantity section */}
             {!markup.isSet ? (
               <div className="mb-4">
-                <Label htmlFor="totalQuantity" className="text-print-primary font-medium">Quantity</Label>
+                <Label htmlFor="totalQuantity" className="text-print-primary font-medium">QTY</Label>
                 <div className="flex items-center mt-1">
                   <div className="w-24 text-sm font-medium mr-2">QTY:</div>
                   <Input 
@@ -622,7 +599,13 @@ const FlexiblePackagingCalculator: React.FC = () => {
             
             <div className="flex justify-end mt-4">
               <Button 
-                onClick={() => handleAddToSummary(markup.totalQuantity, markup.baseCost, markup.basePrice)}
+                onClick={() => handleAddToSummary({
+                  id: Date.now().toString(),
+                  quantity: markup.totalQuantity,
+                  totalCost: markup.baseCost,
+                  totalPrice: markup.basePrice,
+                  currency: markup.currency
+                })}
                 className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
               >
                 <Plus className="h-4 w-4" /> Add to Summary
@@ -633,41 +616,10 @@ const FlexiblePackagingCalculator: React.FC = () => {
 
         <Card className="p-4">
           <h2 className="section-title">Quantity Variations</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1000, 2500, 5000, 10000, 25000].map((qty) => {
-              const qtyFactor = qty / 5000;
-              const cost = markup.baseCost * (qtyFactor < 1 ? 1.2 - qtyFactor * 0.2 : 0.8 + qtyFactor * 0.04);
-              const price = cost * (1 + markup.markupPercent / 100);
-              
-              return (
-                <Card key={qty} className="p-3 border rounded bg-white hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-center mb-2">
-                    <Badge variant="outline" className="text-print-primary border-print-primary">
-                      {qty.toLocaleString()} units
-                    </Badge>
-                    <Button 
-                      size="sm" 
-                      variant="ghost"
-                      className="h-8 px-2 hover:bg-print-success hover:text-white"
-                      onClick={() => handleAddToSummary(qty, cost, price)}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="text-sm space-y-1">
-                    <div className="flex justify-between text-gray-600">
-                      <span>Cost:</span>
-                      <span>{formatCurrency(cost, markup.currency)}</span>
-                    </div>
-                    <div className="flex justify-between font-medium">
-                      <span>Price:</span>
-                      <span className="text-print-primary">{formatCurrency(price, markup.currency)}</span>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
+          <QuantityTable 
+            onAddToSummary={handleAddToSummary}
+            currency={markup.currency}
+          />
         </Card>
       </div>
 
@@ -683,7 +635,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
                 <span className="font-medium">{config.product.replace(/_/g, " ")}</span>
               </li>
               
-              {/* Size information based on product type */}
               {config.product === "Roll_Stock" ? (
                 <>
                   <li className="flex justify-between">
@@ -736,7 +687,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
                 <span className="font-medium">{config.ink.replace(/_/g, " ")}</span>
               </li>
               
-              {/* Pouch-specific fields */}
               {config.product !== "Roll_Stock" && (
                 <>
                   {config.zipper !== "None" && (
@@ -760,7 +710,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
                 </>
               )}
               
-              {/* Roll-specific fields */}
               {config.product === "Roll_Stock" && (
                 <>
                   <li className="flex justify-between">
@@ -836,7 +785,6 @@ const FlexiblePackagingCalculator: React.FC = () => {
             <Button 
               className="w-full bg-print-accent hover:bg-print-accent/90 text-print-primary font-bold flex items-center justify-center gap-2"
               onClick={() => {
-                // Create and download price list
                 const fileName = "price-list.csv";
                 let content = "Quantity,Price\n";
                 orderSummary.forEach(item => {
