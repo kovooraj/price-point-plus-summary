@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2, Search } from "lucide-react";
+import { Plus, History } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
 import PriceMarkup from "./PriceMarkup";
@@ -13,6 +13,7 @@ import RollLabelsCalculator from "./RollLabelsCalculator";
 import FoldingCartonsCalculator from "./FoldingCartonsCalculator";
 import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
 import QuotesTab from "./QuotesTab";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export interface ProductOption {
   id: string;
@@ -78,7 +79,7 @@ const PrintCalculator: React.FC = () => {
   });
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
-
+  const [isQuotesDialogOpen, setIsQuotesDialogOpen] = useState(false);
   const [isSets, setIsSets] = useState(false);
 
   const handleAddToSummary = (item: OrderItem) => {
@@ -139,7 +140,20 @@ const PrintCalculator: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-print-primary mb-4">Print Product Calculator</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold text-print-primary">Print Product Calculator</h1>
+        <Dialog open={isQuotesDialogOpen} onOpenChange={setIsQuotesDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              Quote History
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-6xl w-[90vw] max-h-[85vh] overflow-y-auto">
+            <QuotesTab />
+          </DialogContent>
+        </Dialog>
+      </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
         <TabsList className="w-full border-b justify-start overflow-x-auto">
@@ -147,7 +161,6 @@ const PrintCalculator: React.FC = () => {
           <TabsTrigger value="rolllabels" className="px-6 py-2">Roll Labels</TabsTrigger>
           <TabsTrigger value="foldingcartons" className="px-6 py-2">Folding Cartons</TabsTrigger>
           <TabsTrigger value="flexiblepackaging" className="px-6 py-2">Flexible Packaging</TabsTrigger>
-          <TabsTrigger value="quotes" className="px-6 py-2">Quotes</TabsTrigger>
           <TabsTrigger value="custom" className="px-6 py-2">Custom</TabsTrigger>
         </TabsList>
         
@@ -204,10 +217,6 @@ const PrintCalculator: React.FC = () => {
         
         <TabsContent value="flexiblepackaging" className="mt-4">
           <FlexiblePackagingCalculator />
-        </TabsContent>
-        
-        <TabsContent value="quotes" className="mt-4">
-          <QuotesTab />
         </TabsContent>
         
         <TabsContent value="custom" className="mt-4">
