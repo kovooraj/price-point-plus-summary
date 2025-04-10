@@ -127,7 +127,7 @@ const PrintCalculator: React.FC = () => {
   };
   return <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-3xl font-bold text-print-primary py-[19px]">Product Forge</h1>
+        <h1 className="text-3xl font-bold text-print-primary py-[19px]">⚒️ Product Forge</h1>
         <Dialog open={isQuotesDialogOpen} onOpenChange={setIsQuotesDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
