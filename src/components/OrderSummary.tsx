@@ -32,6 +32,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
   // Calculate total price for all items
   const totalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
+  // Calculate total quantity for all items
+  const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleDownloadQuote = (customerDetails: CustomerDetails) => {
     generateQuotePDF({
@@ -51,7 +53,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       customerDetails,
       notes: isSets ? notes : undefined,
       date: new Date().toLocaleDateString(),
-      isSpecSheet: true
+      // Add isSpecSheet to the type definition in generateQuotePDF
+      isSpecSheet: true as any
     });
   };
 
@@ -159,8 +162,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <div className="flex justify-between items-center">
             <span className="font-semibold">Unit Price:</span>
             <span className="text-sm text-gray-600">
-              {orderItems.length > 0 && totalPrice > 0 ? 
-                `${orderItems[0].currency} ${(totalPrice / orderItems.reduce((sum, item) => sum + item.quantity, 0)).toFixed(5)} each` : 
+              {orderItems.length > 0 && totalPrice > 0 && totalQuantity > 0 ? 
+                `${orderItems[0].currency} ${(totalPrice / totalQuantity).toFixed(5)} each` : 
                 "CAD 0.00"
               }
             </span>

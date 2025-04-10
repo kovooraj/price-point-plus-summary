@@ -69,7 +69,9 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
       
       <div>
         <div className="mb-4">
-          <Label htmlFor="customQuantity" className="text-print-primary font-medium">Quantity</Label>
+          <Label htmlFor="customQuantity" className="text-print-primary font-medium">
+            {isSets ? "Total Quantity" : "Quantity"}
+          </Label>
           <div className="flex items-center mt-1">
             <div className="w-24 text-sm font-medium mr-2">QTY:</div>
             <Input 

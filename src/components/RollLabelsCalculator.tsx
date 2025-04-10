@@ -1,12 +1,12 @@
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { DollarSign, Plus } from "lucide-react";
+import { DollarSign, Plus, Search } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import OrderSummary from "./OrderSummary";
@@ -87,6 +87,7 @@ const RollLabelsCalculator: React.FC = () => {
   });
   
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   
   const handleInputChange = (field: keyof RollLabelsState, value: string | number | boolean) => {
     setState({
@@ -118,6 +119,26 @@ const RollLabelsCalculator: React.FC = () => {
       description: `Added ${state.quantity} labels to order summary`,
     });
   };
+
+  const handleAddFromTable = (quantity: number) => {
+    const cost = state.cost * quantity / state.quantity;
+    const price = state.price * quantity / state.quantity;
+    
+    const newItem: OrderItem = {
+      id: `${quantity}-${Date.now()}`,
+      quantity: quantity,
+      totalCost: cost,
+      totalPrice: price,
+      currency: state.currency
+    };
+    
+    setOrderItems([...orderItems, newItem]);
+    
+    toast({
+      title: "Item added",
+      description: `Added ${quantity} labels to order summary`,
+    });
+  };
   
   const handleRemoveItem = (id: string) => {
     setOrderItems(orderItems.filter(item => item.id !== id));
@@ -146,6 +167,19 @@ const RollLabelsCalculator: React.FC = () => {
     ganging: "Yes",
     paperCost: "Current Price",
   };
+
+  // Standard quantity variations for all tabs
+  const standardQuantities = [100, 200, 300, 400, 500, 1000, 1500, 2000, 2500, 3000, 10000, 15000, 20000, 25000, 30000, 100000];
+
+  // Filter quantities based on search query
+  const filteredQuantities = useMemo(() => {
+    if (!searchQuery) return standardQuantities;
+    
+    const query = searchQuery.toLowerCase();
+    return standardQuantities.filter(qty => 
+      qty.toString().includes(query)
+    );
+  }, [searchQuery]);
   
   return (
     <div className="print-calculator-layout">
@@ -405,7 +439,7 @@ const RollLabelsCalculator: React.FC = () => {
               </div>
             ) : (
               <div className="form-group">
-                <Label htmlFor="quantity">Quantity</Label>
+                <Label htmlFor="quantity">{state.isSets ? "Total Quantity" : "Quantity"}</Label>
                 <Input 
                   id="quantity"
                   type="number" 
@@ -480,41 +514,58 @@ const RollLabelsCalculator: React.FC = () => {
         <Card className="p-4">
           <h2 className="section-title">Quantity Variations</h2>
           
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Cost</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[1000, 2500, 5000, 10000, 25000].map(qty => (
-                <TableRow key={qty}>
-                  <TableCell>{qty.toLocaleString()}</TableCell>
-                  <TableCell>${(state.cost * qty / state.quantity).toFixed(2)}</TableCell>
-                  <TableCell>${(state.price * qty / state.quantity).toFixed(2)}</TableCell>
-                  <TableCell className="text-right">
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      className="text-xs"
-                      onClick={() => {
-                        handleInputChange("quantity", qty);
-                        toast({
-                          title: "Quantity updated",
-                          description: `Updated quantity to ${qty}`,
-                        });
-                      }}
-                    >
-                      <Plus className="h-3 w-3 mr-1" /> Select
-                    </Button>
-                  </TableCell>
+          <div className="mb-4 flex items-center gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input 
+                type="text"
+                placeholder="Search quantities..." 
+                className="pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader className="bg-print-primary text-white">
+                <TableRow>
+                  <TableHead className="border-r text-white">QTY</TableHead>
+                  <TableHead className="border-r text-white">Cost ($)</TableHead>
+                  <TableHead className="border-r text-white">Price ($)</TableHead>
+                  <TableHead className="border-r text-white">Unit Price ($)</TableHead>
+                  <TableHead className="text-white">Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredQuantities.map((qty, index) => {
+                  const cost = (state.cost * qty / state.quantity).toFixed(2);
+                  const price = (state.price * qty / state.quantity).toFixed(2);
+                  const unitPrice = (parseFloat(price) / qty).toFixed(4);
+                  
+                  return (
+                    <TableRow key={qty} className={index % 2 === 0 ? "bg-muted/30" : ""}>
+                      <TableCell className="font-medium border-r">{qty.toLocaleString()}</TableCell>
+                      <TableCell className="border-r">{cost}</TableCell>
+                      <TableCell className="border-r font-semibold text-print-primary">{price}</TableCell>
+                      <TableCell className="border-r">{unitPrice}</TableCell>
+                      <TableCell>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="flex items-center gap-1 hover:bg-print-success hover:text-white hover:border-print-success transition-colors"
+                          onClick={() => handleAddFromTable(qty)}
+                        >
+                          <Plus className="h-4 w-4" /> Add
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       </div>
 
