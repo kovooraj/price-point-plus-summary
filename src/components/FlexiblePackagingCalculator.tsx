@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -73,6 +74,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
   });
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
+  const [isSets, setIsSets] = useState(false);
 
   useEffect(() => {
     if (config.product === "Roll_Stock") {
@@ -481,27 +483,25 @@ const FlexiblePackagingCalculator: React.FC = () => {
               </div>
             </div>
             
-            {config.product !== "Roll_Stock" && (
-              <div className="flex items-center justify-between">
-                <Label className="text-print-primary font-medium">Sets</Label>
-                <div className="flex items-center space-x-2">
-                  <div className={`flex items-center ${!markup.isSet ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                    <span>No</span>
-                  </div>
-                  
-                  <Switch 
-                    checked={markup.isSet} 
-                    onCheckedChange={(checked) => handleMarkupChange("isSet", checked)}
-                  />
-                  
-                  <div className={`flex items-center ${markup.isSet ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                    <span>Yes</span>
-                  </div>
+            <div className="flex items-center justify-between">
+              <Label className="text-print-primary font-medium">Sets</Label>
+              <div className="flex items-center space-x-2">
+                <div className={`flex items-center ${!isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>
+                  <span>No</span>
+                </div>
+                
+                <Switch 
+                  checked={isSets} 
+                  onCheckedChange={(checked) => setIsSets(checked)}
+                />
+                
+                <div className={`flex items-center ${isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>
+                  <span>Yes</span>
                 </div>
               </div>
-            )}
+            </div>
             
-            {!markup.isSet ? (
+            {!isSets ? (
               <div className="mb-4">
                 <Label htmlFor="totalQuantity" className="text-print-primary font-medium">QTY</Label>
                 <div className="flex items-center mt-1">
