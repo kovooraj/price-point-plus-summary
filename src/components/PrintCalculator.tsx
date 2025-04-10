@@ -147,7 +147,7 @@ const PrintCalculator: React.FC = () => {
           <TabsTrigger value="rolllabels" className="px-6 py-2">Roll Labels</TabsTrigger>
           <TabsTrigger value="foldingcartons" className="px-6 py-2">Folding Cartons</TabsTrigger>
           <TabsTrigger value="flexiblepackaging" className="px-6 py-2">Flexible Packaging</TabsTrigger>
-          <TabsTrigger value="custom" className="px-6 py-2">Custom</TabsTrigger>
+          <TabsTrigger value="custom" className="px-6 py-2">Custom Order</TabsTrigger>
         </TabsList>
         
         <TabsContent value="commercial" className="mt-4">
