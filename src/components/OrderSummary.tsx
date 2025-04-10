@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,9 +29,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [specSheetDialogOpen, setSpecSheetDialogOpen] = useState(false);
   const [notes, setNotes] = useState("");
 
-  // Calculate total price for all items
   const totalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
-  // Calculate total quantity for all items
   const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleDownloadQuote = (customerDetails: CustomerDetails) => {
@@ -46,15 +43,13 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   };
 
   const handleDownloadSpecSheet = (customerDetails: CustomerDetails) => {
-    // Spec sheet is similar to quote but focused on specifications
     generateQuotePDF({
       productConfig,
       orderItems,
       customerDetails,
       notes: isSets ? notes : undefined,
       date: new Date().toLocaleDateString(),
-      // Add isSpecSheet to the type definition in generateQuotePDF
-      isSpecSheet: true as any
+      isSpecSheet: true
     });
   };
 

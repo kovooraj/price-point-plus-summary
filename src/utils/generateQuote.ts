@@ -8,6 +8,7 @@ export interface QuoteData {
   customerDetails: CustomerDetails;
   notes?: string;
   date: string;
+  isSpecSheet?: boolean; // Added isSpecSheet property as optional
 }
 
 // Generate a random quote number if none is provided
