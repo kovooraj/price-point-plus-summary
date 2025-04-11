@@ -1,15 +1,13 @@
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Clock } from "lucide-react";
-
 interface ComingSoonProps {
   title: string;
 }
-
-const ComingSoon: React.FC<ComingSoonProps> = ({ title }) => {
-  return (
-    <div className="container mx-auto p-4">
+const ComingSoon: React.FC<ComingSoonProps> = ({
+  title
+}) => {
+  return <div className="container mx-auto p-4 px-[60px]">
       <h1 className="text-3xl font-bold text-print-primary py-[19px]">{title}</h1>
       <Card className="my-8 py-16">
         <CardContent className="flex flex-col items-center justify-center text-center">
@@ -20,8 +18,6 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ title }) => {
           </p>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default ComingSoon;
