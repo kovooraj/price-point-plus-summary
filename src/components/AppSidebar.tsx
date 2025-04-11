@@ -13,7 +13,7 @@ export const AppSidebar: React.FC = () => {
       <SidebarHeader>
         <div className="flex items-center justify-between h-20 px-4">
           <div className="flex items-center gap-2">
-            <img alt="Product Forge Logo" src="/lovable-uploads/4021437c-a6c0-4336-8531-88dd1ad0e360.png" className="h-30 w-auto" />
+            <img alt="Product Forge Logo" src="/lovable-uploads/4021437c-a6c0-4336-8531-88dd1ad0e360.png" className="h-20 w-auto" />
           </div>
           <SidebarTrigger onClick={toggleSidebar} className="text-white hover:text-accent" />
         </div>
