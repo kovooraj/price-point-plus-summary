@@ -1,6 +1,12 @@
 
 import { OrderItem, ProductConfig } from "../components/PrintCalculator";
-import { CustomerDetails } from "../components/QuotePopupDialog";
+
+export interface CustomerDetails {
+  customerName: string;
+  companyName: string;
+  quoteNumber: string;
+  quoteFor: string; // Added quoteFor property
+}
 
 export interface QuoteData {
   productConfig: ProductConfig;
@@ -38,6 +44,7 @@ export const generateQuotePDF = (data: QuoteData): void => {
   content += `Quote Number: ${quoteNumber}\n`;
   content += `Date: ${data.date}\n`;
   content += `Customer: ${data.customerDetails.customerName}\n`;
+  content += `Quote For: ${data.customerDetails.quoteFor || "Willowpack"}\n`; // Add Quote For to the output
   if (data.customerDetails.companyName) {
     content += `Company: ${data.customerDetails.companyName}\n`;
   }

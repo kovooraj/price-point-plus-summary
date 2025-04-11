@@ -14,14 +14,14 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Logo, Calculator, History, CreditCard, Users, Settings } from "lucide-react";
+import { Printer, History, CreditCard, Users, Settings } from "lucide-react";
 
 export const AppSidebar: React.FC = () => {
   return (
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center h-14 px-4">
-          <Logo className="w-8 h-8 mr-2 text-primary" />
+          <Printer className="w-8 h-8 mr-2 text-primary" />
           <span className="text-lg font-bold">Product Forge</span>
         </div>
       </SidebarHeader>
@@ -33,7 +33,7 @@ export const AppSidebar: React.FC = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Estimating">
                   <Link to="/">
-                    <Calculator className="h-5 w-5" />
+                    <Printer className="h-5 w-5" />
                     <span>Estimating</span>
                   </Link>
                 </SidebarMenuButton>

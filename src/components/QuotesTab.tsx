@@ -14,6 +14,7 @@ interface StoredQuote {
     customerName: string;
     companyName: string;
     quoteNumber: string;
+    quoteFor?: string; // Add quoteFor as optional since older quotes may not have it
   };
   notes?: string;
   date: string;
@@ -41,7 +42,10 @@ const QuotesTab: React.FC = () => {
     generateQuotePDF({
       productConfig: quote.productConfig,
       orderItems: quote.orderItems,
-      customerDetails: quote.customerDetails,
+      customerDetails: {
+        ...quote.customerDetails,
+        quoteFor: quote.customerDetails.quoteFor || "Willowpack" // Provide default value for quoteFor
+      },
       notes: quote.notes,
       date: quote.date,
     });
