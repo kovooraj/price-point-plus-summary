@@ -34,6 +34,16 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+    
+    /* Sidebar specific colors */
+    --sidebar-background: #1A1F2C;
+    --sidebar-foreground: #E1E1E6;
+    --sidebar-primary: #1EAEDB;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: rgba(255, 255, 255, 0.1);
+    --sidebar-accent-foreground: #FFFFFF; 
+    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-ring: #1EAEDB;
   }
 
   .dark {
@@ -79,15 +89,25 @@
 
 .print-calculator-layout {
   display: grid;
-  grid-template-columns: 1fr 350px;
-  grid-gap: 1rem;
-  height: 100%;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 1024px) {
   .print-calculator-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: 2fr 1fr;
   }
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-content {
+  align-self: start;
+  position: sticky;
+  top: 1rem;
 }
 
 .section-title {

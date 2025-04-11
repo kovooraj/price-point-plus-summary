@@ -78,7 +78,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="sm:max-w-[550px]">
         <AlertDialogHeader>
           <AlertDialogTitle>Download Quote</AlertDialogTitle>
           <AlertDialogDescription>
@@ -88,7 +88,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="customerName" className="text-right">
+            <Label htmlFor="customerName" className="text-right whitespace-nowrap">
               Customer Name*
             </Label>
             <Input
@@ -100,7 +100,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="companyName" className="text-right">
+            <Label htmlFor="companyName" className="text-right whitespace-nowrap">
               Company Name
             </Label>
             <Input
@@ -112,7 +112,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="quoteNumber" className="text-right">
+            <Label htmlFor="quoteNumber" className="text-right whitespace-nowrap">
               SF Quote Number
             </Label>
             <Input
@@ -124,7 +124,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="quoteFor" className="text-right">
+            <Label htmlFor="quoteFor" className="text-right whitespace-nowrap">
               Quote For
             </Label>
             <Select

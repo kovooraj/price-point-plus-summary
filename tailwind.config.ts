@@ -54,14 +54,14 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+					DEFAULT: '#1A1F2C',
+					foreground: '#E1E1E6',
+					primary: '#1EAEDB',
+					'primary-foreground': '#FFFFFF',
+					accent: 'rgba(255, 255, 255, 0.1)',
+					'accent-foreground': '#FFFFFF',
+					border: 'rgba(255, 255, 255, 0.1)',
+					ring: '#1EAEDB'
 				},
 				print: {
 					primary: '#1a365d',
