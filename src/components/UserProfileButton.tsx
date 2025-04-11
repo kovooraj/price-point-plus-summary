@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Settings, LogOut, User } from "lucide-react";
+import { toast } from "@/hooks/use-toast"; // Direct import from hooks
 
 const UserProfileButton = () => {
   const navigate = useNavigate();
@@ -38,7 +39,12 @@ const UserProfileButton = () => {
           <span>Profile</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={() => {
+          toast({
+            title: "Logged out",
+            description: "You have been logged out successfully"
+          });
+        }}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
