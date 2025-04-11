@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "../utils/formatters";
 import { Badge } from "@/components/ui/badge";
 import QuantityTable from "./QuantityTable";
+import OrderSummary from "./OrderSummary";
 
 interface FlexiblePackagingConfig {
   product: string;
@@ -75,6 +75,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
   const [isSets, setIsSets] = useState(false);
+  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     if (config.product === "Roll_Stock") {
@@ -196,6 +197,28 @@ const FlexiblePackagingCalculator: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const getFormattedProductConfig = () => {
+    return {
+      productType: config.product.replace(/_/g, " "),
+      option: "",
+      itemSize: config.product === "Roll_Stock" 
+        ? `${config.rollWidth}" x ${config.repeatLength}"`
+        : `${config.height}" x ${config.width}"${config.gusset ? ` x ${config.gusset}"` : ""}`,
+      shippedSize: "",
+      material: config.mainStructure.replace(/_/g, " "),
+      sidesPrinted: config.ink,
+      pmsColors: "0",
+      coating: config.lamination,
+      thickness: "",
+      sidesCoated: "",
+      coverage: "",
+      lamination: "",
+      sidesLaminated: "",
+      ganging: "",
+      paperCost: ""
+    };
   };
 
   return (
@@ -624,193 +647,13 @@ const FlexiblePackagingCalculator: React.FC = () => {
       </div>
 
       <div className="summary-content">
-        <Card className="p-4 bg-white shadow-sm sticky top-4">
-          <h2 className="text-xl font-bold text-print-primary border-b pb-3 mb-4">Order Summary</h2>
-          
-          <div className="mb-6">
-            <h3 className="text-md font-semibold mb-2">Product Specifications</h3>
-            <ul className="text-sm space-y-1.5">
-              <li className="flex justify-between">
-                <span className="text-gray-600">Product:</span>
-                <span className="font-medium">{config.product.replace(/_/g, " ")}</span>
-              </li>
-              
-              {config.product === "Roll_Stock" ? (
-                <>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Roll Width:</span>
-                    <span className="font-medium">{config.rollWidth} in</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Repeat Length:</span>
-                    <span className="font-medium">{config.repeatLength} in</span>
-                  </li>
-                </>
-              ) : config.product === "Flat_Lay_Pouches" ? (
-                <>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Height:</span>
-                    <span className="font-medium">{config.height} in</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Width:</span>
-                    <span className="font-medium">{config.width} in</span>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Height:</span>
-                    <span className="font-medium">{config.height} in</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Width:</span>
-                    <span className="font-medium">{config.width} in</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Gusset:</span>
-                    <span className="font-medium">{config.gusset} in</span>
-                  </li>
-                </>
-              )}
-              
-              <li className="flex justify-between">
-                <span className="text-gray-600">Lamination:</span>
-                <span className="font-medium">{config.lamination}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-gray-600">Main Structure:</span>
-                <span className="font-medium">{config.mainStructure.replace(/_/g, " ")}</span>
-              </li>
-              <li className="flex justify-between">
-                <span className="text-gray-600">Ink:</span>
-                <span className="font-medium">{config.ink.replace(/_/g, " ")}</span>
-              </li>
-              
-              {config.product !== "Roll_Stock" && (
-                <>
-                  {config.zipper !== "None" && (
-                    <li className="flex justify-between">
-                      <span className="text-gray-600">Zipper:</span>
-                      <span className="font-medium">{config.zipper}</span>
-                    </li>
-                  )}
-                  {config.tearNotch === "Yes" && (
-                    <li className="flex justify-between">
-                      <span className="text-gray-600">Tear Notch:</span>
-                      <span className="font-medium">Yes</span>
-                    </li>
-                  )}
-                  {config.holePunch === "Yes" && (
-                    <li className="flex justify-between">
-                      <span className="text-gray-600">Hole Punch:</span>
-                      <span className="font-medium">Yes</span>
-                    </li>
-                  )}
-                </>
-              )}
-              
-              {config.product === "Roll_Stock" && (
-                <>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Wind Direction:</span>
-                    <span className="font-medium">{config.windDirection?.replace(/_/g, " ")}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span className="text-gray-600">Repeats/Roll:</span>
-                    <span className="font-medium">{config.repeatsPerRoll}</span>
-                  </li>
-                </>
-              )}
-            </ul>
-          </div>
-          
-          {orderSummary.length > 0 ? (
-            <div className="mb-6">
-              <h3 className="text-md font-semibold mb-3">Selected Quantities</h3>
-              <ul className="space-y-3">
-                {orderSummary.map((item) => (
-                  <li key={item.id} className="bg-gray-50 p-2 rounded-md">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <Badge variant="outline" className="bg-print-primary text-white">
-                          {item.quantity.toLocaleString()} units
-                        </Badge>
-                        <div className="mt-1.5 text-sm font-medium">
-                          {item.currency} {item.totalPrice.toFixed(2)}
-                        </div>
-                      </div>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        className="text-gray-500 hover:text-destructive"
-                        onClick={() => handleRemoveFromSummary(item.id)}
-                      >
-                        <span className="sr-only">Remove</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                      </Button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <div className="mb-6 text-center p-4 border border-dashed rounded-md">
-              <p className="text-gray-500">No quantities added yet</p>
-              <p className="text-sm text-gray-400 mt-1">
-                Add quantities from the pricing section
-              </p>
-            </div>
-          )}
-          
-          <Separator className="my-4" />
-          
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="font-semibold">Total Items:</span>
-              <span>{orderSummary.length}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="font-semibold">Total Price:</span>
-              <span className="text-xl font-bold text-print-primary">
-                {orderSummary.length > 0 ? 
-                  `${orderSummary[0].currency} ${orderSummary.reduce((sum, item) => sum + item.totalPrice, 0).toFixed(2)}` : 
-                  `${markup.currency} 0.00`
-                }
-              </span>
-            </div>
-          </div>
-          
-          <div className="space-y-3 mt-6">
-            <Button 
-              className="w-full bg-print-accent hover:bg-print-accent/90 text-print-primary font-bold flex items-center justify-center gap-2"
-              onClick={() => {
-                const fileName = "price-list.csv";
-                let content = "Quantity,Price\n";
-                orderSummary.forEach(item => {
-                  content += `${item.quantity},${item.totalPrice.toFixed(2)}\n`;
-                });
-                const blob = new Blob([content], { type: "text/csv" });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.href = url;
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}
-            >
-              <Download className="h-4 w-4" /> Download Price List
-            </Button>
-            
-            <Button 
-              className="w-full bg-white border-print-primary border text-print-primary hover:bg-print-primary/10 font-bold flex items-center justify-center gap-2"
-              onClick={handleDownloadSpecSheet}
-            >
-              <Package className="h-4 w-4" /> Download Spec Sheet
-            </Button>
-          </div>
-        </Card>
+        <OrderSummary
+          productConfig={getFormattedProductConfig()}
+          orderItems={orderSummary}
+          onRemoveItem={handleRemoveFromSummary}
+          isSets={isSets}
+          showSpecSheet={true}
+        />
       </div>
     </div>
   );
