@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,11 +14,13 @@ import FoldingCartonsCalculator from "./FoldingCartonsCalculator";
 import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
 import QuotesTab from "./QuotesTab";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 export interface ProductOption {
   id: string;
   name: string;
   value: string;
 }
+
 export interface OrderItem {
   id: string;
   quantity: number;
@@ -25,6 +28,7 @@ export interface OrderItem {
   totalPrice: number;
   currency: string;
 }
+
 export interface ProductConfig {
   productType: string;
   option: string;
@@ -42,10 +46,9 @@ export interface ProductConfig {
   ganging: string;
   paperCost: string;
 }
+
 const PrintCalculator: React.FC = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("commercial");
   const [productConfig, setProductConfig] = useState<ProductConfig>({
     productType: "Flyers",
@@ -64,6 +67,7 @@ const PrintCalculator: React.FC = () => {
     ganging: "Yes",
     paperCost: "Current Price"
   });
+  
   const [markup, setMarkup] = useState({
     baseQuantity: 10000,
     baseCost: 540.99,
@@ -71,11 +75,14 @@ const PrintCalculator: React.FC = () => {
     customQuantity: 0,
     customCost: 400.73,
     customPrice: 562.63,
-    currency: "CAD"
+    currency: "CAD",
+    versions: 1
   });
+  
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
   const [isQuotesDialogOpen, setIsQuotesDialogOpen] = useState(false);
   const [isSets, setIsSets] = useState(false);
+  
   const handleAddToSummary = (item: OrderItem) => {
     const newItem = {
       ...item,
@@ -88,6 +95,7 @@ const PrintCalculator: React.FC = () => {
       description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`
     });
   };
+  
   const handleAddCustomQty = () => {
     if (markup.customQuantity <= 0) {
       toast({
@@ -105,6 +113,7 @@ const PrintCalculator: React.FC = () => {
       currency: markup.currency
     });
   };
+  
   const handleRemoveFromSummary = (id: string) => {
     setOrderSummary(orderSummary.filter(item => item.id !== id));
     toast({
@@ -113,19 +122,23 @@ const PrintCalculator: React.FC = () => {
       variant: "destructive"
     });
   };
+  
   const handleConfigChange = (field: keyof ProductConfig, value: string) => {
     setProductConfig({
       ...productConfig,
       [field]: value
     });
   };
+  
   const handleMarkupChange = (field: keyof typeof markup, value: number | string) => {
     setMarkup({
       ...markup,
       [field]: value
     });
   };
-  return <div className="container mx-auto p-4">
+  
+  return (
+    <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold text-print-primary py-[19px]">⚒️ Product Forge</h1>
         <Dialog open={isQuotesDialogOpen} onOpenChange={setIsQuotesDialogOpen}>
@@ -157,7 +170,12 @@ const PrintCalculator: React.FC = () => {
 
               <Card className="p-4">
                 <h2 className="section-title">Markup &amp; Pricing</h2>
-                <PriceMarkup markup={markup} onMarkupChange={handleMarkupChange} isSets={isSets} onSetsChange={setIsSets} />
+                <PriceMarkup 
+                  markup={markup} 
+                  onMarkupChange={handleMarkupChange} 
+                  isSets={isSets} 
+                  onSetsChange={setIsSets} 
+                />
                 <div className="flex justify-end mt-4">
                   <Button onClick={handleAddCustomQty} className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white">
                     <Plus className="h-4 w-4" /> Add Custom Quantity to Summary
@@ -227,6 +245,8 @@ const PrintCalculator: React.FC = () => {
           margin-bottom: 1rem;
         }
       `}</style>
-    </div>;
+    </div>
+  );
 };
+
 export default PrintCalculator;

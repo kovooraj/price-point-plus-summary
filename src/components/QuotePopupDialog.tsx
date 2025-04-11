@@ -13,6 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface QuotePopupDialogProps {
   open: boolean;
@@ -24,6 +31,7 @@ export interface CustomerDetails {
   customerName: string;
   companyName: string;
   quoteNumber: string;
+  quoteFor: string;
 }
 
 const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({ 
@@ -36,6 +44,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
     customerName: "",
     companyName: "",
     quoteNumber: "",
+    quoteFor: "Willowpack"
   });
 
   const handleChange = (field: keyof CustomerDetails, value: string) => {
@@ -63,6 +72,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
       customerName: "",
       companyName: "",
       quoteNumber: "",
+      quoteFor: "Willowpack"
     });
   };
 
@@ -112,6 +122,24 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
               className="col-span-3"
               placeholder="Leave empty for auto-generation"
             />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="quoteFor" className="text-right">
+              Quote For
+            </Label>
+            <Select
+              value={customerDetails.quoteFor}
+              onValueChange={(value) => handleChange("quoteFor", value)}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Willowpack">Willowpack</SelectItem>
+                <SelectItem value="SinaLite">SinaLite</SelectItem>
+                <SelectItem value="Eprint fast">Eprint fast</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 

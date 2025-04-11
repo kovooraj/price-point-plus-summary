@@ -14,6 +14,7 @@ interface PriceMarkupProps {
     customCost: number;
     customPrice: number;
     currency: string;
+    versions?: number;
   };
   onMarkupChange: (field: keyof PriceMarkupProps["markup"], value: number | string) => void;
   isSets?: boolean;
@@ -67,7 +68,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
         </div>
       )}
       
-      <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="mb-4">
           <Label htmlFor="customQuantity" className="text-print-primary font-medium">
             {isSets ? "Total Quantity" : "Quantity"}
@@ -85,54 +86,78 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
           </div>
         </div>
         
-        <div className="mb-4">
-          <Label htmlFor="markup" className="text-print-primary font-medium">Markup Percentage</Label>
-          <div className="flex items-center mt-1">
-            <div className="w-24 text-sm font-medium mr-2">Markup %:</div>
-            <Input 
-              id="markup"
-              type="number" 
-              placeholder="Enter markup percentage"
-              className="bg-white"
-              min="0"
-              max="100"
-              onChange={(e) => {
-                const markupPercent = parseFloat(e.target.value) || 0;
-                const newPrice = markup.customCost * (1 + markupPercent / 100);
-                onMarkupChange("customPrice", newPrice);
-              }}
-            />
+        {isSets && (
+          <div className="mb-4">
+            <Label htmlFor="versions" className="text-print-primary font-medium">
+              Number of Versions
+            </Label>
+            <div className="flex items-center mt-1">
+              <div className="w-24 text-sm font-medium mr-2">Versions:</div>
+              <Input 
+                id="versions"
+                type="number" 
+                value={markup.versions || 1} 
+                onChange={handleInputChange("versions")} 
+                placeholder="Enter number of versions"
+                className="bg-white"
+                min="1"
+              />
+            </div>
           </div>
+        )}
+      </div>
+        
+      <div className="mb-4">
+        <Label htmlFor="markup" className="text-print-primary font-medium">Markup Percentage</Label>
+        <div className="flex items-center mt-1">
+          <div className="w-24 text-sm font-medium mr-2">Markup %:</div>
+          <Input 
+            id="markup"
+            type="number" 
+            placeholder="Enter markup percentage"
+            className="bg-white"
+            min="0"
+            max="100"
+            onChange={(e) => {
+              const markupPercent = parseFloat(e.target.value) || 0;
+              const newPrice = markup.customCost * (1 + markupPercent / 100);
+              onMarkupChange("customPrice", newPrice);
+            }}
+          />
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="mb-4">
+          <Label htmlFor="cost" className="text-print-primary font-medium">Cost ({markup.currency})</Label>
+          <Input 
+            id="cost"
+            type="number" 
+            step="0.01" 
+            value={markup.customCost} 
+            onChange={handleInputChange("customCost")} 
+            className="bg-gray-100"
+            readOnly
+          />
         </div>
         
-        <div className="flex flex-col space-y-2 mt-3">
-          <div className="flex items-center">
-            <div className="w-24 text-sm font-medium mr-2">Cost ($):</div>
-            <Input 
-              type="number" 
-              step="0.01" 
-              value={markup.customCost} 
-              onChange={handleInputChange("customCost")} 
-              className="bg-gray-100"
-              readOnly
-            />
-          </div>
-          
-          <div className="flex items-center">
-            <div className="w-24 text-sm font-medium mr-2">Price ($):</div>
-            <Input 
-              type="number" 
-              step="0.01" 
-              value={markup.customPrice} 
-              onChange={handleInputChange("customPrice")} 
-              className="bg-blue-50"
-              readOnly
-            />
-          </div>
-          
+        <div className="mb-4">
+          <Label htmlFor="price" className="text-print-primary font-medium">Price ({markup.currency})</Label>
+          <Input 
+            id="price"
+            type="number" 
+            step="0.01" 
+            value={markup.customPrice} 
+            onChange={handleInputChange("customPrice")} 
+            className="bg-blue-50"
+            readOnly
+          />
           <div className="text-sm text-right mt-1">
             <span className="text-print-primary">
-              {markup.currency}
+              @ {((markup.customPrice / markup.customCost - 1) * 100).toFixed(0)}% markup
+            </span>
+            <span className="float-right text-print-primary">
+              Unit price: {(markup.customPrice / markup.customQuantity).toFixed(5)}
             </span>
           </div>
         </div>
