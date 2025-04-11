@@ -1,42 +1,21 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarGroup,
-  SidebarTrigger,
-  useSidebar
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Printer, History, CreditCard, Users, Settings, LogOut } from "lucide-react";
-
 export const AppSidebar: React.FC = () => {
-  const { state, toggleSidebar } = useSidebar();
-
-  return (
-    <Sidebar 
-      className="border-none" 
-      collapsible="icon" // Change from "offcanvas" to "icon" to show icons when collapsed
-    >
+  const {
+    state,
+    toggleSidebar
+  } = useSidebar();
+  return <Sidebar className="border-none" collapsible="icon" // Change from "offcanvas" to "icon" to show icons when collapsed
+  >
       <SidebarHeader>
         <div className="flex items-center justify-between h-20 px-4">
           <div className="flex items-center gap-2">
-            <img 
-              src="/lovable-uploads/4e054b52-31c9-4112-826b-b37f1e858bd5.png" 
-              alt="Product Forge Logo" 
-              className="h-12 w-auto" // Increased logo size further
-            />
+            <img src="/lovable-uploads/4e054b52-31c9-4112-826b-b37f1e858bd5.png" alt="Product Forge Logo" className="h-100 w-auto" />
           </div>
-          <SidebarTrigger 
-            onClick={toggleSidebar} 
-            className="text-white hover:text-accent" 
-          />
+          <SidebarTrigger onClick={toggleSidebar} className="text-white hover:text-accent" />
         </div>
       </SidebarHeader>
       <SidebarContent>
@@ -93,7 +72,5 @@ export const AppSidebar: React.FC = () => {
           </Button>
         </div>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>;
 };
-
