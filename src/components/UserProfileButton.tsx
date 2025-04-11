@@ -9,7 +9,7 @@ const UserProfileButton = () => {
   const navigate = useNavigate();
   return <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 hover:bg-accent cursor-pointer rounded px-[15px]">
+        <button className="flex items-center gap-2 hover:bg-accent cursor-pointer rounded px-[15px] py-[4px]">
           <Avatar className="h-8 w-8 border border-border">
             <AvatarImage src="/lovable-uploads/a000a88c-c4e3-4a81-8756-37a6d5fdfd9a.png" className="object-fill" />
             <AvatarFallback>JD</AvatarFallback>
