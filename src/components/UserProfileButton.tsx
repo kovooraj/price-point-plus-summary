@@ -1,30 +1,20 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Settings, LogOut, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast"; // Direct import from hooks
 
 const UserProfileButton = () => {
   const navigate = useNavigate();
-  
-  return (
-    <DropdownMenu>
+  return <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-2 rounded-full p-1 hover:bg-accent cursor-pointer">
+        <button className="flex items-center gap-2 hover:bg-accent cursor-pointer rounded px-[15px]">
           <Avatar className="h-8 w-8 border border-border">
             <AvatarImage src="https://github.com/shadcn.png" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium hidden sm:inline">John Doe</span>
+          <span className="text-sm font-medium hidden sm:inline">Alex Kovoor</span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -40,17 +30,15 @@ const UserProfileButton = () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => {
-          toast({
-            title: "Logged out",
-            description: "You have been logged out successfully"
-          });
-        }}>
+        toast({
+          title: "Logged out",
+          description: "You have been logged out successfully"
+        });
+      }}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
-  );
+    </DropdownMenu>;
 };
-
 export default UserProfileButton;
