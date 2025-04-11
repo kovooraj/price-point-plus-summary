@@ -164,7 +164,7 @@ const PrintCalculator: React.FC = () => {
                 <h2 className="section-title">Markup &amp; Pricing</h2>
                 <PriceMarkup markup={markup} onMarkupChange={handleMarkupChange} isSets={isSets} onSetsChange={setIsSets} />
                 <div className="flex justify-end mt-4">
-                  <Button onClick={handleAddCustomQty} className="flex items-center gap-1 text-white text-justify bg-print-primary">
+                  <Button onClick={handleAddCustomQty} className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white">
                     <Plus className="h-4 w-4" /> Add Custom Quantity to Summary
                   </Button>
                 </div>
