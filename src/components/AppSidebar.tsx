@@ -11,7 +11,7 @@ export const AppSidebar: React.FC = () => {
   return <Sidebar className="border-none" collapsible="icon" // Change from "offcanvas" to "icon" to show icons when collapsed
   >
       <SidebarHeader>
-        <div className="flex items-center justify-between h-20 py-[50px] px-0">
+        <div className="flex items-center justify-between h-20 py-[50px] px-[10px]">
           <div className="flex items-center gap-2">
             <img alt="Product Forge Logo" className="h-auto w-[80%] object-contain" src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" />
           </div>
