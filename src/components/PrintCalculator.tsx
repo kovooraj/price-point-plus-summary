@@ -149,7 +149,7 @@ const PrintCalculator: React.FC = () => {
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="w-full border-b justify-start overflow-x-auto py-0 px-[2px] bg-print-dark">
+        <TabsList className="w-full border-b justify-start overflow-x-auto py-0 px-[2px]">
           <TabsTrigger value="commercial" className="px-6 py-2">Commercial Printing</TabsTrigger>
           <TabsTrigger value="rolllabels" className="px-6 py-2">Roll Labels</TabsTrigger>
           <TabsTrigger value="foldingcartons" className="px-6 py-2">Folding Cartons</TabsTrigger>
