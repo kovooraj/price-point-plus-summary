@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
@@ -7,29 +6,20 @@ import { Printer, History, CreditCard, Users, Settings, Moon, Sun } from "lucide
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/hooks/use-theme";
-
 export const AppSidebar: React.FC = () => {
-  const { state, toggleSidebar } = useSidebar();
-  const { theme, setTheme } = useTheme();
+  const {
+    state,
+    toggleSidebar
+  } = useSidebar();
+  const {
+    theme,
+    setTheme
+  } = useTheme();
   const isCollapsed = state === "collapsed";
-
-  return (
-    <Sidebar className="border-none" collapsible="icon">
+  return <Sidebar className="border-none" collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center justify-center h-24 pb-4 pt-6 px-[10px]">
-          {isCollapsed ? (
-            <img 
-              alt="Logo Small" 
-              className="h-auto w-[60%] max-h-[40px] object-contain" 
-              src="/lovable-uploads/ce711eba-4472-4e17-a6f8-e612fc753438.png" 
-            />
-          ) : (
-            <img 
-              alt="Logo Full" 
-              className="h-auto w-[85%] max-h-[50px] object-contain" 
-              src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" 
-            />
-          )}
+          {isCollapsed ? <img alt="Logo Small" src="/lovable-uploads/ce711eba-4472-4e17-a6f8-e612fc753438.png" className="h-auto w-[200%] max-h-auto object-contain" /> : <img alt="Logo Full" className="h-auto w-[85%] max-h-[50px] object-contain" src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" />}
         </div>
       </SidebarHeader>
       
@@ -82,16 +72,8 @@ export const AppSidebar: React.FC = () => {
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <SidebarMenuButton 
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                tooltip={theme === "dark" ? "Light Mode" : "Dark Mode"}
-                className="text-sidebar-foreground hover:text-white"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-8 w-8" />
-                ) : (
-                  <Moon className="h-8 w-8" />
-                )}
+              <SidebarMenuButton onClick={() => setTheme(theme === "dark" ? "light" : "dark")} tooltip={theme === "dark" ? "Light Mode" : "Dark Mode"} className="text-sidebar-foreground hover:text-white">
+                {theme === "dark" ? <Sun className="h-8 w-8" /> : <Moon className="h-8 w-8" />}
                 <span className="text-base ml-2">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -109,12 +91,10 @@ export const AppSidebar: React.FC = () => {
                   <AvatarImage src="/lovable-uploads/a000a88c-c4e3-4a81-8756-37a6d5fdfd9a.png" className="object-fill" />
                   <AvatarFallback>AK</AvatarFallback>
                 </Avatar>
-                {!isCollapsed && (
-                  <div className="flex flex-col items-start">
+                {!isCollapsed && <div className="flex flex-col items-start">
                     <span className="text-sm font-medium text-white">Alex Kovoor</span>
                     <span className="text-xs text-gray-400">Admin</span>
-                  </div>
-                )}
+                  </div>}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
@@ -132,12 +112,8 @@ export const AppSidebar: React.FC = () => {
           </DropdownMenu>
           
           {/* Sidebar collapse button - positioned at the bottom */}
-          <SidebarTrigger 
-            onClick={toggleSidebar} 
-            className={`text-white hover:text-accent ${isCollapsed ? 'mx-auto' : 'mx-auto'}`}
-          />
+          <SidebarTrigger onClick={toggleSidebar} className={`text-white hover:text-accent ${isCollapsed ? 'mx-auto' : 'mx-auto'}`} />
         </div>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>;
 };
