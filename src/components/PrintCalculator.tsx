@@ -1,8 +1,9 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, History } from "lucide-react";
+import { History } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
 import PriceMarkup from "./PriceMarkup";
@@ -14,11 +15,13 @@ import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
 import QuotesTab from "./QuotesTab";
 import UserProfileButton from "./UserProfileButton";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 export interface ProductOption {
   id: string;
   name: string;
   value: string;
 }
+
 export interface OrderItem {
   id: string;
   quantity: number;
@@ -27,6 +30,7 @@ export interface OrderItem {
   currency: string;
   versions?: number;
 }
+
 export interface ProductConfig {
   productType: string;
   option: string;
@@ -44,10 +48,9 @@ export interface ProductConfig {
   ganging: string;
   paperCost: string;
 }
+
 const PrintCalculator: React.FC = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("commercial");
   const [productConfig, setProductConfig] = useState<ProductConfig>({
     productType: "Flyers",
@@ -66,6 +69,7 @@ const PrintCalculator: React.FC = () => {
     ganging: "Yes",
     paperCost: "Current Price"
   });
+  
   const [markup, setMarkup] = useState({
     baseQuantity: 10000,
     baseCost: 540.99,
@@ -76,9 +80,11 @@ const PrintCalculator: React.FC = () => {
     currency: "CAD",
     versions: 1
   });
+  
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
   const [isQuotesDialogOpen, setIsQuotesDialogOpen] = useState(false);
   const [isSets, setIsSets] = useState(false);
+  
   const handleAddToSummary = (item: OrderItem) => {
     const newItem = {
       ...item,
@@ -86,12 +92,15 @@ const PrintCalculator: React.FC = () => {
       currency: markup.currency,
       versions: isSets ? markup.versions : undefined
     };
+    
     setOrderSummary([...orderSummary, newItem]);
+    
     toast({
       title: "Added to order summary",
       description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`
     });
   };
+  
   const handleAddCustomQty = () => {
     if (markup.customQuantity <= 0) {
       toast({
@@ -101,6 +110,7 @@ const PrintCalculator: React.FC = () => {
       });
       return;
     }
+    
     handleAddToSummary({
       id: `custom-${Date.now()}`,
       quantity: markup.customQuantity,
@@ -110,26 +120,31 @@ const PrintCalculator: React.FC = () => {
       versions: isSets ? markup.versions : undefined
     });
   };
+  
   const handleRemoveFromSummary = (id: string) => {
     setOrderSummary(orderSummary.filter(item => item.id !== id));
+    
     toast({
       title: "Removed from order summary",
       description: "Item removed successfully",
       variant: "destructive"
     });
   };
+  
   const handleConfigChange = (field: keyof ProductConfig, value: string) => {
     setProductConfig({
       ...productConfig,
       [field]: value
     });
   };
+  
   const handleMarkupChange = (field: keyof typeof markup, value: number | string) => {
     setMarkup({
       ...markup,
       [field]: value
     });
   };
+  
   return <div className="container mx-auto p-4 px-[60px]">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold text-print-primary py-[19px]">Estimating Calculator</h1>
@@ -164,12 +179,13 @@ const PrintCalculator: React.FC = () => {
 
               <Card className="p-4">
                 <h2 className="section-title">Markup &amp; Pricing</h2>
-                <PriceMarkup markup={markup} onMarkupChange={handleMarkupChange} isSets={isSets} onSetsChange={setIsSets} />
-                <div className="flex justify-end mt-4">
-                  <Button onClick={handleAddCustomQty} className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white">
-                    <Plus className="h-4 w-4" /> Add Custom Quantity to Summary
-                  </Button>
-                </div>
+                <PriceMarkup 
+                  markup={markup} 
+                  onMarkupChange={handleMarkupChange} 
+                  isSets={isSets} 
+                  onSetsChange={setIsSets}
+                  onAddCustomQty={handleAddCustomQty}
+                />
               </Card>
 
               {!isSets && <Card className="p-4">
@@ -236,4 +252,5 @@ const PrintCalculator: React.FC = () => {
       `}</style>
     </div>;
 };
+
 export default PrintCalculator;

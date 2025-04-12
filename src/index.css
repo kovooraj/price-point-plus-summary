@@ -129,8 +129,11 @@
 
 /* Remove yellow backgrounds from inputs */
 input.bg-yellow-50, 
+input.bg-amber-50,
 .bg-yellow-50,
-[data-radix-select-trigger].bg-yellow-50 {
+.bg-amber-50,
+[data-radix-select-trigger].bg-yellow-50,
+[data-radix-select-trigger].bg-amber-50 {
   @apply bg-background dark:bg-background border-primary/20;
 }
 

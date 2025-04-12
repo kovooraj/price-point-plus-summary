@@ -145,7 +145,7 @@ const QuotePopupDialog: React.FC<QuotePopupDialogProps> = ({
 
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleSubmit}>Download</AlertDialogAction>
+          <AlertDialogAction onClick={handleSubmit}>Create Quote</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

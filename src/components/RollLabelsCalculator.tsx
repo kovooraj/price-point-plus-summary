@@ -3,13 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { DollarSign, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import OrderSummary from "./OrderSummary";
 import { OrderItem, ProductConfig } from "./PrintCalculator";
 import QuantityTable from "./QuantityTable";
+import PriceMarkup from "./PriceMarkup";
 
 interface RollLabelsState {
   productType: string;
@@ -94,20 +92,14 @@ const RollLabelsCalculator: React.FC = () => {
     });
   };
   
-  const toggleCurrency = () => {
-    setState({
-      ...state,
-      currency: state.currency === "CAD" ? "USD" : "CAD"
-    });
-  };
-
   const handleAddCustomQty = () => {
     const newItem: OrderItem = {
       id: `custom-${Date.now()}`,
       quantity: state.quantity,
       totalCost: state.cost,
       totalPrice: state.price,
-      currency: state.currency
+      currency: state.currency,
+      versions: state.isSets ? state.versions : undefined
     };
     
     setOrderItems([...orderItems, newItem]);
@@ -122,7 +114,8 @@ const RollLabelsCalculator: React.FC = () => {
     const newItem = {
       ...item,
       id: Date.now().toString(),
-      currency: state.currency
+      currency: state.currency,
+      versions: state.isSets ? state.versions : undefined
     };
     
     setOrderItems([...orderItems, newItem]);
@@ -159,6 +152,33 @@ const RollLabelsCalculator: React.FC = () => {
     sidesLaminated: "1",
     ganging: "Yes",
     paperCost: "Current Price",
+  };
+  
+  // Create a markup object for the PriceMarkup component
+  const markup = {
+    baseQuantity: 0,
+    baseCost: 0,
+    basePrice: 0,
+    customQuantity: state.quantity,
+    customCost: state.cost,
+    customPrice: state.price,
+    currency: state.currency,
+    versions: state.versions
+  };
+  
+  const handleMarkupChange = (field: keyof typeof markup, value: number | string) => {
+    if (field === "customQuantity") {
+      handleInputChange("quantity", Number(value));
+    } else if (field === "currency") {
+      handleInputChange("currency", value as string);
+    } else if (field === "versions") {
+      handleInputChange("versions", Number(value));
+    } else if (field === "customPrice") {
+      handleInputChange("price", Number(value));
+      // Recalculate markup based on new price
+      const newMarkup = ((Number(value) / state.cost - 1) * 100);
+      handleInputChange("markup", newMarkup);
+    }
   };
   
   return (
@@ -361,140 +381,22 @@ const RollLabelsCalculator: React.FC = () => {
         <Card className="p-4">
           <h2 className="section-title">Markup & Pricing</h2>
           
-          <div className="mb-4 flex items-center justify-between">
-            <Label className="text-print-primary font-medium">Currency</Label>
-            <div className="flex items-center space-x-2">
-              <div className={`flex items-center ${state.currency === "CAD" ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                <DollarSign className="h-4 w-4 mr-1" />
-                <span>CAD</span>
-              </div>
-              
-              <Switch 
-                checked={state.currency === "USD"} 
-                onCheckedChange={toggleCurrency}
-              />
-              
-              <div className={`flex items-center ${state.currency === "USD" ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                <DollarSign className="h-4 w-4 mr-1" />
-                <span>USD</span>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <Label className="text-print-primary font-medium">Sets</Label>
-              <div className="flex items-center space-x-2">
-                <span className={`${!state.isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>No</span>
-                <Switch 
-                  checked={state.isSets} 
-                  onCheckedChange={(checked) => handleInputChange("isSets", checked)}
-                />
-                <span className={`${state.isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>Yes</span>
-              </div>
-            </div>
-
-            {state.isSets ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <Label htmlFor="quantity">Total Quantity</Label>
-                  <Input 
-                    id="quantity"
-                    type="number" 
-                    value={state.quantity} 
-                    onChange={(e) => handleInputChange("quantity", parseInt(e.target.value) || 0)}
-                    className="bg-amber-50"
-                  />
-                </div>
-                <div className="form-group">
-                  <Label htmlFor="versions">Number of Versions</Label>
-                  <Input 
-                    id="versions"
-                    type="number" 
-                    value={state.versions} 
-                    onChange={(e) => handleInputChange("versions", parseInt(e.target.value) || 1)}
-                    className="bg-amber-50"
-                  />
-                </div>
-              </div>
-            ) : (
-              <div className="form-group">
-                <Label htmlFor="quantity">{state.isSets ? "Total Quantity" : "Quantity"}</Label>
-                <Input 
-                  id="quantity"
-                  type="number" 
-                  value={state.quantity} 
-                  onChange={(e) => handleInputChange("quantity", parseInt(e.target.value) || 0)}
-                  className="bg-amber-50"
-                />
-              </div>
-            )}
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="form-group">
-              <Label htmlFor="markup">Markup (%)</Label>
-              <Input 
-                id="markup"
-                type="number" 
-                value={state.markup} 
-                onChange={(e) => {
-                  const newMarkup = parseInt(e.target.value) || 0;
-                  const newPrice = state.cost * (1 + newMarkup / 100);
-                  setState({
-                    ...state,
-                    markup: newMarkup,
-                    price: newPrice
-                  });
-                }}
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div className="form-group">
-              <Label htmlFor="cost">Cost ({state.currency})</Label>
-              <Input 
-                id="cost"
-                type="number" 
-                step="0.01"
-                value={state.cost} 
-                className="bg-gray-100"
-                readOnly
-              />
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="price">Price ({state.currency})</Label>
-              <Input 
-                id="price"
-                type="number" 
-                step="0.01"
-                value={state.price} 
-                className="bg-blue-50"
-                readOnly
-              />
-              <div className="text-xs text-right mt-1">
-                @ {state.markup}% markup
-              </div>
-            </div>
-          </div>
-
-          <div className="flex justify-end mt-6">
-            <Button 
-              onClick={handleAddCustomQty}
-              className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
-            >
-              <Plus className="h-4 w-4" /> Add to Order Summary
-            </Button>
-          </div>
+          <PriceMarkup
+            markup={markup}
+            onMarkupChange={handleMarkupChange}
+            isSets={state.isSets}
+            onSetsChange={(checked) => handleInputChange("isSets", checked)}
+            onAddCustomQty={handleAddCustomQty}
+          />
         </Card>
 
         {/* Quantity Variations Card */}
-        <Card className="p-4">
-          <h2 className="section-title">Quantity Variations</h2>
-          <QuantityTable onAddToSummary={handleAddToSummary} currency={state.currency} />
-        </Card>
+        {!state.isSets && (
+          <Card className="p-4">
+            <h2 className="section-title">Quantity Variations</h2>
+            <QuantityTable onAddToSummary={handleAddToSummary} currency={state.currency} />
+          </Card>
+        )}
       </div>
 
       <div className="summary-content">
