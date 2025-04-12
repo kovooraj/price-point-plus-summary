@@ -127,6 +127,12 @@
   @apply text-lg font-semibold text-print-primary border-b pb-2 mb-4;
 }
 
+/* Remove blue background from inputs */
+.dark input.bg-blue-50,
+input.bg-blue-50 {
+  @apply bg-background dark:bg-muted/20 border-primary/20;
+}
+
 /* Dark mode overrides for specific components */
 .dark .bg-white {
   @apply bg-background;
@@ -138,10 +144,6 @@
 
 .dark .bg-gray-100 {
   @apply bg-muted;
-}
-
-.dark .bg-blue-50 {
-  @apply bg-primary/10;
 }
 
 .dark .text-gray-500 {
@@ -177,10 +179,6 @@
   @apply bg-muted/40 text-foreground border-muted;
 }
 
-.dark input.bg-blue-50 {
-  @apply bg-primary/20 text-foreground border-primary/30;
-}
-
 .dark label {
   @apply text-foreground;
 }
@@ -208,4 +206,10 @@
 
 .dark .bg-white.shadow-sm {
   @apply bg-card text-card-foreground;
+}
+
+/* Fix for input and select components in dark mode */
+.dark select,
+.dark [data-radix-select-trigger] {
+  @apply bg-background border-input text-foreground;
 }

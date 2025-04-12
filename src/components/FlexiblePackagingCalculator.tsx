@@ -12,6 +12,7 @@ import { formatCurrency } from "../utils/formatters";
 import { Badge } from "@/components/ui/badge";
 import QuantityTable from "./QuantityTable";
 import OrderSummary from "./OrderSummary";
+import PriceMarkup from "./PriceMarkup";
 
 interface FlexiblePackagingConfig {
   product: string;
@@ -39,6 +40,9 @@ interface FlexiblePackagingMarkup {
   markupPercent: number;
   baseCost: number;
   basePrice: number;
+  customQuantity: number;
+  customCost: number;
+  customPrice: number;
 }
 
 interface OrderItem {
@@ -47,6 +51,7 @@ interface OrderItem {
   totalCost: number;
   totalPrice: number;
   currency: string;
+  versions?: number;
 }
 
 const FlexiblePackagingCalculator: React.FC = () => {
@@ -71,6 +76,9 @@ const FlexiblePackagingCalculator: React.FC = () => {
     markupPercent: 30,
     baseCost: 1541.77,
     basePrice: 2004.31,
+    customQuantity: 5000,
+    customCost: 1541.77,
+    customPrice: 2004.31
   });
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
@@ -138,12 +146,24 @@ const FlexiblePackagingCalculator: React.FC = () => {
 
     if (field === "markupPercent" && typeof value === "number") {
       const newPrice = markup.baseCost * (1 + value / 100);
-      setMarkup(prev => ({ ...prev, basePrice: newPrice }));
+      setMarkup(prev => ({ ...prev, basePrice: newPrice, customPrice: newPrice }));
+    }
+    
+    if (field === "customQuantity" && typeof value === "number") {
+      setMarkup(prev => ({ 
+        ...prev, 
+        totalQuantity: value,
+      }));
     }
   };
 
   const handleAddToSummary = (item: OrderItem) => {
-    setOrderSummary([...orderSummary, item]);
+    const newItem = {
+      ...item,
+      versions: isSets ? markup.versions : undefined
+    };
+    
+    setOrderSummary([...orderSummary, newItem]);
     toast({
       title: "Added to order summary",
       description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`,
@@ -156,6 +176,26 @@ const FlexiblePackagingCalculator: React.FC = () => {
       title: "Removed from order summary",
       description: "Item removed successfully",
       variant: "destructive",
+    });
+  };
+
+  const handleAddCustomQty = () => {
+    if (markup.customQuantity <= 0) {
+      toast({
+        title: "Invalid quantity",
+        description: "Please enter a valid quantity greater than 0",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    handleAddToSummary({
+      id: `custom-${Date.now()}`,
+      quantity: markup.customQuantity,
+      totalCost: markup.customCost,
+      totalPrice: markup.customPrice,
+      currency: markup.currency,
+      versions: isSets ? markup.versions : undefined
     });
   };
 
@@ -485,165 +525,56 @@ const FlexiblePackagingCalculator: React.FC = () => {
         </Card>
 
         <Card className="p-4">
-          <h2 className="section-title">Markup & Pricing</h2>
+          <h2 className="section-title">Markup &amp; Pricing</h2>
           
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label className="text-print-primary font-medium">Currency</Label>
-              <div className="flex items-center space-x-2">
-                <div className={`flex items-center ${markup.currency === "USD" ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                  <span>USD</span>
-                </div>
-                
-                <Switch 
-                  checked={markup.currency === "CAD"} 
-                  onCheckedChange={(checked) => handleMarkupChange("currency", checked ? "CAD" : "USD")}
-                />
-                
-                <div className={`flex items-center ${markup.currency === "CAD" ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                  <span>CAD</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <Label className="text-print-primary font-medium">Sets</Label>
-              <div className="flex items-center space-x-2">
-                <div className={`flex items-center ${!isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                  <span>No</span>
-                </div>
-                
-                <Switch 
-                  checked={isSets} 
-                  onCheckedChange={(checked) => setIsSets(checked)}
-                />
-                
-                <div className={`flex items-center ${isSets ? "font-bold text-print-primary" : "text-gray-500"}`}>
-                  <span>Yes</span>
-                </div>
-              </div>
-            </div>
-            
-            {!isSets ? (
-              <div className="mb-4">
-                <Label htmlFor="totalQuantity" className="text-print-primary font-medium">QTY</Label>
-                <div className="flex items-center mt-1">
-                  <div className="w-24 text-sm font-medium mr-2">QTY:</div>
-                  <Input 
-                    id="totalQuantity"
-                    type="number" 
-                    value={markup.totalQuantity} 
-                    onChange={(e) => handleMarkupChange("totalQuantity", parseInt(e.target.value) || 0)} 
-                    placeholder="Enter quantity"
-                    className="bg-white"
-                  />
-                </div>
-              </div>
-            ) : (
-              <>
-                <div className="mb-4">
-                  <Label htmlFor="totalQuantity" className="text-print-primary font-medium">Total Quantity</Label>
-                  <div className="flex items-center mt-1">
-                    <div className="w-24 text-sm font-medium mr-2">Total QTY:</div>
-                    <Input 
-                      id="totalQuantity"
-                      type="number" 
-                      value={markup.totalQuantity} 
-                      onChange={(e) => handleMarkupChange("totalQuantity", parseInt(e.target.value) || 0)} 
-                      placeholder="Enter total quantity"
-                      className="bg-white"
-                    />
-                  </div>
-                </div>
-                
-                <div className="mb-4">
-                  <Label htmlFor="versions" className="text-print-primary font-medium">Number of Versions</Label>
-                  <div className="flex items-center mt-1">
-                    <div className="w-24 text-sm font-medium mr-2">Versions:</div>
-                    <Input 
-                      id="versions"
-                      type="number" 
-                      value={markup.versions} 
-                      onChange={(e) => handleMarkupChange("versions", parseInt(e.target.value) || 1)} 
-                      placeholder="Enter number of versions"
-                      className="bg-white"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-            
-            <div className="mb-4">
-              <Label htmlFor="markup" className="text-print-primary font-medium">Markup Percentage</Label>
-              <div className="flex items-center mt-1">
-                <div className="w-24 text-sm font-medium mr-2">Markup %:</div>
-                <Input 
-                  id="markup"
-                  type="number" 
-                  value={markup.markupPercent}
-                  onChange={(e) => handleMarkupChange("markupPercent", parseFloat(e.target.value) || 0)}
-                  placeholder="Enter markup percentage"
-                  className="bg-white"
-                  min="0"
-                  max="100"
-                />
-              </div>
-            </div>
-            
-            <div className="flex flex-col space-y-2 mt-3">
-              <div className="flex items-center">
-                <div className="w-24 text-sm font-medium mr-2">Cost ($):</div>
-                <Input 
-                  type="number" 
-                  step="0.01" 
-                  value={markup.baseCost} 
-                  onChange={(e) => handleMarkupChange("baseCost", parseFloat(e.target.value) || 0)} 
-                  className="bg-gray-100"
-                />
-              </div>
-              
-              <div className="flex items-center">
-                <div className="w-24 text-sm font-medium mr-2">Price ($):</div>
-                <Input 
-                  type="number" 
-                  step="0.01" 
-                  value={markup.basePrice} 
-                  onChange={(e) => handleMarkupChange("basePrice", parseFloat(e.target.value) || 0)} 
-                  className="bg-blue-50"
-                />
-              </div>
-              
-              <div className="text-sm text-right mt-1">
-                <span className="text-print-primary">
-                  {markup.currency}
-                </span>
-              </div>
-            </div>
-            
-            <div className="flex justify-end mt-4">
-              <Button 
-                onClick={() => handleAddToSummary({
-                  id: Date.now().toString(),
-                  quantity: markup.totalQuantity,
-                  totalCost: markup.baseCost,
-                  totalPrice: markup.basePrice,
-                  currency: markup.currency
-                })}
-                className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
-              >
-                <Plus className="h-4 w-4" /> Add to Summary
-              </Button>
-            </div>
+          <PriceMarkup 
+            markup={{
+              baseQuantity: markup.totalQuantity,
+              baseCost: markup.baseCost,
+              basePrice: markup.basePrice,
+              customQuantity: markup.customQuantity,
+              customCost: markup.customCost,
+              customPrice: markup.customPrice,
+              currency: markup.currency,
+              versions: markup.versions
+            }} 
+            onMarkupChange={(field, value) => {
+              if (field === "currency") {
+                handleMarkupChange("currency", value);
+              } else if (field === "customQuantity") {
+                handleMarkupChange("customQuantity", value);
+                handleMarkupChange("totalQuantity", value);
+              } else if (field === "versions") {
+                handleMarkupChange("versions", value);
+              } else if (field === "customPrice") {
+                handleMarkupChange("customPrice", value);
+              } else if (field === "customCost") {
+                handleMarkupChange("customCost", value);
+              }
+            }}
+            isSets={isSets}
+            onSetsChange={setIsSets}
+          />
+          
+          <div className="flex justify-end mt-4">
+            <Button 
+              onClick={handleAddCustomQty}
+              className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
+            >
+              <Plus className="h-4 w-4" /> Add to Summary
+            </Button>
           </div>
         </Card>
 
-        <Card className="p-4">
-          <h2 className="section-title">Quantity Variations</h2>
-          <QuantityTable 
-            onAddToSummary={handleAddToSummary}
-            currency={markup.currency}
-          />
-        </Card>
+        {!isSets && (
+          <Card className="p-4">
+            <h2 className="section-title">Quantity Variations</h2>
+            <QuantityTable 
+              onAddToSummary={handleAddToSummary}
+              currency={markup.currency}
+            />
+          </Card>
+        )}
       </div>
 
       <div className="summary-content">
