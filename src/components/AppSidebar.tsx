@@ -82,7 +82,7 @@ export const AppSidebar: React.FC = () => {
       </SidebarContent>
       
       <SidebarFooter>
-        <div className="p-4 flex flex-col gap-4">
+        <div className="p-4 flex flex-col gap-4 px-0">
           {/* User profile dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
