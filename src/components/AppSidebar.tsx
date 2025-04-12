@@ -112,7 +112,7 @@ export const AppSidebar: React.FC = () => {
           </DropdownMenu>
           
           {/* Sidebar collapse button - positioned at the bottom */}
-          <SidebarTrigger onClick={toggleSidebar} className="text-left px-[20px]" />
+          <SidebarTrigger onClick={toggleSidebar} className="text-justify px-[26px] mx-[10px]" />
         </div>
       </SidebarFooter>
     </Sidebar>;
