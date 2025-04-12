@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
@@ -7,7 +6,6 @@ import { Printer, History, CreditCard, Users, Settings, Moon, Sun, PanelLeft, Ch
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/hooks/use-theme";
-
 export const AppSidebar: React.FC = () => {
   const {
     state,
@@ -18,13 +16,10 @@ export const AppSidebar: React.FC = () => {
     setTheme
   } = useTheme();
   const isCollapsed = state === "collapsed";
-  
   return <Sidebar className="border-none" collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center justify-center h-24 pb-4 pt-3 px-0">
-          {isCollapsed ? 
-            <img alt="Logo Small" src="/lovable-uploads/ce711eba-4472-4e17-a6f8-e612fc753438.png" className="h-12 w-12 object-contain" /> : 
-            <img alt="Logo Full" className="h-auto w-[85%] max-h-[50px] object-contain" src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" />}
+        <div className="flex items-center justify-start h-24 pb-4 pt-3 px-0">
+          {isCollapsed ? <img alt="Logo Small" src="/lovable-uploads/ce711eba-4472-4e17-a6f8-e612fc753438.png" className="h-12 w-12 object-contain" /> : <img alt="Logo Full" className="h-auto w-[85%] max-h-[50px] object-contain" src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" />}
         </div>
       </SidebarHeader>
       
@@ -117,20 +112,11 @@ export const AppSidebar: React.FC = () => {
           </DropdownMenu>
           
           {/* Redesigned sidebar collapse button */}
-          <Button
-            onClick={toggleSidebar}
-            variant="ghost"
-            size="sm"
-            className={`flex items-center gap-2 justify-center w-full text-sidebar-foreground hover:bg-sidebar-accent/20 hover:text-white rounded mx-0 py-2 px-3 transition-colors`}
-          >
-            {isCollapsed ? (
-              <ChevronRight className="h-5 w-5" />
-            ) : (
-              <>
+          <Button onClick={toggleSidebar} variant="ghost" size="sm" className={`flex items-center gap-2 justify-center w-full text-sidebar-foreground hover:bg-sidebar-accent/20 hover:text-white rounded mx-0 py-2 px-3 transition-colors`}>
+            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <>
                 <ChevronLeft className="h-5 w-5" />
                 <span className="text-sm">Collapse</span>
-              </>
-            )}
+              </>}
           </Button>
         </div>
       </SidebarFooter>
