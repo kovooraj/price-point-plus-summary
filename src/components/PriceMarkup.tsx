@@ -3,7 +3,8 @@ import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { DollarSign } from "lucide-react";
+import { DollarSign, Copy } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PriceMarkupProps {
   markup: {
@@ -22,6 +23,8 @@ interface PriceMarkupProps {
 }
 
 const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSets, onSetsChange }) => {
+  const { toast } = useToast();
+  
   const handleInputChange = (field: keyof typeof markup) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value) || 0;
     onMarkupChange(field, value);
@@ -29,6 +32,24 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
 
   const toggleCurrency = () => {
     onMarkupChange("currency", markup.currency === "CAD" ? "USD" : "CAD");
+  };
+  
+  const copyToClipboard = (value: string, label: string) => {
+    navigator.clipboard.writeText(value).then(
+      () => {
+        toast({
+          title: `${label} copied`,
+          description: `${label} has been copied to clipboard`
+        });
+      },
+      (err) => {
+        toast({
+          variant: "destructive",
+          title: "Failed to copy",
+          description: "Could not copy to clipboard"
+        });
+      }
+    );
   };
 
   return (
@@ -82,7 +103,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
               value={markup.customQuantity} 
               onChange={handleInputChange("customQuantity")} 
               placeholder="Enter quantity"
-              className="bg-white"
+              className="bg-background"
             />
           </div>
         </div>
@@ -100,7 +121,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
                 value={markup.versions || 1} 
                 onChange={handleInputChange("versions")} 
                 placeholder="Enter number of versions"
-                className="bg-white"
+                className="bg-background"
                 min="1"
               />
             </div>
@@ -116,7 +137,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
             id="markup"
             type="number" 
             placeholder="Enter markup percentage"
-            className="bg-white"
+            className="bg-background"
             min="0"
             max="100"
             onChange={(e) => {
@@ -144,15 +165,24 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
         
         <div>
           <Label htmlFor="price" className="text-print-primary font-medium">Price ({markup.currency})</Label>
-          <Input 
-            id="price"
-            type="number" 
-            step="0.01" 
-            value={markup.customPrice} 
-            onChange={handleInputChange("customPrice")} 
-            className="bg-blue-50"
-            readOnly
-          />
+          <div className="price-field-container">
+            <Input 
+              id="price"
+              type="number" 
+              step="0.01" 
+              value={markup.customPrice} 
+              onChange={handleInputChange("customPrice")} 
+              className="bg-background"
+              readOnly
+            />
+            <button 
+              className="copy-button" 
+              onClick={() => copyToClipboard(markup.customPrice.toString(), "Price")}
+              aria-label="Copy price to clipboard"
+            >
+              <Copy className="h-4 w-4" />
+            </button>
+          </div>
           <div className="text-sm text-right mt-1">
             <span className="text-print-primary">
               @ {((markup.customPrice / markup.customCost - 1) * 100).toFixed(0)}% markup

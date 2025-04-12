@@ -4,12 +4,13 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileSpreadsheet, Trash2 } from "lucide-react";
+import { Download, FileSpreadsheet, Trash2, Copy } from "lucide-react";
 import { OrderItem, ProductConfig } from "./PrintCalculator";
 import { formatProductSpec } from "../utils/formatters";
 import QuotePopupDialog, { CustomerDetails } from "./QuotePopupDialog";
 import { generateQuotePDF } from "../utils/generateQuote";
 import OrderNotes from "./OrderNotes";
+import { useToast } from "@/components/ui/use-toast";
 
 interface OrderSummaryProps {
   productConfig: ProductConfig;
@@ -26,6 +27,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   isSets = false,
   showSpecSheet = true
 }) => {
+  const { toast } = useToast();
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
   const [specSheetDialogOpen, setSpecSheetDialogOpen] = useState(false);
   const [notes, setNotes] = useState("");
@@ -58,9 +60,77 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   // - Show if there's only 1 item
   // - Show if sets are enabled
   const shouldShowTotalPrice = orderItems.length === 1 || isSets;
+  
+  const copyOrderSummary = () => {
+    // Generate a text representation of the order summary
+    let summaryText = `ORDER SUMMARY\n\n`;
+    summaryText += `Product: ${productConfig.productType}\n`;
+    summaryText += `Size: ${productConfig.itemSize}\n`;
+    summaryText += `Material: ${productConfig.material}\n`;
+    summaryText += `Printing: ${productConfig.sidesPrinted} Sides\n`;
+    
+    if (productConfig.coating !== "No_Coating") {
+      summaryText += `Coating: ${productConfig.coating.replace("_", " ")}\n`;
+    }
+    
+    if (productConfig.lamination !== "None") {
+      summaryText += `Lamination: ${productConfig.lamination.replace("_", " ")}\n`;
+    }
+    
+    summaryText += `\nSELECTED QUANTITIES:\n`;
+    
+    if (orderItems.length > 0) {
+      orderItems.forEach((item, index) => {
+        summaryText += `${index + 1}. Quantity: ${item.quantity.toLocaleString()} units`;
+        if (item.versions && item.versions > 1) {
+          summaryText += `, ${item.versions} versions`;
+        }
+        summaryText += `\n   Price: ${item.currency} ${item.totalPrice.toFixed(2)}`;
+        summaryText += `\n   Unit Price: ${item.currency} ${(item.totalPrice / item.quantity).toFixed(5)} each\n`;
+      });
+      
+      summaryText += `\nTotal Items: ${orderItems.length}\n`;
+      
+      if (shouldShowTotalPrice) {
+        summaryText += `Total Price: ${orderItems[0].currency} ${totalPrice.toFixed(2)}\n`;
+        summaryText += `Unit Price: ${orderItems[0].currency} ${(totalPrice / totalQuantity).toFixed(5)} each\n`;
+      }
+    } else {
+      summaryText += "No quantities added yet\n";
+    }
+    
+    if (isSets && notes) {
+      summaryText += `\nNOTES:\n${notes}\n`;
+    }
+    
+    navigator.clipboard.writeText(summaryText).then(
+      () => {
+        toast({
+          title: "Order Summary copied",
+          description: "Order summary has been copied to clipboard"
+        });
+      },
+      (err) => {
+        toast({
+          variant: "destructive",
+          title: "Failed to copy",
+          description: "Could not copy to clipboard"
+        });
+      }
+    );
+  };
 
   return (
-    <Card className="p-4 bg-white shadow-sm sticky top-4">
+    <Card className="p-4 bg-white shadow-sm sticky top-4 relative">
+      <button 
+        onClick={copyOrderSummary}
+        className="order-summary-copy-btn"
+        aria-label="Copy order summary to clipboard"
+        title="Copy order summary to clipboard"
+      >
+        <Copy className="h-4 w-4" />
+      </button>
+      
       <h2 className="text-xl font-bold text-print-primary border-b pb-3 mb-4">Order Summary</h2>
       
       <div className="mb-6">

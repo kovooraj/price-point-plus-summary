@@ -33,7 +33,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="productType">Product Type</Label>
           <Select value={productConfig.productType} onValueChange={(value) => onConfigChange("productType", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select product type" />
             </SelectTrigger>
             <SelectContent>
@@ -47,7 +47,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="option">Option(s)</Label>
           <Select value={productConfig.option} onValueChange={(value) => onConfigChange("option", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select option" />
             </SelectTrigger>
             <SelectContent>
@@ -61,7 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="itemSize">Item Size</Label>
           <Select value={productConfig.itemSize} onValueChange={(value) => onConfigChange("itemSize", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select size" />
             </SelectTrigger>
             <SelectContent>
@@ -89,7 +89,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="material">Material</Label>
           <Select value={productConfig.material} onValueChange={(value) => onConfigChange("material", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select material" />
             </SelectTrigger>
             <SelectContent>
@@ -103,7 +103,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="sidesPrinted">Sides Printed</Label>
           <Select value={productConfig.sidesPrinted} onValueChange={(value) => onConfigChange("sidesPrinted", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select sides printed" />
             </SelectTrigger>
             <SelectContent>
@@ -131,7 +131,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="coating">Coating / Finish</Label>
           <Select value={productConfig.coating} onValueChange={(value) => onConfigChange("coating", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select coating/finish" />
             </SelectTrigger>
             <SelectContent>
@@ -187,7 +187,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="lamination">Lamination</Label>
           <Select value={productConfig.lamination} onValueChange={(value) => onConfigChange("lamination", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select lamination" />
             </SelectTrigger>
             <SelectContent>
@@ -215,7 +215,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         <div className="form-group">
           <Label htmlFor="ganging">Ganging</Label>
           <Select value={productConfig.ganging} onValueChange={(value) => onConfigChange("ganging", value)}>
-            <SelectTrigger className="w-full bg-yellow-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Select ganging" />
             </SelectTrigger>
             <SelectContent>

@@ -127,9 +127,17 @@
   @apply text-lg font-semibold text-print-primary border-b pb-2 mb-4;
 }
 
+/* Remove yellow backgrounds from inputs */
+input.bg-yellow-50, 
+.bg-yellow-50,
+[data-radix-select-trigger].bg-yellow-50 {
+  @apply bg-background dark:bg-background border-primary/20;
+}
+
 /* Remove blue background from inputs */
 .dark input.bg-blue-50,
-input.bg-blue-50 {
+input.bg-blue-50,
+.bg-blue-50 {
   @apply bg-background dark:bg-muted/20 border-primary/20;
 }
 
@@ -212,4 +220,18 @@ input.bg-blue-50 {
 .dark select,
 .dark [data-radix-select-trigger] {
   @apply bg-background border-input text-foreground;
+}
+
+/* Price field with copy button styling */
+.price-field-container {
+  @apply relative;
+}
+
+.price-field-container .copy-button {
+  @apply absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300;
+}
+
+/* Order summary copy button styling */
+.order-summary-copy-btn {
+  @apply absolute top-4 right-4 p-1 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 bg-transparent;
 }
