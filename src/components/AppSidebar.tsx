@@ -14,14 +14,14 @@ export const AppSidebar: React.FC = () => {
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar className="border-none" collapsible="icon" defaultOpen={false}>
+    <Sidebar className="border-none" collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center justify-center h-24 pb-4 pt-6 px-[10px]">
           {isCollapsed ? (
             <img 
               alt="Logo Small" 
               className="h-auto w-[60%] max-h-[40px] object-contain" 
-              src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" 
+              src="/lovable-uploads/ce711eba-4472-4e17-a6f8-e612fc753438.png" 
             />
           ) : (
             <img 
@@ -101,18 +101,10 @@ export const AppSidebar: React.FC = () => {
       
       <SidebarFooter>
         <div className="p-4 flex flex-col gap-4">
-          {/* Theme toggle button moved to main menu */}
-          
-          {/* Sidebar collapse button */}
-          <SidebarTrigger 
-            onClick={toggleSidebar} 
-            className="text-white hover:text-accent mx-auto"
-          />
-          
           {/* User profile dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 hover:bg-accent/20 cursor-pointer rounded px-[15px] py-[8px] w-full justify-center">
+              <button className={`flex items-center gap-2 hover:bg-sidebar-accent/20 cursor-pointer rounded px-2 py-2 ${isCollapsed ? 'justify-center w-full' : 'px-[15px] py-[8px] w-full'}`}>
                 <Avatar className="h-10 w-10 border border-sidebar-border">
                   <AvatarImage src="/lovable-uploads/a000a88c-c4e3-4a81-8756-37a6d5fdfd9a.png" className="object-fill" />
                   <AvatarFallback>AK</AvatarFallback>
@@ -138,6 +130,12 @@ export const AppSidebar: React.FC = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          
+          {/* Sidebar collapse button - positioned at the bottom */}
+          <SidebarTrigger 
+            onClick={toggleSidebar} 
+            className={`text-white hover:text-accent ${isCollapsed ? 'mx-auto' : 'mx-auto'}`}
+          />
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -68,8 +68,9 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
         </div>
       )}
       
+      {/* Always use grid for consistency across all tabs */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="mb-4">
+        <div>
           <Label htmlFor="customQuantity" className="text-print-primary font-medium">
             {isSets ? "Total Quantity" : "Quantity"}
           </Label>
@@ -87,7 +88,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
         </div>
         
         {isSets && (
-          <div className="mb-4">
+          <div>
             <Label htmlFor="versions" className="text-print-primary font-medium">
               Number of Versions
             </Label>
@@ -128,7 +129,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="mb-4">
+        <div>
           <Label htmlFor="cost" className="text-print-primary font-medium">Cost ({markup.currency})</Label>
           <Input 
             id="cost"
@@ -141,7 +142,7 @@ const PriceMarkup: React.FC<PriceMarkupProps> = ({ markup, onMarkupChange, isSet
           />
         </div>
         
-        <div className="mb-4">
+        <div>
           <Label htmlFor="price" className="text-print-primary font-medium">Price ({markup.currency})</Label>
           <Input 
             id="price"

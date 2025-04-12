@@ -155,3 +155,57 @@
 .dark .border-dashed {
   @apply border-muted;
 }
+
+/* Additional dark mode overrides for better contrast */
+.dark .section-title {
+  @apply text-foreground border-border;
+}
+
+.dark .text-print-primary {
+  @apply text-foreground;
+}
+
+.dark .bg-print-primary {
+  @apply bg-primary;
+}
+
+.dark input.bg-white {
+  @apply bg-muted/20 text-foreground border-border;
+}
+
+.dark input.bg-gray-100 {
+  @apply bg-muted/40 text-foreground border-muted;
+}
+
+.dark input.bg-blue-50 {
+  @apply bg-primary/20 text-foreground border-primary/30;
+}
+
+.dark label {
+  @apply text-foreground;
+}
+
+.dark .text-sm.text-gray-600 {
+  @apply text-muted-foreground;
+}
+
+.dark .text-xs.text-gray-500 {
+  @apply text-muted-foreground;
+}
+
+.dark .text-xl.font-bold.text-print-primary {
+  @apply text-foreground;
+}
+
+/* Fix dark mode styling for cards and buttons */
+.dark .bg-amber-400 {
+  @apply bg-accent text-accent-foreground;
+}
+
+.dark .border-gray-300 {
+  @apply border-muted;
+}
+
+.dark .bg-white.shadow-sm {
+  @apply bg-card text-card-foreground;
+}
