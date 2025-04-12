@@ -14,18 +14,22 @@ import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
 import QuotesTab from "./QuotesTab";
 import UserProfileButton from "./UserProfileButton";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 export interface ProductOption {
   id: string;
   name: string;
   value: string;
 }
+
 export interface OrderItem {
   id: string;
   quantity: number;
   totalCost: number;
   totalPrice: number;
   currency: string;
+  versions?: number;
 }
+
 export interface ProductConfig {
   productType: string;
   option: string;
@@ -43,10 +47,9 @@ export interface ProductConfig {
   ganging: string;
   paperCost: string;
 }
+
 const PrintCalculator: React.FC = () => {
-  const {
-    toast
-  } = useToast();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("commercial");
   const [productConfig, setProductConfig] = useState<ProductConfig>({
     productType: "Flyers",
@@ -65,6 +68,7 @@ const PrintCalculator: React.FC = () => {
     ganging: "Yes",
     paperCost: "Current Price"
   });
+  
   const [markup, setMarkup] = useState({
     baseQuantity: 10000,
     baseCost: 540.99,
@@ -75,21 +79,27 @@ const PrintCalculator: React.FC = () => {
     currency: "CAD",
     versions: 1
   });
+  
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
   const [isQuotesDialogOpen, setIsQuotesDialogOpen] = useState(false);
   const [isSets, setIsSets] = useState(false);
+
   const handleAddToSummary = (item: OrderItem) => {
     const newItem = {
       ...item,
       id: Date.now().toString(),
-      currency: markup.currency
+      currency: markup.currency,
+      versions: isSets ? markup.versions : undefined
     };
+    
     setOrderSummary([...orderSummary, newItem]);
+    
     toast({
       title: "Added to order summary",
       description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`
     });
   };
+
   const handleAddCustomQty = () => {
     if (markup.customQuantity <= 0) {
       toast({
@@ -99,34 +109,41 @@ const PrintCalculator: React.FC = () => {
       });
       return;
     }
+    
     handleAddToSummary({
       id: `custom-${Date.now()}`,
       quantity: markup.customQuantity,
       totalCost: markup.customCost,
       totalPrice: markup.customPrice,
-      currency: markup.currency
+      currency: markup.currency,
+      versions: isSets ? markup.versions : undefined
     });
   };
+
   const handleRemoveFromSummary = (id: string) => {
     setOrderSummary(orderSummary.filter(item => item.id !== id));
+    
     toast({
       title: "Removed from order summary",
       description: "Item removed successfully",
       variant: "destructive"
     });
   };
+
   const handleConfigChange = (field: keyof ProductConfig, value: string) => {
     setProductConfig({
       ...productConfig,
       [field]: value
     });
   };
+
   const handleMarkupChange = (field: keyof typeof markup, value: number | string) => {
     setMarkup({
       ...markup,
       [field]: value
     });
   };
+
   return <div className="container mx-auto p-4 px-[60px]">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold text-print-primary py-[19px]">Estimating Calculator</h1>
@@ -142,7 +159,6 @@ const PrintCalculator: React.FC = () => {
               <QuotesTab />
             </DialogContent>
           </Dialog>
-          <UserProfileButton />
         </div>
       </div>
       
@@ -170,14 +186,21 @@ const PrintCalculator: React.FC = () => {
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <h2 className="section-title">Quantity Variations</h2>
-                <QuantityTable onAddToSummary={handleAddToSummary} currency={markup.currency} />
-              </Card>
+              {!isSets && (
+                <Card className="p-4">
+                  <h2 className="section-title">Quantity Variations</h2>
+                  <QuantityTable onAddToSummary={handleAddToSummary} currency={markup.currency} />
+                </Card>
+              )}
             </div>
 
             <div className="summary-content">
-              <OrderSummary productConfig={productConfig} orderItems={orderSummary} onRemoveItem={handleRemoveFromSummary} isSets={isSets} />
+              <OrderSummary 
+                productConfig={productConfig} 
+                orderItems={orderSummary} 
+                onRemoveItem={handleRemoveFromSummary} 
+                isSets={isSets}
+              />
             </div>
           </div>
         </TabsContent>
@@ -234,4 +257,5 @@ const PrintCalculator: React.FC = () => {
       `}</style>
     </div>;
 };
+
 export default PrintCalculator;

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +53,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       isSpecSheet: true
     });
   };
+  
+  // Determine if we should show the total price based on conditions:
+  // - Show if there's only 1 item
+  // - Show if sets are enabled
+  const shouldShowTotalPrice = orderItems.length === 1 || isSets;
 
   return (
     <Card className="p-4 bg-white shadow-sm sticky top-4">
@@ -101,6 +107,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                   <div>
                     <Badge variant="outline" className="bg-print-primary text-white">
                       {item.quantity.toLocaleString()} units
+                      {item.versions && item.versions > 1 && ` • ${item.versions} versions`}
                     </Badge>
                     <div className="mt-1.5 text-sm font-medium">
                       {item.currency} {item.totalPrice.toFixed(2)}
@@ -144,16 +151,20 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <span className="font-semibold">Total Items:</span>
           <span>{orderItems.length}</span>
         </div>
-        <div className="flex justify-between items-center">
-          <span className="font-semibold">Total Price:</span>
-          <span className="text-xl font-bold text-print-primary">
-            {orderItems.length > 0 ? 
-              `${orderItems[0].currency} ${totalPrice.toFixed(2)}` : 
-              "CAD 0.00"
-            }
-          </span>
-        </div>
-        {orderItems.length > 0 && (
+        
+        {shouldShowTotalPrice && (
+          <div className="flex justify-between items-center">
+            <span className="font-semibold">Total Price:</span>
+            <span className="text-xl font-bold text-print-primary">
+              {orderItems.length > 0 ? 
+                `${orderItems[0].currency} ${totalPrice.toFixed(2)}` : 
+                "CAD 0.00"
+              }
+            </span>
+          </div>
+        )}
+        
+        {orderItems.length > 0 && shouldShowTotalPrice && (
           <div className="flex justify-between items-center">
             <span className="font-semibold">Unit Price:</span>
             <span className="text-sm text-gray-600">

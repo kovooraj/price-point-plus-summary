@@ -35,8 +35,12 @@
 
     --radius: 0.5rem;
     
+    /* Color palette for print calculator */
+    --print-primary: #1A1F2C;
+    --print-success: #10B981;
+    
     /* Sidebar specific colors */
-    --sidebar-background: #1A1F2C;
+    --sidebar: #1A1F2C;
     --sidebar-foreground: #E1E1E6;
     --sidebar-primary: #1EAEDB;
     --sidebar-primary-foreground: #FFFFFF;
@@ -74,6 +78,15 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /* Color palette for print calculator in dark mode */
+    --print-primary: #E1E1E6;
+    --print-success: #10B981;
+    
+    /* Sidebar specific colors - keep dark for both modes */
+    --sidebar: #1A1F2C;
+    --sidebar-foreground: #E1E1E6;
+    --sidebar-accent: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -112,4 +125,33 @@
 
 .section-title {
   @apply text-lg font-semibold text-print-primary border-b pb-2 mb-4;
+}
+
+/* Dark mode overrides for specific components */
+.dark .bg-white {
+  @apply bg-background;
+}
+
+.dark .bg-gray-50 {
+  @apply bg-muted/30;
+}
+
+.dark .bg-gray-100 {
+  @apply bg-muted;
+}
+
+.dark .bg-blue-50 {
+  @apply bg-primary/10;
+}
+
+.dark .text-gray-500 {
+  @apply text-muted-foreground;
+}
+
+.dark .text-gray-600 {
+  @apply text-muted-foreground;
+}
+
+.dark .border-dashed {
+  @apply border-muted;
 }
