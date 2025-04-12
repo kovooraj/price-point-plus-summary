@@ -18,7 +18,7 @@ export const AppSidebar: React.FC = () => {
   const isCollapsed = state === "collapsed";
   return <Sidebar className="border-none" collapsible="icon">
       <SidebarHeader>
-        <div className="flex items-center justify-center h-24 pb-4 pt-6 px-px">
+        <div className="flex items-center justify-start h-24 pb-4 pt-3 px-0">
           {isCollapsed ? <img alt="Logo Small" src="/lovable-uploads/ce711eba-4472-4e17-a6f8-e612fc753438.png" className="h-auto w-[200%] max-h-auto object-contain" /> : <img alt="Logo Full" className="h-auto w-[85%] max-h-[50px] object-contain" src="/lovable-uploads/803cbb9a-bad5-421d-af7f-dd069edb7bb7.png" />}
         </div>
       </SidebarHeader>
