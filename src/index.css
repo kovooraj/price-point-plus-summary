@@ -257,9 +257,9 @@ input.bg-blue-50,
   @apply bg-[#FD100A] text-white hover:bg-[#FD100A]/90;
 }
 
-/* Dark mode input styling */
+/* Dark mode input styling - FIXED to avoid circular dependency */
 .dark .bg-background {
-  @apply bg-muted/20;
+  background-color: rgba(217, 217, 227, 0.2); /* Using direct color instead of @apply */
 }
 
 /* Dark mode specific fixes for the panel as seen in the image */
