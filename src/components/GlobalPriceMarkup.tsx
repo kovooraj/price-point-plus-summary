@@ -122,18 +122,19 @@ const GlobalPriceMarkup: React.FC<GlobalPriceMarkupProps> = ({
               </div>
               <div>
                 <Label htmlFor="customQuantity" className="text-base">Total Quantity</Label>
-                <div className="relative mt-2">
+                <div className="relative mt-2 flex h-10">
                   <Input 
                     id="customQuantity"
                     type="number" 
                     value={markup.customQuantity} 
                     onChange={handleInputChange("customQuantity")} 
-                    className="bg-background pr-24"
+                    className="bg-background rounded-r-none flex-grow"
                   />
                   <Button 
                     onClick={onAddCustomQty}
-                    className="absolute right-0 top-0 bottom-0 flex items-center gap-1 bg-primary text-white"
-                    size="sm"
+                    className="rounded-l-none"
+                    size="full"
+                    variant="cta"
                   >
                     <Plus className="h-4 w-4" /> Add
                   </Button>
@@ -143,18 +144,19 @@ const GlobalPriceMarkup: React.FC<GlobalPriceMarkupProps> = ({
           ) : (
             <div className="mb-4">
               <Label htmlFor="customQuantity" className="text-base">Total Quantity</Label>
-              <div className="relative mt-2">
+              <div className="relative mt-2 flex h-10">
                 <Input 
                   id="customQuantity"
                   type="number" 
                   value={markup.customQuantity} 
                   onChange={handleInputChange("customQuantity")} 
-                  className="bg-background pr-24"
+                  className="bg-background rounded-r-none flex-grow"
                 />
                 <Button 
                   onClick={onAddCustomQty}
-                  className="absolute right-0 top-0 bottom-0 flex items-center gap-1 bg-destructive hover:bg-destructive/90 text-white"
-                  size="sm"
+                  className="rounded-l-none"
+                  size="full"
+                  variant="cta"
                 >
                   <Plus className="h-4 w-4" /> Add
                 </Button>

@@ -48,6 +48,10 @@
     --sidebar-accent-foreground: #FFFFFF; 
     --sidebar-border: rgba(255, 255, 255, 0.1);
     --sidebar-ring: #1EAEDB;
+    
+    /* CTA color */
+    --cta: #FD100A;
+    --cta-foreground: #FFFFFF;
   }
 
   .dark {
@@ -87,6 +91,10 @@
     --sidebar: #1A1F2C;
     --sidebar-foreground: #E1E1E6;
     --sidebar-accent: rgba(255, 255, 255, 0.1);
+    
+    /* CTA color - keep the same in dark mode */
+    --cta: #FD100A;
+    --cta-foreground: #FFFFFF;
   }
 }
 
@@ -129,7 +137,7 @@
 
 /* Fix sidebar collapse button text alignment */
 [data-sidebar-trigger] {
-  @apply flex items-center justify-start;
+  @apply flex items-center justify-start w-full;
 }
 
 /* Remove yellow backgrounds from inputs */
@@ -242,4 +250,33 @@ input.bg-blue-50,
 /* Order summary copy button styling */
 .order-summary-copy-btn {
   @apply absolute top-4 right-4 p-1 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 bg-transparent;
+}
+
+/* CTA button styling */
+.btn-cta {
+  @apply bg-[#FD100A] text-white hover:bg-[#FD100A]/90;
+}
+
+/* Dark mode input styling */
+.dark .bg-background {
+  @apply bg-muted/20;
+}
+
+/* Dark mode specific fixes for the panel as seen in the image */
+.dark .print-calculator-layout {
+  @apply bg-[#1A1F2C];
+}
+
+.dark .card {
+  @apply bg-[#1A1F2C] border-[#2A303C];
+}
+
+.dark input,
+.dark select,
+.dark [data-radix-select-trigger] {
+  @apply bg-[#2A303C] border-[#3A4255] text-white;
+}
+
+.dark .section-title {
+  @apply border-[#2A303C];
 }

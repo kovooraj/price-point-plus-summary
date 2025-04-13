@@ -53,6 +53,10 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				cta: {
+					DEFAULT: 'var(--cta)',
+					foreground: 'var(--cta-foreground)'
+				},
 				sidebar: {
 					DEFAULT: '#1A1F2C',
 					foreground: '#E1E1E6',
