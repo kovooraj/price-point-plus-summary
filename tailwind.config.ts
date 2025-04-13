@@ -73,7 +73,12 @@ export default {
 					light: '#f8fafc',
 					dark: '#334155',
 					success: '#10b981'
-				}
+				},
+				// Add specific dark mode colors for direct access in Tailwind classes
+				darkField: '#222939',
+				darkText: '#677D8E',
+				darkBorder: '#3A4255',
+				darkBg: '#1A1F2C',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
