@@ -97,6 +97,12 @@
     /* CTA color - keep the same in dark mode */
     --cta: #FD100A;
     --cta-foreground: #FFFFFF;
+    
+    /* Global Dark Mode Field Colors */
+    --dark-field-bg: #222939;
+    --dark-field-text: #677D8E;
+    --dark-field-border: #3A4255;
+    --dark-bg: #1A1F2C;
   }
 }
 
@@ -163,34 +169,34 @@ input.bg-blue-50,
 
 /* Dark mode overrides for specific components */
 .dark .bg-white {
-  background-color: #1A1F2C;
+  background-color: var(--dark-bg);
 }
 
 .dark .bg-gray-50 {
-  background-color: #222939;
+  background-color: var(--dark-field-bg);
 }
 
 .dark .bg-gray-100 {
-  background-color: #222939;
+  background-color: var(--dark-field-bg);
 }
 
 .dark .text-gray-500 {
-  color: #677D8E;
+  color: var(--dark-field-text);
 }
 
 .dark .text-gray-600 {
-  color: #677D8E;
+  color: var(--dark-field-text);
 }
 
 .dark .border-dashed {
   border-style: dashed;
-  border-color: #3A4255;
+  border-color: var(--dark-field-border);
 }
 
 /* Additional dark mode overrides for better contrast */
 .dark .section-title {
   color: #E1E1E6;
-  border-color: #3A4255;
+  border-color: var(--dark-field-border);
 }
 
 .dark .text-print-primary {
@@ -202,15 +208,15 @@ input.bg-blue-50,
 }
 
 .dark input.bg-white {
-  background-color: #222939;
-  color: #677D8E;
-  border-color: #3A4255;
+  background-color: var(--dark-field-bg);
+  color: var(--dark-field-text);
+  border-color: var(--dark-field-border);
 }
 
 .dark input.bg-gray-100 {
-  background-color: #222939;
-  color: #677D8E;
-  border-color: #3A4255;
+  background-color: var(--dark-field-bg);
+  color: var(--dark-field-text);
+  border-color: var(--dark-field-border);
 }
 
 .dark label {
@@ -218,11 +224,11 @@ input.bg-blue-50,
 }
 
 .dark .text-sm.text-gray-600 {
-  color: #677D8E;
+  color: var(--dark-field-text);
 }
 
 .dark .text-xs.text-gray-500 {
-  color: #677D8E;
+  color: var(--dark-field-text);
 }
 
 .dark .text-xl.font-bold.text-print-primary {
@@ -236,20 +242,20 @@ input.bg-blue-50,
 }
 
 .dark .border-gray-300 {
-  border-color: #3A4255;
+  border-color: var(--dark-field-border);
 }
 
 .dark .bg-white.shadow-sm {
-  background-color: #1A1F2C;
+  background-color: var(--dark-bg);
   color: #E1E1E6;
 }
 
 /* Fix for input and select components in dark mode */
 .dark select,
 .dark [data-radix-select-trigger] {
-  background-color: #222939;
-  border-color: #3A4255;
-  color: #677D8E;
+  background-color: var(--dark-field-bg);
+  border-color: var(--dark-field-border);
+  color: var(--dark-field-text);
 }
 
 /* Price field with copy button styling */
@@ -264,7 +270,7 @@ input.bg-blue-50,
   transform: translateY(-50%);
   padding: 0.25rem;
   border-radius: 0.375rem;
-  color: #677D8E;
+  color: var(--dark-field-text);
 }
 
 .price-field-container .copy-button:hover {
@@ -282,7 +288,7 @@ input.bg-blue-50,
   right: 1rem;
   padding: 0.25rem;
   border-radius: 0.375rem;
-  color: #677D8E;
+  color: var(--dark-field-text);
   background-color: transparent;
 }
 
