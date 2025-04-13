@@ -4,15 +4,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import { Plus, Package, Download } from "lucide-react";
+import { Package, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { formatCurrency } from "../utils/formatters";
-import { Badge } from "@/components/ui/badge";
 import QuantityTable from "./QuantityTable";
 import OrderSummary from "./OrderSummary";
-import PriceMarkup from "./PriceMarkup";
+import GlobalPriceMarkup from "./GlobalPriceMarkup";
 
 interface FlexiblePackagingConfig {
   product: string;
@@ -69,16 +65,16 @@ const FlexiblePackagingCalculator: React.FC = () => {
   });
 
   const [markup, setMarkup] = useState<FlexiblePackagingMarkup>({
-    currency: "USD",
+    currency: "CAD",
     isSet: false,
-    totalQuantity: 5000,
+    totalQuantity: 1000,
     versions: 1,
-    markupPercent: 30,
-    baseCost: 1541.77,
-    basePrice: 2004.31,
-    customQuantity: 5000,
-    customCost: 1541.77,
-    customPrice: 2004.31
+    markupPercent: 40,
+    baseCost: 300,
+    basePrice: 420,
+    customQuantity: 1000,
+    customCost: 300,
+    customPrice: 420
   });
 
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
@@ -138,22 +134,35 @@ const FlexiblePackagingCalculator: React.FC = () => {
     });
   };
 
-  const handleMarkupChange = (field: keyof FlexiblePackagingMarkup, value: number | string | boolean) => {
-    setMarkup({
-      ...markup,
-      [field]: value,
-    });
-
-    if (field === "markupPercent" && typeof value === "number") {
-      const newPrice = markup.baseCost * (1 + value / 100);
-      setMarkup(prev => ({ ...prev, basePrice: newPrice, customPrice: newPrice }));
-    }
-    
-    if (field === "customQuantity" && typeof value === "number") {
-      setMarkup(prev => ({ 
-        ...prev, 
-        totalQuantity: value,
-      }));
+  const handleMarkupChange = (field: keyof FlexiblePackagingMarkup | string, value: number | string | boolean) => {
+    if (field === "currency") {
+      setMarkup({
+        ...markup,
+        currency: value as string,
+      });
+    } else if (field === "customQuantity") {
+      setMarkup({
+        ...markup,
+        customQuantity: value as number,
+        totalQuantity: value as number,
+      });
+    } else if (field === "versions") {
+      setMarkup({
+        ...markup,
+        versions: value as number,
+      });
+    } else if (field === "customPrice") {
+      setMarkup({
+        ...markup,
+        customPrice: value as number,
+        basePrice: value as number,
+      });
+    } else if (field === "customCost") {
+      setMarkup({
+        ...markup,
+        customCost: value as number,
+        baseCost: value as number,
+      });
     }
   };
 
@@ -294,7 +303,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.rollWidth || ""}
                     onChange={(e) => handleConfigChange("rollWidth", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
                 <div>
@@ -304,7 +313,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.repeatLength || ""}
                     onChange={(e) => handleConfigChange("repeatLength", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
               </>
@@ -319,7 +328,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.height || ""}
                     onChange={(e) => handleConfigChange("height", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
                 <div>
@@ -329,7 +338,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.width || ""}
                     onChange={(e) => handleConfigChange("width", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
               </>
@@ -344,7 +353,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.height || ""}
                     onChange={(e) => handleConfigChange("height", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
                 <div>
@@ -354,7 +363,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.width || ""}
                     onChange={(e) => handleConfigChange("width", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
                 <div>
@@ -364,7 +373,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.gusset || ""}
                     onChange={(e) => handleConfigChange("gusset", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
               </>
@@ -516,7 +525,7 @@ const FlexiblePackagingCalculator: React.FC = () => {
                     type="text"
                     value={config.repeatsPerRoll || ""}
                     onChange={(e) => handleConfigChange("repeatsPerRoll", e.target.value)}
-                    className="bg-white"
+                    className="bg-background"
                   />
                 </div>
               </>
@@ -524,47 +533,19 @@ const FlexiblePackagingCalculator: React.FC = () => {
           </div>
         </Card>
 
-        <Card className="p-4">
-          <h2 className="section-title">Markup &amp; Pricing</h2>
-          
-          <PriceMarkup 
-            markup={{
-              baseQuantity: markup.totalQuantity,
-              baseCost: markup.baseCost,
-              basePrice: markup.basePrice,
-              customQuantity: markup.customQuantity,
-              customCost: markup.customCost,
-              customPrice: markup.customPrice,
-              currency: markup.currency,
-              versions: markup.versions
-            }} 
-            onMarkupChange={(field, value) => {
-              if (field === "currency") {
-                handleMarkupChange("currency", value);
-              } else if (field === "customQuantity") {
-                handleMarkupChange("customQuantity", value);
-                handleMarkupChange("totalQuantity", value);
-              } else if (field === "versions") {
-                handleMarkupChange("versions", value);
-              } else if (field === "customPrice") {
-                handleMarkupChange("customPrice", value);
-              } else if (field === "customCost") {
-                handleMarkupChange("customCost", value);
-              }
-            }}
-            isSets={isSets}
-            onSetsChange={setIsSets}
-          />
-          
-          <div className="flex justify-end mt-4">
-            <Button 
-              onClick={handleAddCustomQty}
-              className="flex items-center gap-1 bg-print-success hover:bg-print-success/90 text-white"
-            >
-              <Plus className="h-4 w-4" /> Add to Summary
-            </Button>
-          </div>
-        </Card>
+        <GlobalPriceMarkup 
+          markup={{
+            customQuantity: markup.customQuantity,
+            customCost: markup.customCost,
+            customPrice: markup.customPrice,
+            currency: markup.currency,
+            versions: markup.versions
+          }} 
+          onMarkupChange={handleMarkupChange} 
+          isSets={isSets} 
+          onSetsChange={setIsSets}
+          onAddCustomQty={handleAddCustomQty}
+        />
 
         {!isSets && (
           <Card className="p-4">

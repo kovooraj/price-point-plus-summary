@@ -127,6 +127,11 @@
   @apply text-lg font-semibold text-print-primary border-b pb-2 mb-4;
 }
 
+/* Fix sidebar collapse button text alignment */
+[data-sidebar-trigger] {
+  @apply flex items-center justify-start;
+}
+
 /* Remove yellow backgrounds from inputs */
 input.bg-yellow-50, 
 input.bg-amber-50,

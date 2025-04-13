@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { History } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
-import PriceMarkup from "./PriceMarkup";
+import GlobalPriceMarkup from "./GlobalPriceMarkup";
 import QuantityTable from "./QuantityTable";
 import OrderSummary from "./OrderSummary";
 import RollLabelsCalculator from "./RollLabelsCalculator";
@@ -74,7 +74,7 @@ const PrintCalculator: React.FC = () => {
     baseQuantity: 10000,
     baseCost: 540.99,
     basePrice: 703.28,
-    customQuantity: 0,
+    customQuantity: 1000,
     customCost: 400.73,
     customPrice: 562.63,
     currency: "CAD",
@@ -177,16 +177,19 @@ const PrintCalculator: React.FC = () => {
             <div className="main-content space-y-6">
               <ProductForm productConfig={productConfig} onConfigChange={handleConfigChange} />
 
-              <Card className="p-4">
-                <h2 className="section-title">Markup &amp; Pricing</h2>
-                <PriceMarkup 
-                  markup={markup} 
-                  onMarkupChange={handleMarkupChange} 
-                  isSets={isSets} 
-                  onSetsChange={setIsSets}
-                  onAddCustomQty={handleAddCustomQty}
-                />
-              </Card>
+              <GlobalPriceMarkup 
+                markup={{
+                  customQuantity: markup.customQuantity,
+                  customCost: markup.customCost,
+                  customPrice: markup.customPrice,
+                  currency: markup.currency,
+                  versions: markup.versions
+                }} 
+                onMarkupChange={handleMarkupChange} 
+                isSets={isSets} 
+                onSetsChange={setIsSets}
+                onAddCustomQty={handleAddCustomQty}
+              />
 
               {!isSets && <Card className="p-4">
                   <h2 className="section-title">Quantity Variations</h2>

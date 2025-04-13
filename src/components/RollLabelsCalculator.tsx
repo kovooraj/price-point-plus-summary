@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import OrderSummary from "./OrderSummary";
 import { OrderItem, ProductConfig } from "./PrintCalculator";
 import QuantityTable from "./QuantityTable";
-import PriceMarkup from "./PriceMarkup";
+import GlobalPriceMarkup from "./GlobalPriceMarkup";
 
 interface RollLabelsState {
   productType: string;
@@ -62,7 +62,7 @@ const RollLabelsCalculator: React.FC = () => {
     freeShipping: "No",
     cutMethod: "Does_Not_M",
     purchaseDie: "",
-    quantity: 108000,
+    quantity: 1000,
     cores: 48,
     coreWidth: 3.25,
     coreDiameter: 8.0,
@@ -75,10 +75,10 @@ const RollLabelsCalculator: React.FC = () => {
     boxes: 24,
     boxSize: "12 x 9 x 9.5",
     cuttingMethod: "Laser",
-    cost: 3579.91,
-    price: 4295.89,
-    markup: 20,
-    currency: "USD",
+    cost: 300,
+    price: 420,
+    markup: 40,
+    currency: "CAD",
     isSets: false,
     versions: 1
   });
@@ -135,7 +135,6 @@ const RollLabelsCalculator: React.FC = () => {
     });
   };
 
-  // Create a product config object for the OrderSummary component
   const productConfig: ProductConfig = {
     productType: "Roll Labels",
     option: state.shape,
@@ -154,11 +153,7 @@ const RollLabelsCalculator: React.FC = () => {
     paperCost: "Current Price",
   };
   
-  // Create a markup object for the PriceMarkup component
   const markup = {
-    baseQuantity: 0,
-    baseCost: 0,
-    basePrice: 0,
     customQuantity: state.quantity,
     customCost: state.cost,
     customPrice: state.price,
@@ -175,16 +170,14 @@ const RollLabelsCalculator: React.FC = () => {
       handleInputChange("versions", Number(value));
     } else if (field === "customPrice") {
       handleInputChange("price", Number(value));
-      // Recalculate markup based on new price
-      const newMarkup = ((Number(value) / state.cost - 1) * 100);
-      handleInputChange("markup", newMarkup);
+    } else if (field === "customCost") {
+      handleInputChange("cost", Number(value));
     }
   };
   
   return (
     <div className="print-calculator-layout">
       <div className="main-content space-y-6">
-        {/* Product Configuration Card */}
         <Card className="p-4">
           <h2 className="section-title">Product Configuration</h2>
           
@@ -377,24 +370,21 @@ const RollLabelsCalculator: React.FC = () => {
           </div>
         </Card>
 
-        {/* Pricing Card */}
-        <Card className="p-4">
-          <h2 className="section-title">Markup & Pricing</h2>
-          
-          <PriceMarkup
-            markup={markup}
-            onMarkupChange={handleMarkupChange}
-            isSets={state.isSets}
-            onSetsChange={(checked) => handleInputChange("isSets", checked)}
-            onAddCustomQty={handleAddCustomQty}
-          />
-        </Card>
+        <GlobalPriceMarkup
+          markup={markup}
+          onMarkupChange={handleMarkupChange}
+          isSets={state.isSets}
+          onSetsChange={(checked) => handleInputChange("isSets", checked)}
+          onAddCustomQty={handleAddCustomQty}
+        />
 
-        {/* Quantity Variations Card */}
         {!state.isSets && (
           <Card className="p-4">
             <h2 className="section-title">Quantity Variations</h2>
-            <QuantityTable onAddToSummary={handleAddToSummary} currency={state.currency} />
+            <QuantityTable 
+              onAddToSummary={handleAddToSummary}
+              currency={state.currency}
+            />
           </Card>
         )}
       </div>
