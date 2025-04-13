@@ -55,34 +55,34 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Updated dark mode colors */
+    --background: 220 16% 14%; /* #1A1F2C */
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 220 16% 14%; /* #1A1F2C */
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 220 16% 14%; /* #1A1F2C */
     --popover-foreground: 210 40% 98%;
 
     /* Updated primary to match accent color for selected tabs */
-    --primary: 0 100% 52%;
+    --primary: 0 100% 52%; /* #FD100A */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 220 24% 18%; /* #222939 */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 24% 18%; /* #222939 */
+    --muted-foreground: 206 14% 48%; /* #677D8E */
 
-    /* Updated accent to match CTA color */
-    --accent: 0 100% 52%;
+    --accent: 0 100% 52%; /* #FD100A */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 220 22% 26%; /* #3A4255 */
+    --input: 220 22% 26%; /* #3A4255 */
     --ring: 212.7 26.8% 83.9%;
 
     /* Color palette for print calculator in dark mode */
@@ -322,6 +322,12 @@ input.bg-blue-50,
 .dark input,
 .dark select,
 .dark [data-radix-select-trigger] {
+  background-color: #222939;
+  border-color: #3A4255;
+  color: #677D8E;
+}
+
+.dark textarea {
   background-color: #222939;
   border-color: #3A4255;
   color: #677D8E;
