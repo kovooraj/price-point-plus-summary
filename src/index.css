@@ -56,23 +56,23 @@
 
   .dark {
     /* Updated dark mode colors */
-    --background: 220 16% 14%; /* #1A1F2C */
+    --background: 232 19% 14%; /* #1A1F2C */
     --foreground: 210 40% 98%;
 
-    --card: 220 16% 14%; /* #1A1F2C */
+    --card: 232 19% 14%; /* #1A1F2C */
     --card-foreground: 210 40% 98%;
 
-    --popover: 220 16% 14%; /* #1A1F2C */
+    --popover: 232 19% 14%; /* #1A1F2C */
     --popover-foreground: 210 40% 98%;
 
     /* Updated primary to match accent color for selected tabs */
     --primary: 0 100% 52%; /* #FD100A */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 24% 18%; /* #222939 */
+    --secondary: 232 19% 14%; /* #222939 */
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 220 24% 18%; /* #222939 */
+    --muted: 232 19% 14%; /* #222939 */
     --muted-foreground: 206 14% 48%; /* #677D8E */
 
     --accent: 0 100% 52%; /* #FD100A */
