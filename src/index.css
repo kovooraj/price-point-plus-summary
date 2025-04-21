@@ -102,7 +102,7 @@
     --dark-field-bg: #222939;
     --dark-field-text: #677D8E;
     --dark-field-border: #3A4255;
-    --dark-bg: #1A1F2C;
+    --dark-bg: #1d1f2a;
   }
 }
 
@@ -312,16 +312,16 @@ input.bg-blue-50,
 
 /* Dark mode styling - direct values instead of @apply to avoid circular dependency */
 .dark {
-  background-color: #1A1F2C;
+  background-color: #1d1f2a;
 }
 
 /* Dark mode specific fixes for the panel as seen in the image */
 .dark .print-calculator-layout {
-  background-color: #1A1F2C;
+  background-color: #1d1f2a;
 }
 
 .dark .card {
-  background-color: #1A1F2C;
+  background-color: #1d1f2a;
   border-color: #2A303C;
 }
 
