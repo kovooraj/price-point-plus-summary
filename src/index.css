@@ -90,7 +90,7 @@
     --print-success: #10B981;
     
     /* Sidebar specific colors - keep dark for both modes */
-    --sidebar: #1A1F2C;
+    --sidebar: rgb(29 31 42);
     --sidebar-foreground: #E1E1E6;
     --sidebar-accent: rgba(255, 255, 255, 0.1);
     
