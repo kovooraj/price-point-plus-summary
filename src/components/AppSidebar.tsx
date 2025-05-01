@@ -1,11 +1,13 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Sidebar, SidebarContent, SidebarHeader, SidebarFooter, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarGroup, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Printer, History, CreditCard, Users, Settings, Moon, Sun, PanelLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { Printer, History, CreditCard, Users, Settings, Moon, Sun, ChevronLeft, ChevronRight } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/hooks/use-theme";
+
 export const AppSidebar: React.FC = () => {
   const {
     state,
@@ -16,6 +18,7 @@ export const AppSidebar: React.FC = () => {
     setTheme
   } = useTheme();
   const isCollapsed = state === "collapsed";
+  
   return <Sidebar className="border-none" collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center justify-start h-24 pb-4 pt-3 px-0">
@@ -70,13 +73,6 @@ export const AppSidebar: React.FC = () => {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton onClick={() => setTheme(theme === "dark" ? "light" : "dark")} tooltip={theme === "dark" ? "Light Mode" : "Dark Mode"} className="text-sidebar-foreground hover:text-white">
-                {theme === "dark" ? <Sun className="h-8 w-8" /> : <Moon className="h-8 w-8" />}
-                <span className="text-base ml-2">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
@@ -111,13 +107,37 @@ export const AppSidebar: React.FC = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          {/* Redesigned sidebar collapse button */}
-          <Button onClick={toggleSidebar} variant="ghost" size="sm" className={`flex items-center gap-2 justify-center w-full text-sidebar-foreground hover:bg-sidebar-accent/20 hover:text-white rounded mx-0 py-2 px-3 transition-colors`}>
-            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <>
-                <ChevronLeft className="h-5 w-5" />
-                <span className="text-sm">Collapse</span>
-              </>}
-          </Button>
+          {/* Sidebar footer buttons */}
+          <div className={`flex ${isCollapsed ? 'flex-col' : 'flex-row'} gap-2 px-3`}>
+            {/* Theme toggle button */}
+            <Button 
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              variant="ghost" 
+              size="icon"
+              className="h-9 w-9 rounded-md text-sidebar-foreground hover:bg-sidebar-accent/20 hover:text-white transition-colors"
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Light Mode" : "Dark Mode"}
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
+            
+            {/* Sidebar collapse button */}
+            <Button 
+              onClick={toggleSidebar} 
+              variant="ghost" 
+              size={isCollapsed ? "icon" : "sm"}
+              className={`rounded-md text-sidebar-foreground hover:bg-sidebar-accent/20 hover:text-white flex items-center justify-start transition-colors ${isCollapsed ? "h-9 w-9" : "h-9"}`}
+            >
+              {isCollapsed ? (
+                <ChevronRight className="h-4 w-4" />
+              ) : (
+                <>
+                  <ChevronLeft className="h-4 w-4 mr-2" />
+                  <span className="text-sm">Collapse</span>
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </SidebarFooter>
     </Sidebar>;

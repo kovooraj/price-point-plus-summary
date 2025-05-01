@@ -73,7 +73,7 @@
     --secondary-foreground: 210 40% 98%;
 
     --muted: 232 19% 14%; /* #222939 */
-    --muted-foreground: 206 14% 48%; /* #677D8E */
+    --muted-foreground: 217 9% 53%; /* #677D8E */
 
     --accent: 0 100% 52%; /* #FD100A */
     --accent-foreground: 0 0% 100%;
@@ -90,7 +90,7 @@
     --print-success: #10B981;
     
     /* Sidebar specific colors - keep dark for both modes */
-    --sidebar: rgb(29 31 42);
+    --sidebar: #1A1F2C;
     --sidebar-foreground: #E1E1E6;
     --sidebar-accent: rgba(255, 255, 255, 0.1);
     
@@ -102,7 +102,7 @@
     --dark-field-bg: #222939;
     --dark-field-text: #677D8E;
     --dark-field-border: #3A4255;
-    --dark-bg: #1d1f2a;
+    --dark-bg: #1A1F2C;
   }
 }
 
@@ -168,15 +168,18 @@ input.bg-blue-50,
 }
 
 /* Dark mode overrides for specific components */
-.dark .bg-white {
+.dark .bg-white,
+.dark .bg-background {
   background-color: var(--dark-bg);
 }
 
-.dark .bg-gray-50 {
+.dark .bg-gray-50,
+.dark [data-radix-select-trigger].bg-gray-50 {
   background-color: var(--dark-field-bg);
 }
 
-.dark .bg-gray-100 {
+.dark .bg-gray-100,
+.dark [data-radix-select-content].bg-gray-100 {
   background-color: var(--dark-field-bg);
 }
 
@@ -207,13 +210,15 @@ input.bg-blue-50,
   background-color: #FD100A;
 }
 
-.dark input.bg-white {
+.dark input.bg-white,
+.dark select.bg-white {
   background-color: var(--dark-field-bg);
   color: var(--dark-field-text);
   border-color: var(--dark-field-border);
 }
 
-.dark input.bg-gray-100 {
+.dark input.bg-gray-100,
+.dark select.bg-gray-100 {
   background-color: var(--dark-field-bg);
   color: var(--dark-field-text);
   border-color: var(--dark-field-border);
@@ -256,6 +261,21 @@ input.bg-blue-50,
   background-color: var(--dark-field-bg);
   border-color: var(--dark-field-border);
   color: var(--dark-field-text);
+}
+
+.dark [data-radix-select-content],
+.dark [data-radix-select-viewport] {
+  background-color: var(--dark-field-bg);
+  color: var(--dark-field-text);
+}
+
+.dark [data-radix-select-item] {
+  color: var(--dark-field-text);
+}
+
+.dark [data-radix-select-item]:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #E1E1E6;
 }
 
 /* Price field with copy button styling */
@@ -312,28 +332,23 @@ input.bg-blue-50,
 
 /* Dark mode styling - direct values instead of @apply to avoid circular dependency */
 .dark {
-  background-color: #1d1f2a;
+  background-color: #1A1F2C;
 }
 
 /* Dark mode specific fixes for the panel as seen in the image */
 .dark .print-calculator-layout {
-  background-color: #1d1f2a;
+  background-color: #1A1F2C;
 }
 
 .dark .card {
-  background-color: #1d1f2a;
+  background-color: #1A1F2C;
   border-color: #2A303C;
 }
 
 .dark input,
 .dark select,
+.dark textarea,
 .dark [data-radix-select-trigger] {
-  background-color: #222939;
-  border-color: #3A4255;
-  color: #677D8E;
-}
-
-.dark textarea {
   background-color: #222939;
   border-color: #3A4255;
   color: #677D8E;
@@ -359,4 +374,81 @@ input.bg-blue-50,
   background-color: #222939;
   color: #677D8E;
   border-color: #3A4255;
+}
+
+/* Custom Order tab specific styling */
+.segment-card {
+  @apply rounded-md border border-border p-4 mb-4;
+}
+
+.dark .segment-card {
+  background-color: #1A1F2C;
+  border-color: #3A4255;
+}
+
+.segment-header {
+  @apply flex justify-between items-center mb-3;
+}
+
+.segment-title {
+  @apply text-base font-medium;
+}
+
+.segment-content {
+  @apply grid gap-4;
+}
+
+.segment-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.job-summary {
+  @apply bg-card rounded-md border border-border p-4;
+}
+
+.dark .job-summary {
+  background-color: #1A1F2C;
+  border-color: #3A4255;
+}
+
+.summary-title {
+  @apply text-lg font-medium mb-4 pb-2 border-b;
+}
+
+.summary-item {
+  @apply flex justify-between py-1;
+}
+
+.summary-label {
+  @apply text-sm font-medium;
+}
+
+.summary-value {
+  @apply text-sm;
+}
+
+.summary-buttons {
+  @apply flex flex-col gap-2 mt-4;
+}
+
+/* Zapier-like UI elements */
+.zapier-add {
+  @apply flex items-center justify-center p-3 border border-dashed rounded-md cursor-pointer hover:bg-muted transition-colors;
+}
+
+.dark .zapier-add {
+  border-color: #3A4255;
+}
+
+.zapier-add-text {
+  @apply flex items-center gap-2 text-sm font-medium;
+}
+
+/* Mode toggle button styling */
+.mode-toggle {
+  @apply p-2 rounded-md hover:bg-muted transition-colors;
+}
+
+.dark .mode-toggle {
+  @apply hover:bg-sidebar-accent;
 }

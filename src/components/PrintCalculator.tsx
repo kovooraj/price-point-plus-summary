@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History } from "lucide-react";
+import { History, ArrowRightLeft } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
 import GlobalPriceMarkup from "./GlobalPriceMarkup";
@@ -15,6 +15,8 @@ import FlexiblePackagingCalculator from "./FlexiblePackagingCalculator";
 import QuotesTab from "./QuotesTab";
 import UserProfileButton from "./UserProfileButton";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import CustomOrderTab from "./CustomOrderTab";
+import SalesforceDialog from "./custom-order/SalesforceDialog";
 
 export interface ProductOption {
   id: string;
@@ -83,6 +85,7 @@ const PrintCalculator: React.FC = () => {
   
   const [orderSummary, setOrderSummary] = useState<OrderItem[]>([]);
   const [isQuotesDialogOpen, setIsQuotesDialogOpen] = useState(false);
+  const [isSalesforceDialogOpen, setIsSalesforceDialogOpen] = useState(false);
   const [isSets, setIsSets] = useState(false);
   
   const handleAddToSummary = (item: OrderItem) => {
@@ -145,6 +148,20 @@ const PrintCalculator: React.FC = () => {
     });
   };
   
+  // Render the "Sync with Salesforce" button for all tabs
+  const renderSalesforceButton = () => {
+    return (
+      <Button 
+        variant="cta" 
+        className="w-full mt-2"
+        onClick={() => setIsSalesforceDialogOpen(true)}
+      >
+        <ArrowRightLeft className="h-5 w-5 mr-2" />
+        Sync with Salesforce
+      </Button>
+    );
+  };
+  
   return <div className="container mx-auto p-4 px-[60px]">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold text-print-primary py-[19px]">Estimating Calculator</h1>
@@ -198,61 +215,48 @@ const PrintCalculator: React.FC = () => {
             </div>
 
             <div className="summary-content">
-              <OrderSummary productConfig={productConfig} orderItems={orderSummary} onRemoveItem={handleRemoveFromSummary} isSets={isSets} />
+              <OrderSummary 
+                productConfig={productConfig} 
+                orderItems={orderSummary} 
+                onRemoveItem={handleRemoveFromSummary} 
+                isSets={isSets} 
+              />
+              {renderSalesforceButton()}
             </div>
           </div>
         </TabsContent>
         
         <TabsContent value="rolllabels" className="mt-4">
           <RollLabelsCalculator />
+          <div className="flex justify-end mt-4">
+            {renderSalesforceButton()}
+          </div>
         </TabsContent>
         
         <TabsContent value="foldingcartons" className="mt-4">
           <FoldingCartonsCalculator />
+          <div className="flex justify-end mt-4">
+            {renderSalesforceButton()}
+          </div>
         </TabsContent>
         
         <TabsContent value="flexiblepackaging" className="mt-4">
           <FlexiblePackagingCalculator />
+          <div className="flex justify-end mt-4">
+            {renderSalesforceButton()}
+          </div>
         </TabsContent>
         
         <TabsContent value="custom" className="mt-4">
-          <div className="p-8 text-center text-muted-foreground">
-            Custom Calculator coming soon
-          </div>
+          <CustomOrderTab />
         </TabsContent>
       </Tabs>
 
-      <style>{`
-        .print-calculator-layout {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1.5rem;
-        }
-        
-        @media (min-width: 1024px) {
-          .print-calculator-layout {
-            grid-template-columns: 2fr 1fr;
-          }
-        }
-        
-        .main-content {
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .summary-content {
-          align-self: start;
-          position: sticky;
-          top: 1rem;
-        }
-        
-        .section-title {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: var(--print-primary);
-          margin-bottom: 1rem;
-        }
-      `}</style>
+      {/* Salesforce Dialog */}
+      <SalesforceDialog 
+        isOpen={isSalesforceDialogOpen} 
+        onOpenChange={setIsSalesforceDialogOpen} 
+      />
     </div>;
 };
 
