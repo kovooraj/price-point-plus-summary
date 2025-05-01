@@ -134,8 +134,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
                 min="0"
                 className="flex-1"
               />
-              <Select value={materialUOM} onValueChange={setMaterialUOM} className="w-28">
-                <SelectTrigger>
+              <Select value={materialUOM} onValueChange={setMaterialUOM}>
+                <SelectTrigger className="w-28">
                   <SelectValue placeholder="UOM" />
                 </SelectTrigger>
                 <SelectContent>
