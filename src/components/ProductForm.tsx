@@ -122,9 +122,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         </div>
 
         {showMaterialCost && (
-          <>
-            <div className="form-group">
-              <Label htmlFor="materialCost">Material Cost</Label>
+          <div className="form-group">
+            <Label htmlFor="materialCost">Material Cost</Label>
+            <div className="flex items-center gap-2">
               <Input
                 id="materialCost"
                 value={materialCost}
@@ -132,14 +132,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
                 placeholder="Enter material cost"
                 type="number"
                 min="0"
+                className="flex-1"
               />
-            </div>
-
-            <div className="form-group">
-              <Label htmlFor="materialUOM">UOM</Label>
-              <Select value={materialUOM} onValueChange={setMaterialUOM}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select UOM" />
+              <Select value={materialUOM} onValueChange={setMaterialUOM} className="w-28">
+                <SelectTrigger>
+                  <SelectValue placeholder="UOM" />
                 </SelectTrigger>
                 <SelectContent>
                   {materialUOMs.map(uom => (
@@ -148,7 +145,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
                 </SelectContent>
               </Select>
             </div>
-          </>
+          </div>
         )}
 
         <div className="form-group">
@@ -241,19 +238,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
           </Select>
         </div>
 
-        <div className="form-group">
-          <Label htmlFor="paperCost">Paper Cost</Label>
-          <Select value={productConfig.paperCost} onValueChange={(value) => onConfigChange("paperCost", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select paper cost" />
-            </SelectTrigger>
-            <SelectContent>
-              {paperCosts.map(cost => (
-                <SelectItem key={cost} value={cost}>{cost}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {!showMaterialCost && (
+          <div className="form-group">
+            <Label htmlFor="paperCost">Paper Cost</Label>
+            <Select value={productConfig.paperCost} onValueChange={(value) => onConfigChange("paperCost", value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select paper cost" />
+              </SelectTrigger>
+              <SelectContent>
+                {paperCosts.map(cost => (
+                  <SelectItem key={cost} value={cost}>{cost}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
     </Card>
   );

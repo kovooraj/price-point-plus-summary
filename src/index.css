@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -103,6 +102,9 @@
     --dark-field-text: #677D8E;
     --dark-field-border: #3A4255;
     --dark-bg: #1A1F2C;
+    
+    /* Salesforce Blue for dark mode */
+    --salesforce-blue: #0FA0CE;
   }
 }
 
@@ -367,6 +369,20 @@ input.bg-blue-50,
 /* Override for the data-state=active background in dark mode */
 .dark [data-state=active].bg-background {
   background-color: #FD100A;
+}
+
+/* Salesforce button styling in dark mode */
+.dark .bg-cta.text-cta-foreground,
+.dark button[variant="cta"],
+.dark [class*="bg-cta"] {
+  background-color: var(--salesforce-blue);
+}
+
+/* Dark mode Salesforce button hover state */
+.dark .bg-cta:hover,
+.dark button[variant="cta"]:hover,
+.dark [class*="bg-cta"]:hover {
+  background-color: rgba(15, 160, 206, 0.9);
 }
 
 /* No quantities section styling in dark mode */

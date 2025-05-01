@@ -147,20 +147,6 @@ const PrintCalculator: React.FC = () => {
     });
   };
   
-  // Render the "Sync with Salesforce" button for all tabs
-  const renderSalesforceButton = () => {
-    return (
-      <Button 
-        variant="cta" 
-        className="w-full mt-2"
-        onClick={() => setIsSalesforceDialogOpen(true)}
-      >
-        <ArrowRightLeft className="h-5 w-5 mr-2" />
-        Sync with Salesforce
-      </Button>
-    );
-  };
-  
   return <div className="container mx-auto p-4 px-[60px]">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-3xl font-bold text-print-primary py-[19px]">Estimating Calculator</h1>
@@ -220,14 +206,6 @@ const PrintCalculator: React.FC = () => {
                 onRemoveItem={handleRemoveFromSummary} 
                 isSets={isSets} 
               />
-              <Button 
-                variant="cta" 
-                className="w-full mt-2"
-                onClick={() => setIsSalesforceDialogOpen(true)}
-              >
-                <ArrowRightLeft className="h-5 w-5 mr-2" />
-                Sync with Salesforce
-              </Button>
             </div>
           </div>
         </TabsContent>
