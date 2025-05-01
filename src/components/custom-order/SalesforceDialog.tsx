@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/components/ui/use-toast';
+import { ArrowRightLeft } from 'lucide-react';
 
 interface SalesforceDialogProps {
   isOpen: boolean;
@@ -61,7 +62,12 @@ const SalesforceDialog: React.FC<SalesforceDialogProps> = ({ isOpen, onOpenChang
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button variant="cta" onClick={handleSync} disabled={isLoading}>
-            {isLoading ? "Syncing..." : "Sync Quote"}
+            {isLoading ? "Syncing..." : (
+              <>
+                <ArrowRightLeft className="h-4 w-4 mr-2" />
+                Sync Quote
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ProductConfig } from "./PrintCalculator";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface ProductFormProps {
@@ -11,19 +12,39 @@ interface ProductFormProps {
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange }) => {
+  const [showMaterialCost, setShowMaterialCost] = useState(productConfig.material === "Other");
+  const [materialUOM, setMaterialUOM] = useState("sheet");
+  const [materialCost, setMaterialCost] = useState("");
+  const [showCoatingFields, setShowCoatingFields] = useState(false);
+  const [showLaminationFields, setShowLaminationFields] = useState(false);
+
+  useEffect(() => {
+    // Update visibility based on selected coating
+    const isAqOrUV = productConfig.coating === "Aqueous Coating" || productConfig.coating === "UV Coating";
+    const isLamination = productConfig.coating === "Lamination";
+    
+    setShowCoatingFields(isAqOrUV);
+    setShowLaminationFields(isLamination);
+  }, [productConfig.coating]);
+
+  useEffect(() => {
+    setShowMaterialCost(productConfig.material === "Other");
+  }, [productConfig.material]);
+
   const productTypes = ["Flyers", "Brochures", "Business Cards", "Posters"];
   const options = ["None", "Rounded Corners", "Die Cut", "Folding"];
   const sizes = ["8.5 x 3.5", "8.5 x 11", "11 x 17", "5 x 7"];
-  const materials = ["16pt Gloss Cover", "100lb Gloss Text", "14pt Matte Cover", "80lb Uncoated Text"];
-  const sidesPrinted = ["4/4", "4/1", "4/0", "1/1", "1/0"];
-  const pmsColors = ["0", "1", "2", "3", "4"];
-  const coatings = ["No_Coating", "Aqueous Coating", "UV Coating", "Soft Touch"];
-  const thickness = ["1mil", "2mil", "3mil"]; // Removed empty string value
+  const materials = ["Other", "16pt Gloss Cover", "100lb Gloss Text", "14pt Matte Cover", "80lb Uncoated Text"];
+  const sidesPrinted = [
+    "0/0", "1/0", "2/0", "3/0", "4/0", "5/0", "6/0", "7/0", 
+    "1/1", "2/2", "3/3", "4/4", "5/5", "6/6", "7/7"
+  ];
+  const coatings = ["No_Coating", "Aqueous Coating", "UV Coating", "Lamination"];
   const sidesOptions = ["0", "1", "2"];
-  const coverages = ["100%", "80%", "60%", "40%", "20%"];
   const laminations = ["Matte_Lamination", "Glossy Lamination", "None"];
   const yesNo = ["Yes", "No"];
   const paperCosts = ["Current Price", "Custom Price"];
+  const materialUOMs = ["sheet", "M", "Roll"];
   
   return (
     <Card className="p-4 bg-white shadow-sm">
@@ -100,6 +121,36 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
           </Select>
         </div>
 
+        {showMaterialCost && (
+          <>
+            <div className="form-group">
+              <Label htmlFor="materialCost">Material Cost</Label>
+              <Input
+                id="materialCost"
+                value={materialCost}
+                onChange={(e) => setMaterialCost(e.target.value)}
+                placeholder="Enter material cost"
+                type="number"
+                min="0"
+              />
+            </div>
+
+            <div className="form-group">
+              <Label htmlFor="materialUOM">UOM</Label>
+              <Select value={materialUOM} onValueChange={setMaterialUOM}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select UOM" />
+                </SelectTrigger>
+                <SelectContent>
+                  {materialUOMs.map(uom => (
+                    <SelectItem key={uom} value={uom}>{uom}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+
         <div className="form-group">
           <Label htmlFor="sidesPrinted">Sides Printed</Label>
           <Select value={productConfig.sidesPrinted} onValueChange={(value) => onConfigChange("sidesPrinted", value)}>
@@ -109,20 +160,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
             <SelectContent>
               {sidesPrinted.map(side => (
                 <SelectItem key={side} value={side}>{side}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="form-group">
-          <Label htmlFor="pmsColors">PMS Colours?</Label>
-          <Select value={productConfig.pmsColors} onValueChange={(value) => onConfigChange("pmsColors", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select PMS colors" />
-            </SelectTrigger>
-            <SelectContent>
-              {pmsColors.map(color => (
-                <SelectItem key={color} value={color}>{color} {color === "0" && "- Set to 0 if none"}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -142,75 +179,53 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
           </Select>
         </div>
 
-        <div className="form-group">
-          <Label htmlFor="thickness">Thickness (μm)</Label>
-          <Select value={productConfig.thickness} onValueChange={(value) => onConfigChange("thickness", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select thickness" />
-            </SelectTrigger>
-            <SelectContent>
-              {thickness.map(t => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {showCoatingFields && (
+          <div className="form-group">
+            <Label htmlFor="sidesCoated">Sides Coated</Label>
+            <Select value={productConfig.sidesCoated} onValueChange={(value) => onConfigChange("sidesCoated", value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select sides coated" />
+              </SelectTrigger>
+              <SelectContent>
+                {sidesOptions.map(side => (
+                  <SelectItem key={side} value={side}>{side}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
-        <div className="form-group">
-          <Label htmlFor="sidesCoated">Sides Coated</Label>
-          <Select value={productConfig.sidesCoated} onValueChange={(value) => onConfigChange("sidesCoated", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select sides coated" />
-            </SelectTrigger>
-            <SelectContent>
-              {sidesOptions.map(side => (
-                <SelectItem key={side} value={side}>{side}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {showLaminationFields && (
+          <>
+            <div className="form-group">
+              <Label htmlFor="lamination">Lamination</Label>
+              <Select value={productConfig.lamination} onValueChange={(value) => onConfigChange("lamination", value)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select lamination" />
+                </SelectTrigger>
+                <SelectContent>
+                  {laminations.map(lam => (
+                    <SelectItem key={lam} value={lam}>{lam.replace('_', ' ')}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-        <div className="form-group">
-          <Label htmlFor="coverage">Coverage</Label>
-          <Select value={productConfig.coverage} onValueChange={(value) => onConfigChange("coverage", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select coverage" />
-            </SelectTrigger>
-            <SelectContent>
-              {coverages.map(coverage => (
-                <SelectItem key={coverage} value={coverage}>{coverage}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="form-group">
-          <Label htmlFor="lamination">Lamination</Label>
-          <Select value={productConfig.lamination} onValueChange={(value) => onConfigChange("lamination", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select lamination" />
-            </SelectTrigger>
-            <SelectContent>
-              {laminations.map(lam => (
-                <SelectItem key={lam} value={lam}>{lam.replace('_', ' ')}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="form-group">
-          <Label htmlFor="sidesLaminated">Sides Laminated</Label>
-          <Select value={productConfig.sidesLaminated} onValueChange={(value) => onConfigChange("sidesLaminated", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select sides laminated" />
-            </SelectTrigger>
-            <SelectContent>
-              {sidesOptions.map(side => (
-                <SelectItem key={side} value={side}>{side}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            <div className="form-group">
+              <Label htmlFor="sidesLaminated">Sides Laminated</Label>
+              <Select value={productConfig.sidesLaminated} onValueChange={(value) => onConfigChange("sidesLaminated", value)}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select sides laminated" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sidesOptions.map(side => (
+                    <SelectItem key={side} value={side}>{side}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
 
         <div className="form-group">
           <Label htmlFor="ganging">Ganging</Label>

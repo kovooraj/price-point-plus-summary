@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,6 @@ interface RollLabelsState {
   windDirection: string;
   labelsPerCoreOption: string;
   perforation: string;
-  freeShipping: string;
   cutMethod: string;
   purchaseDie: string;
   quantity: number;
@@ -59,7 +59,6 @@ const RollLabelsCalculator: React.FC = () => {
     windDirection: "WD 2 = Bottom off First",
     labelsPerCoreOption: "Does Not Matter",
     perforation: "No",
-    freeShipping: "No",
     cutMethod: "Does_Not_M",
     purchaseDie: "",
     quantity: 1000,
@@ -93,20 +92,22 @@ const RollLabelsCalculator: React.FC = () => {
   };
   
   const handleAddCustomQty = () => {
-    const newItem: OrderItem = {
+    if (state.quantity <= 0) {
+      toast({
+        title: "Invalid quantity",
+        description: "Please enter a valid quantity greater than 0",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    handleAddToSummary({
       id: `custom-${Date.now()}`,
       quantity: state.quantity,
       totalCost: state.cost,
       totalPrice: state.price,
       currency: state.currency,
       versions: state.isSets ? state.versions : undefined
-    };
-    
-    setOrderItems([...orderItems, newItem]);
-    
-    toast({
-      title: "Item added",
-      description: `Added ${state.quantity} labels to order summary`,
     });
   };
 
@@ -344,22 +345,6 @@ const RollLabelsCalculator: React.FC = () => {
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Perforation" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="No">No</SelectItem>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="freeShipping">Free Shipping</Label>
-              <Select 
-                value={state.freeShipping} 
-                onValueChange={(value) => handleInputChange("freeShipping", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Free Shipping" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="No">No</SelectItem>
