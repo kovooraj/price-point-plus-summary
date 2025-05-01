@@ -17,6 +17,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
   const [materialCost, setMaterialCost] = useState("");
   const [showCoatingFields, setShowCoatingFields] = useState(false);
   const [showLaminationFields, setShowLaminationFields] = useState(false);
+  const [paperCostUOM, setPaperCostUOM] = useState("sheet");
 
   useEffect(() => {
     // Update visibility based on selected coating
@@ -241,16 +242,31 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         {!showMaterialCost && (
           <div className="form-group">
             <Label htmlFor="paperCost">Paper Cost</Label>
-            <Select value={productConfig.paperCost} onValueChange={(value) => onConfigChange("paperCost", value)}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select paper cost" />
-              </SelectTrigger>
-              <SelectContent>
-                {paperCosts.map(cost => (
-                  <SelectItem key={cost} value={cost}>{cost}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              <Select 
+                value={productConfig.paperCost} 
+                onValueChange={(value) => onConfigChange("paperCost", value)}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Select paper cost" />
+                </SelectTrigger>
+                <SelectContent>
+                  {paperCosts.map(cost => (
+                    <SelectItem key={cost} value={cost}>{cost}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={paperCostUOM} onValueChange={setPaperCostUOM}>
+                <SelectTrigger className="w-28">
+                  <SelectValue placeholder="UOM" />
+                </SelectTrigger>
+                <SelectContent>
+                  {materialUOMs.map(uom => (
+                    <SelectItem key={uom} value={uom}>{uom}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         )}
       </div>
