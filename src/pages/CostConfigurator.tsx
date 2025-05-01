@@ -48,7 +48,8 @@ const CostConfigurator = () => {
     creditCardExpense: 0
   });
 
-  const [selectedMaterial, setSelectedMaterial] = useState("16mil Yupo (Durable) Cover - 29.5\" x 20.8\"");
+  // Fix the escaping by using single quotes for the outer string
+  const [selectedMaterial, setSelectedMaterial] = useState('16mil Yupo (Durable) Cover - 29.5" x 20.8"');
   
   const handleSave = (tab: string) => {
     toast({
@@ -85,7 +86,8 @@ const CostConfigurator = () => {
                     <SelectValue placeholder="Select material" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="16mil Yupo (Durable) Cover - 29.5\" x 20.8\"">16mil Yupo (Durable) Cover - 29.5" x 20.8"</SelectItem>
+                    {/* Fix the string escaping by using single quotes for the outer strings */}
+                    <SelectItem value='16mil Yupo (Durable) Cover - 29.5" x 20.8"'>16mil Yupo (Durable) Cover - 29.5" x 20.8"</SelectItem>
                     <SelectItem value="100# Gloss Text">100# Gloss Text</SelectItem>
                     <SelectItem value="80lb Uncoated Text">80lb Uncoated Text</SelectItem>
                   </SelectContent>
