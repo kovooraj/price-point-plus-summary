@@ -102,11 +102,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Button className="w-full mb-2" onClick={onDownloadQuote}>
           <Download className="h-4 w-4 mr-2" /> Download Quote
         </Button>
-        <Button className="w-full mb-2" variant="outline" onClick={onConvertToDocket}>
-          <CreditCard className="h-4 w-4 mr-2" /> Convert to Docket
-        </Button>
-        <Button className="w-full" variant="cta" onClick={onSyncToSalesforce}>
+        <Button className="w-full mb-2" variant="cta" onClick={onSyncToSalesforce}>
           <ArrowRightLeft className="h-4 w-4 mr-2" /> Sync with Salesforce
+        </Button>
+        <Button className="w-full" variant="outline" onClick={onConvertToDocket}>
+          <CreditCard className="h-4 w-4 mr-2" /> Convert to Docket
         </Button>
       </div>
     </Card>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -221,30 +220,28 @@ const PrintCalculator: React.FC = () => {
                 onRemoveItem={handleRemoveFromSummary} 
                 isSets={isSets} 
               />
-              {renderSalesforceButton()}
+              <Button 
+                variant="cta" 
+                className="w-full mt-2"
+                onClick={() => setIsSalesforceDialogOpen(true)}
+              >
+                <ArrowRightLeft className="h-5 w-5 mr-2" />
+                Sync with Salesforce
+              </Button>
             </div>
           </div>
         </TabsContent>
         
         <TabsContent value="rolllabels" className="mt-4">
           <RollLabelsCalculator />
-          <div className="flex justify-end mt-4">
-            {renderSalesforceButton()}
-          </div>
         </TabsContent>
         
         <TabsContent value="foldingcartons" className="mt-4">
           <FoldingCartonsCalculator />
-          <div className="flex justify-end mt-4">
-            {renderSalesforceButton()}
-          </div>
         </TabsContent>
         
         <TabsContent value="flexiblepackaging" className="mt-4">
           <FlexiblePackagingCalculator />
-          <div className="flex justify-end mt-4">
-            {renderSalesforceButton()}
-          </div>
         </TabsContent>
         
         <TabsContent value="custom" className="mt-4">

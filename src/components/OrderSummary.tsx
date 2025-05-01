@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Download, FileSpreadsheet, Trash2, Copy } from "lucide-react";
+import { Download, FileSpreadsheet, Trash2, Copy, ArrowRightLeft } from "lucide-react";
 import { OrderItem, ProductConfig } from "./PrintCalculator";
 import { formatProductSpec } from "../utils/formatters";
 import QuotePopupDialog, { CustomerDetails } from "./QuotePopupDialog";
@@ -253,6 +253,13 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           onClick={() => setQuoteDialogOpen(true)}
         >
           <Download className="h-4 w-4" /> Download Quote
+        </Button>
+        
+        <Button 
+          className="w-full bg-cta text-cta-foreground hover:bg-cta/90 flex items-center justify-center gap-2"
+          onClick={() => {}}
+        >
+          <ArrowRightLeft className="h-4 w-4" /> Sync with Salesforce
         </Button>
         
         {showSpecSheet && (
