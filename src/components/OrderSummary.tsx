@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,19 +12,23 @@ import { generateQuotePDF } from "../utils/generateQuote";
 import OrderNotes from "./OrderNotes";
 import { useToast } from "@/components/ui/use-toast";
 import SalesforceDialog from "./custom-order/SalesforceDialog";
+
 interface OrderSummaryProps {
   productConfig: ProductConfig;
   orderItems: OrderItem[];
   onRemoveItem: (id: string) => void;
   isSets?: boolean;
   showSpecSheet?: boolean;
+  includeDieCost?: boolean;
 }
+
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   productConfig,
   orderItems,
   onRemoveItem,
   isSets = false,
-  showSpecSheet = true
+  showSpecSheet = true,
+  includeDieCost = false
 }) => {
   const {
     toast
@@ -32,9 +37,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [specSheetDialogOpen, setSpecSheetDialogOpen] = useState(false);
   const [notes, setNotes] = useState("");
   const [isSalesforceDialogOpen, setIsSalesforceDialogOpen] = useState(false);
-  const [includeDieCost, setIncludeDieCost] = useState(false);
+  
   const totalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
+  const dieCost = includeDieCost ? 500 : 0;
+  const grandTotal = totalPrice + dieCost;
   const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
+  
   const handleDownloadQuote = (customerDetails: CustomerDetails) => {
     generateQuotePDF({
       productConfig,
@@ -44,6 +52,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       date: new Date().toLocaleDateString()
     });
   };
+  
   const handleDownloadSpecSheet = (customerDetails: CustomerDetails) => {
     generateQuotePDF({
       productConfig,
@@ -59,6 +68,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   // - Show if there's only 1 item
   // - Show if sets are enabled
   const shouldShowTotalPrice = orderItems.length === 1 || isSets;
+  
   const copyOrderSummary = () => {
     // Generate a text representation of the order summary
     let summaryText = `ORDER SUMMARY\n\n`;
@@ -84,8 +94,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       });
       summaryText += `\nTotal Items: ${orderItems.length}\n`;
       if (shouldShowTotalPrice) {
-        summaryText += `Total Price: ${orderItems[0].currency} ${totalPrice.toFixed(2)}\n`;
-        summaryText += `Unit Price: ${orderItems[0].currency} ${(totalPrice / totalQuantity).toFixed(5)} each\n`;
+        if (includeDieCost) {
+          summaryText += `Die Cost: ${orderItems[0]?.currency || "CAD"} 500.00\n`;
+        }
+        summaryText += `Total Price: ${orderItems[0]?.currency || "CAD"} ${grandTotal.toFixed(2)}\n`;
+        summaryText += `Unit Price: ${orderItems[0]?.currency || "CAD"} ${(grandTotal / totalQuantity).toFixed(5)} each\n`;
       }
     } else {
       summaryText += "No quantities added yet\n";
@@ -106,7 +119,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       });
     });
   };
-  return <Card className="p-4 bg-white shadow-sm sticky top-4 relative py-[12px]">
+  
+  return <Card className="p-4 bg-background shadow-sm sticky top-4 relative py-[12px]">
       <button onClick={copyOrderSummary} className="order-summary-copy-btn" aria-label="Copy order summary to clipboard" title="Copy order summary to clipboard">
         <Copy className="h-4 w-4" />
       </button>
@@ -140,7 +154,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               <span className="text-gray-600">Lamination:</span>
               <span className="font-medium">{productConfig.lamination.replace("_", " ")}</span>
             </li>}
-          {productConfig.option === "Die Cut" && includeDieCost && <li className="flex justify-between">
+          {includeDieCost && <li className="flex justify-between">
               <span className="text-gray-600">Die Cost:</span>
               <span className="font-medium">$500.00</span>
             </li>}
@@ -187,17 +201,24 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <span>{orderItems.length}</span>
         </div>
         
+        {includeDieCost && orderItems.length > 0 && <div className="flex justify-between items-center">
+          <span className="font-semibold">Die Cost:</span>
+          <span className="text-print-primary font-medium">
+            {orderItems[0]?.currency || "CAD"} 500.00
+          </span>
+        </div>}
+        
         {shouldShowTotalPrice && <div className="flex justify-between items-center">
             <span className="font-semibold">Total Price:</span>
             <span className="text-xl font-bold text-print-primary">
-              {orderItems.length > 0 ? `${orderItems[0].currency} ${totalPrice.toFixed(2)}` : "CAD 0.00"}
+              {orderItems.length > 0 ? `${orderItems[0].currency} ${grandTotal.toFixed(2)}` : "CAD 0.00"}
             </span>
           </div>}
         
         {orderItems.length > 0 && shouldShowTotalPrice && <div className="flex justify-between items-center">
             <span className="font-semibold">Unit Price:</span>
             <span className="text-sm text-gray-600">
-              {orderItems.length > 0 && totalPrice > 0 && totalQuantity > 0 ? `${orderItems[0].currency} ${(totalPrice / totalQuantity).toFixed(5)} each` : "CAD 0.00"}
+              {orderItems.length > 0 && grandTotal > 0 && totalQuantity > 0 ? `${orderItems[0].currency} ${(grandTotal / totalQuantity).toFixed(5)} each` : "CAD 0.00"}
             </span>
           </div>}
       </div>
@@ -223,4 +244,5 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       <SalesforceDialog isOpen={isSalesforceDialogOpen} onOpenChange={setIsSalesforceDialogOpen} />
     </Card>;
 };
+
 export default OrderSummary;

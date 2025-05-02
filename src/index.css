@@ -256,7 +256,8 @@ input.bg-blue-50,
   border-color: var(--dark-field-border);
 }
 
-.dark .bg-white.shadow-sm {
+.dark .bg-white.shadow-sm,
+.dark .bg-background.shadow-sm {
   background-color: var(--dark-bg);
   color: #E1E1E6;
 }
@@ -473,4 +474,24 @@ input.bg-blue-50,
 
 .dark .mode-toggle {
   @apply hover:bg-sidebar-accent;
+}
+
+/* Salesforce button styling */
+button.bg-cta {
+  background-color: var(--cta);
+}
+
+.dark button[data-radix-tabs-trigger]:not([data-state=active]) {
+  background-color: #1A1F2C;
+}
+
+/* Sync with Salesforce button styling */
+button.bg-cta, 
+button.w-full.bg-cta {
+  background-color: var(--salesforce-blue);
+}
+
+button.bg-cta:hover, 
+button.w-full.bg-cta:hover {
+  background-color: rgba(15, 160, 206, 0.9);
 }

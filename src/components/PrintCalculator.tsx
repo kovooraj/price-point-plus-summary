@@ -88,6 +88,7 @@ const PrintCalculator: React.FC = () => {
   const [isQuotesDialogOpen, setIsQuotesDialogOpen] = useState(false);
   const [isSalesforceDialogOpen, setIsSalesforceDialogOpen] = useState(false);
   const [isSets, setIsSets] = useState(false);
+  const [includeDieCost, setIncludeDieCost] = useState(false);
   
   const handleAddToSummary = (item: OrderItem) => {
     const newItem = {
@@ -148,6 +149,10 @@ const PrintCalculator: React.FC = () => {
       [field]: value
     });
   };
+
+  const handleDieCostChange = (checked: boolean) => {
+    setIncludeDieCost(checked);
+  };
   
   return <div className="container mx-auto p-4 px-[60px]">
       <div className="flex justify-between items-center mb-4">
@@ -179,7 +184,12 @@ const PrintCalculator: React.FC = () => {
         <TabsContent value="commercial" className="mt-4">
           <div className="print-calculator-layout">
             <div className="main-content space-y-6">
-              <ProductForm productConfig={productConfig} onConfigChange={handleConfigChange} />
+              <ProductForm 
+                productConfig={productConfig} 
+                onConfigChange={handleConfigChange} 
+                onDieCostChange={handleDieCostChange}
+                includeDieCost={includeDieCost}
+              />
 
               <GlobalPriceMarkup 
                 markup={{
@@ -195,7 +205,7 @@ const PrintCalculator: React.FC = () => {
                 onAddCustomQty={handleAddCustomQty}
               />
 
-              {!isSets && <Card className="p-4">
+              {!isSets && <Card className="p-4 bg-background">
                   <h2 className="section-title">Quantity Variations</h2>
                   <QuantityTable onAddToSummary={handleAddToSummary} currency={markup.currency} />
                 </Card>}
@@ -206,7 +216,8 @@ const PrintCalculator: React.FC = () => {
                 productConfig={productConfig} 
                 orderItems={orderSummary} 
                 onRemoveItem={handleRemoveFromSummary} 
-                isSets={isSets} 
+                isSets={isSets}
+                includeDieCost={includeDieCost}
               />
             </div>
           </div>

@@ -10,27 +10,28 @@ import { Checkbox } from "@/components/ui/checkbox";
 interface ProductFormProps {
   productConfig: ProductConfig;
   onConfigChange: (field: keyof ProductConfig, value: string) => void;
+  onDieCostChange?: (checked: boolean) => void;
+  includeDieCost?: boolean;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange }) => {
+const ProductForm: React.FC<ProductFormProps> = ({ 
+  productConfig, 
+  onConfigChange,
+  onDieCostChange,
+  includeDieCost = false
+}) => {
   const [showMaterialCost, setShowMaterialCost] = useState(productConfig.material === "Other");
-  const [materialUOM, setMaterialUOM] = useState("sheet");
-  const [materialCost, setMaterialCost] = useState("");
   const [showCoatingFields, setShowCoatingFields] = useState(false);
-  const [showLaminationFields, setShowLaminationFields] = useState(false);
   const [showFoldingFields, setShowFoldingFields] = useState(false);
   const [showShippedSize, setShowShippedSize] = useState(false);
-  const [includeDieCost, setIncludeDieCost] = useState(false);
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
   useEffect(() => {
     // Update visibility based on selected coating
     const isAqOrUV = productConfig.coating === "Aqueous Coating" || productConfig.coating === "UV Coating";
-    const isLamination = productConfig.coating === "Lamination";
     
     setShowCoatingFields(isAqOrUV);
-    setShowLaminationFields(isLamination);
   }, [productConfig.coating]);
 
   useEffect(() => {
@@ -66,8 +67,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
   };
 
   const handleDieCostChange = (checked: boolean) => {
-    setIncludeDieCost(checked);
-    // Logic to add die cost to order summary would go in the parent component
+    if (onDieCostChange) {
+      onDieCostChange(checked);
+    }
   };
 
   const productTypes = ["Flyers", "Brochures", "Business Cards", "Posters"];
@@ -77,14 +79,19 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
     "0/0", "1/0", "2/0", "3/0", "4/0", "5/0", "6/0", "7/0", 
     "1/1", "2/2", "3/3", "4/4", "5/5", "6/6", "7/7"
   ];
-  const coatings = ["No_Coating", "Aqueous Coating", "UV Coating", "Lamination"];
+  const coatings = [
+    "No_Coating", 
+    "Aqueous Coating", 
+    "UV Coating", 
+    "Gloss Lamination", 
+    "Matte Lamination", 
+    "Soft Touch Lamination"
+  ];
   const sidesOptions = ["0", "1", "2"];
-  const laminations = ["Matte_Lamination", "Glossy Lamination", "None"];
   const foldingTypes = ["half fold", "3 panel fold", "z fold", "gate fold", "accordion fold", "4 page fold"];
-  const materialUOMs = ["sheet", "M", "Roll"];
   
   return (
-    <Card className="p-4 bg-white shadow-sm">
+    <Card className="p-4 bg-background shadow-sm">
       <h2 className="section-title">Product Configuration</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -158,33 +165,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
           </Select>
         </div>
 
-        {showMaterialCost && (
-          <div className="form-group">
-            <Label htmlFor="materialCost">Material Cost</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="materialCost"
-                value={materialCost}
-                onChange={(e) => setMaterialCost(e.target.value)}
-                placeholder="Enter material cost"
-                type="number"
-                min="0"
-                className="flex-1"
-              />
-              <Select value={materialUOM} onValueChange={setMaterialUOM}>
-                <SelectTrigger className="w-28">
-                  <SelectValue placeholder="UOM" />
-                </SelectTrigger>
-                <SelectContent>
-                  {materialUOMs.map(uom => (
-                    <SelectItem key={uom} value={uom}>{uom}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-
         <div className="form-group">
           <Label htmlFor="sidesPrinted">Sides Printed</Label>
           <Select value={productConfig.sidesPrinted} onValueChange={(value) => onConfigChange("sidesPrinted", value)}>
@@ -227,38 +207,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
               </SelectContent>
             </Select>
           </div>
-        )}
-
-        {showLaminationFields && (
-          <>
-            <div className="form-group">
-              <Label htmlFor="lamination">Lamination</Label>
-              <Select value={productConfig.lamination} onValueChange={(value) => onConfigChange("lamination", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select lamination" />
-                </SelectTrigger>
-                <SelectContent>
-                  {laminations.map(lam => (
-                    <SelectItem key={lam} value={lam}>{lam.replace('_', ' ')}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="form-group">
-              <Label htmlFor="sidesLaminated">Sides Laminated</Label>
-              <Select value={productConfig.sidesLaminated} onValueChange={(value) => onConfigChange("sidesLaminated", value)}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select sides laminated" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sidesOptions.map(side => (
-                    <SelectItem key={side} value={side}>{side}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </>
         )}
 
         <div className="form-group">
