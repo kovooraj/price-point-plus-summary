@@ -106,7 +106,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       });
     });
   };
-  return <Card className="p-4 bg-white shadow-sm sticky top-4 relative py-[18px]">
+  return <Card className="p-4 bg-white shadow-sm sticky top-4 relative py-[13px]">
       <button onClick={copyOrderSummary} className="order-summary-copy-btn" aria-label="Copy order summary to clipboard" title="Copy order summary to clipboard">
         <Copy className="h-4 w-4" />
       </button>
