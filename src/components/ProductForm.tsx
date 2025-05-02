@@ -261,36 +261,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
           </>
         )}
 
-        {!showMaterialCost && (
-          <div className="form-group">
-            <Label htmlFor="paperCost">Paper Cost</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                id="paperCost"
-                type="number"
-                min="0"
-                placeholder="Enter paper cost"
-                value={productConfig.paperCost}
-                onChange={(e) => onConfigChange("paperCost", e.target.value)}
-                className="flex-1"
-              />
-              <Select 
-                value={materialUOM}
-                onValueChange={setMaterialUOM}
-              >
-                <SelectTrigger className="w-28">
-                  <SelectValue placeholder="UOM" />
-                </SelectTrigger>
-                <SelectContent>
-                  {materialUOMs.map(uom => (
-                    <SelectItem key={uom} value={uom}>{uom}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-
         <div className="form-group">
           <Label htmlFor="option">Option(s)</Label>
           <Select value={productConfig.option} onValueChange={(value) => onConfigChange("option", value)}>

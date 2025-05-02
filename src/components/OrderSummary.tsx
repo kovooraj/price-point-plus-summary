@@ -11,6 +11,7 @@ import QuotePopupDialog, { CustomerDetails } from "./QuotePopupDialog";
 import { generateQuotePDF } from "../utils/generateQuote";
 import OrderNotes from "./OrderNotes";
 import { useToast } from "@/components/ui/use-toast";
+import SalesforceDialog from "./custom-order/SalesforceDialog";
 
 interface OrderSummaryProps {
   productConfig: ProductConfig;
@@ -31,6 +32,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
   const [specSheetDialogOpen, setSpecSheetDialogOpen] = useState(false);
   const [notes, setNotes] = useState("");
+  const [isSalesforceDialogOpen, setIsSalesforceDialogOpen] = useState(false);
+  const [includeDieCost, setIncludeDieCost] = useState(false);
 
   const totalPrice = orderItems.reduce((sum, item) => sum + item.totalPrice, 0);
   const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -164,6 +167,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
               <span className="font-medium">{productConfig.lamination.replace("_", " ")}</span>
             </li>
           )}
+          {productConfig.option === "Die Cut" && includeDieCost && (
+            <li className="flex justify-between">
+              <span className="text-gray-600">Die Cost:</span>
+              <span className="font-medium">$500.00</span>
+            </li>
+          )}
         </ul>
       </div>
       
@@ -257,7 +266,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         
         <Button 
           className="w-full bg-cta text-cta-foreground hover:bg-cta/90 flex items-center justify-center gap-2"
-          onClick={() => {}}
+          onClick={() => setIsSalesforceDialogOpen(true)}
         >
           <ArrowRightLeft className="h-4 w-4" /> Sync with Salesforce
         </Button>
@@ -282,6 +291,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         open={specSheetDialogOpen} 
         onOpenChange={setSpecSheetDialogOpen}
         onSubmit={handleDownloadSpecSheet}
+      />
+      
+      <SalesforceDialog 
+        isOpen={isSalesforceDialogOpen} 
+        onOpenChange={setIsSalesforceDialogOpen} 
       />
     </Card>
   );

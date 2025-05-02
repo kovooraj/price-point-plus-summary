@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, ArrowRightLeft } from "lucide-react";
+import { History } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
 import GlobalPriceMarkup from "./GlobalPriceMarkup";
@@ -164,14 +164,6 @@ const PrintCalculator: React.FC = () => {
               <QuotesTab />
             </DialogContent>
           </Dialog>
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2 dark:bg-[#0FA0CE] dark:text-white dark:hover:bg-[#0FA0CE]/90"
-            onClick={() => setIsSalesforceDialogOpen(true)}
-          >
-            <ArrowRightLeft className="h-5 w-5" />
-            Sync with Salesforce
-          </Button>
         </div>
       </div>
       

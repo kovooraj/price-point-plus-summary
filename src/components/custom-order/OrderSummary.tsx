@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, CreditCard, ArrowRightLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import type { JobDetails, Segment } from '../CustomOrderTab';
+import SalesforceDialog from './SalesforceDialog';
 
 interface OrderSummaryProps {
   jobDetails: JobDetails;
@@ -23,9 +24,10 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   showCostBreakdown,
   onToggleCostBreakdown,
   onDownloadQuote,
-  onConvertToDocket,
-  onSyncToSalesforce
+  onConvertToDocket
 }) => {
+  const [isSalesforceDialogOpen, setIsSalesforceDialogOpen] = useState(false);
+  
   // Helper function to render a summary row
   const SummaryRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
     <div className="summary-item">
@@ -102,13 +104,18 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Button className="w-full mb-2" onClick={onDownloadQuote}>
           <Download className="h-4 w-4 mr-2" /> Download Quote
         </Button>
-        <Button className="w-full mb-2" variant="cta" onClick={onSyncToSalesforce}>
+        <Button className="w-full mb-2" variant="cta" onClick={() => setIsSalesforceDialogOpen(true)}>
           <ArrowRightLeft className="h-4 w-4 mr-2" /> Sync with Salesforce
         </Button>
         <Button className="w-full" variant="outline" onClick={onConvertToDocket}>
           <CreditCard className="h-4 w-4 mr-2" /> Convert to Docket
         </Button>
       </div>
+      
+      <SalesforceDialog 
+        isOpen={isSalesforceDialogOpen} 
+        onOpenChange={setIsSalesforceDialogOpen} 
+      />
     </Card>
   );
 };
