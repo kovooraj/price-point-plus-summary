@@ -112,7 +112,7 @@ export const AppSidebar: React.FC = () => {
             </Button>
             
             {/* Sidebar collapse button */}
-            <Button onClick={toggleSidebar} variant="ghost" size={isCollapsed ? "icon" : "sm"} className="">
+            <Button onClick={toggleSidebar} variant="ghost" size={isCollapsed ? "icon" : "sm"} className={`rounded-md text-sidebar-foreground hover:bg-sidebar-accent/20 hover:text-white flex items-center justify-start transition-colors ${isCollapsed ? "h-9 w-9" : "h-9"}`}>
               {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <>
                   <ChevronLeft className="h-4 w-4 mr-2" />
                   <span className="text-sm">Collapse</span>
