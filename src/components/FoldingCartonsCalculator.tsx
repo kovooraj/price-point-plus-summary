@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import OrderSummary from "./OrderSummary";
 import { OrderItem, ProductConfig } from "./PrintCalculator";
 import GlobalPriceMarkup from "./GlobalPriceMarkup";
-
 interface FoldingCartonsState {
   productType: string;
   flatSize: {
@@ -37,14 +35,15 @@ interface FoldingCartonsState {
   currency: string;
   isSets: boolean;
 }
-
 const FoldingCartonsCalculator: React.FC = () => {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const [state, setState] = useState<FoldingCartonsState>({
     productType: "Standard Tuck End Box",
     flatSize: {
       length: 14.6,
-      height: 13.125,
+      height: 13.125
     },
     material: "20pt Gloss C1S Cover (Indirect Food Grade)",
     sidesPrinted: "4/0",
@@ -65,19 +64,17 @@ const FoldingCartonsCalculator: React.FC = () => {
     currency: "CAD",
     isSets: false
   });
-  
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showCoatingFields, setShowCoatingFields] = useState(false);
   const [showLaminationFields, setShowLaminationFields] = useState(false);
   const [showGlueFlaps, setShowGlueFlaps] = useState(true);
   const [showGlueRequiredField, setShowGlueRequiredField] = useState(false);
-  
+
   // Effect to handle coating fields visibility
   React.useEffect(() => {
     const isAqOrUV = state.coating === "Gloss_AQ" || state.coating === "Matte_AQ" || state.coating === "UV_Coating";
     const isLamination = state.coating === "Gloss_Lamination" || state.coating === "Matte_Lamination";
-    
     setShowCoatingFields(isAqOrUV);
     setShowLaminationFields(isLamination);
   }, [state.coating]);
@@ -91,14 +88,12 @@ const FoldingCartonsCalculator: React.FC = () => {
   React.useEffect(() => {
     setShowGlueRequiredField(state.productType === "Custom Box");
   }, [state.productType]);
-
   const handleInputChange = (field: keyof FoldingCartonsState, value: any) => {
     setState({
       ...state,
       [field]: value
     });
   };
-
   const handleFlatSizeChange = (dimension: 'length' | 'height', value: number) => {
     setState({
       ...state,
@@ -108,7 +103,6 @@ const FoldingCartonsCalculator: React.FC = () => {
       }
     });
   };
-  
   const handleAddCustomQty = () => {
     const newItem: OrderItem = {
       id: Date.now().toString(),
@@ -118,19 +112,15 @@ const FoldingCartonsCalculator: React.FC = () => {
       currency: state.currency,
       versions: state.isSets ? state.versions : undefined
     };
-    
     setOrderItems([...orderItems, newItem]);
-    
     toast({
       title: "Item added",
-      description: `Added ${state.quantity} folding cartons to order summary`,
+      description: `Added ${state.quantity} folding cartons to order summary`
     });
   };
-
   const handleAddFromTable = (quantity: number) => {
     const cost = state.cost * quantity / state.quantity;
     const price = state.price * quantity / state.quantity;
-    
     const newItem: OrderItem = {
       id: Date.now().toString(),
       quantity: quantity,
@@ -139,36 +129,26 @@ const FoldingCartonsCalculator: React.FC = () => {
       currency: state.currency,
       versions: state.isSets ? state.versions : undefined
     };
-    
     setOrderItems([...orderItems, newItem]);
-    
     toast({
       title: "Item added",
-      description: `Added ${quantity} folding cartons to order summary`,
+      description: `Added ${quantity} folding cartons to order summary`
     });
   };
-  
   const handleRemoveItem = (id: string) => {
     setOrderItems(orderItems.filter(item => item.id !== id));
-    
     toast({
       title: "Item removed",
       description: "Item removed from order summary",
       variant: "destructive"
     });
   };
-  
   const standardQuantities = [100, 200, 300, 400, 500, 1000, 1500, 2000, 2500, 3000, 10000, 15000, 20000, 25000, 30000, 100000];
-
   const filteredQuantities = useMemo(() => {
     if (!searchQuery) return standardQuantities;
-    
     const query = searchQuery.toLowerCase();
-    return standardQuantities.filter(qty => 
-      qty.toString().includes(query)
-    );
+    return standardQuantities.filter(qty => qty.toString().includes(query));
   }, [searchQuery]);
-  
   const productConfig: ProductConfig = {
     productType: state.productType,
     option: "",
@@ -185,9 +165,8 @@ const FoldingCartonsCalculator: React.FC = () => {
     sidesLaminated: state.sidesLaminated,
     ganging: "Yes",
     paperCost: "",
-    foldingType: "",
+    foldingType: ""
   };
-  
   const markup = {
     customQuantity: state.quantity,
     customCost: state.cost,
@@ -195,7 +174,6 @@ const FoldingCartonsCalculator: React.FC = () => {
     currency: state.currency,
     versions: state.versions
   };
-
   const handleMarkupChange = (field: keyof typeof markup, value: number | string) => {
     if (field === "customQuantity") {
       handleInputChange("quantity", Number(value));
@@ -209,18 +187,26 @@ const FoldingCartonsCalculator: React.FC = () => {
       handleInputChange("cost", Number(value));
     }
   };
-
-  const coatingOptions = [
-    { value: "Gloss_AQ", label: "Gloss AQ" },
-    { value: "Matte_AQ", label: "Matte AQ" },
-    { value: "UV_Coating", label: "UV Coating" },
-    { value: "Gloss_Lamination", label: "Gloss Lamination" },
-    { value: "Matte_Lamination", label: "Matte Lamination" },
-    { value: "No_Coating", label: "No Coating" }
-  ];
-  
-  return (
-    <div className="print-calculator-layout">
+  const coatingOptions = [{
+    value: "Gloss_AQ",
+    label: "Gloss AQ"
+  }, {
+    value: "Matte_AQ",
+    label: "Matte AQ"
+  }, {
+    value: "UV_Coating",
+    label: "UV Coating"
+  }, {
+    value: "Gloss_Lamination",
+    label: "Gloss Lamination"
+  }, {
+    value: "Matte_Lamination",
+    label: "Matte Lamination"
+  }, {
+    value: "No_Coating",
+    label: "No Coating"
+  }];
+  return <div className="print-calculator-layout">
       <div className="main-content space-y-6">
         <Card className="p-4">
           <h2 className="section-title">Product Configuration</h2>
@@ -228,10 +214,7 @@ const FoldingCartonsCalculator: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="form-group">
               <Label htmlFor="printMethod">Print Method</Label>
-              <Select 
-                value={state.printMethod} 
-                onValueChange={(value) => handleInputChange("printMethod", value)}
-              >
+              <Select value={state.printMethod} onValueChange={value => handleInputChange("printMethod", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Print Method" />
                 </SelectTrigger>
@@ -244,10 +227,7 @@ const FoldingCartonsCalculator: React.FC = () => {
 
             <div className="form-group">
               <Label htmlFor="productType">Product Type</Label>
-              <Select 
-                value={state.productType} 
-                onValueChange={(value) => handleInputChange("productType", value)}
-              >
+              <Select value={state.productType} onValueChange={value => handleInputChange("productType", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Product Type" />
                 </SelectTrigger>
@@ -264,32 +244,17 @@ const FoldingCartonsCalculator: React.FC = () => {
             
             <div className="form-group">
               <Label>Flat Size - Length (in)</Label>
-              <Input 
-                type="number" 
-                step="0.001"
-                value={state.flatSize.length} 
-                onChange={(e) => handleFlatSizeChange("length", parseFloat(e.target.value) || 0)}
-                className="bg-background"
-              />
+              <Input type="number" step="0.001" value={state.flatSize.length} onChange={e => handleFlatSizeChange("length", parseFloat(e.target.value) || 0)} className="bg-background" />
             </div>
             
             <div className="form-group">
               <Label>Flat Size - Height (in)</Label>
-              <Input 
-                type="number" 
-                step="0.001"
-                value={state.flatSize.height} 
-                onChange={(e) => handleFlatSizeChange("height", parseFloat(e.target.value) || 0)}
-                className="bg-background"
-              />
+              <Input type="number" step="0.001" value={state.flatSize.height} onChange={e => handleFlatSizeChange("height", parseFloat(e.target.value) || 0)} className="bg-background" />
             </div>
             
             <div className="form-group">
               <Label htmlFor="material">Material</Label>
-              <Select 
-                value={state.material} 
-                onValueChange={(value) => handleInputChange("material", value)}
-              >
+              <Select value={state.material} onValueChange={value => handleInputChange("material", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Material" />
                 </SelectTrigger>
@@ -303,10 +268,7 @@ const FoldingCartonsCalculator: React.FC = () => {
             
             <div className="form-group">
               <Label htmlFor="sidesPrinted">Sides Printed</Label>
-              <Select 
-                value={state.sidesPrinted} 
-                onValueChange={(value) => handleInputChange("sidesPrinted", value)}
-              >
+              <Select value={state.sidesPrinted} onValueChange={value => handleInputChange("sidesPrinted", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Sides Printed" />
                 </SelectTrigger>
@@ -321,10 +283,7 @@ const FoldingCartonsCalculator: React.FC = () => {
             
             <div className="form-group">
               <Label htmlFor="pmsColors">PMS Colors</Label>
-              <Select 
-                value={state.pmsColors} 
-                onValueChange={(value) => handleInputChange("pmsColors", value)}
-              >
+              <Select value={state.pmsColors} onValueChange={value => handleInputChange("pmsColors", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select PMS Colors" />
                 </SelectTrigger>
@@ -339,28 +298,19 @@ const FoldingCartonsCalculator: React.FC = () => {
             
             <div className="form-group">
               <Label htmlFor="coating">Coating & Finishing</Label>
-              <Select 
-                value={state.coating} 
-                onValueChange={(value) => handleInputChange("coating", value)}
-              >
+              <Select value={state.coating} onValueChange={value => handleInputChange("coating", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Coating" />
                 </SelectTrigger>
                 <SelectContent>
-                  {coatingOptions.map(option => (
-                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
-                  ))}
+                  {coatingOptions.map(option => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             
-            {showCoatingFields && (
-              <div className="form-group">
+            {showCoatingFields && <div className="form-group">
                 <Label htmlFor="sidesCoated">Sides Coated</Label>
-                <Select 
-                  value={state.sidesCoated} 
-                  onValueChange={(value) => handleInputChange("sidesCoated", value)}
-                >
+                <Select value={state.sidesCoated} onValueChange={value => handleInputChange("sidesCoated", value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select Sides Coated" />
                   </SelectTrigger>
@@ -370,17 +320,12 @@ const FoldingCartonsCalculator: React.FC = () => {
                     <SelectItem value="2">2</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            )}
+              </div>}
             
-            {showLaminationFields && (
-              <>
+            {showLaminationFields && <>
                 <div className="form-group">
                   <Label htmlFor="lamination">Lamination Type</Label>
-                  <Select 
-                    value={state.lamination} 
-                    onValueChange={(value) => handleInputChange("lamination", value)}
-                  >
+                  <Select value={state.lamination} onValueChange={value => handleInputChange("lamination", value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Lamination" />
                     </SelectTrigger>
@@ -393,10 +338,7 @@ const FoldingCartonsCalculator: React.FC = () => {
 
                 <div className="form-group">
                   <Label htmlFor="sidesLaminated">Sides Laminated</Label>
-                  <Select 
-                    value={state.sidesLaminated} 
-                    onValueChange={(value) => handleInputChange("sidesLaminated", value)}
-                  >
+                  <Select value={state.sidesLaminated} onValueChange={value => handleInputChange("sidesLaminated", value)}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select Sides Laminated" />
                     </SelectTrigger>
@@ -407,15 +349,11 @@ const FoldingCartonsCalculator: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-              </>
-            )}
+              </>}
             
             <div className="form-group">
               <Label htmlFor="dieRequired">Die Required?</Label>
-              <Select 
-                value={state.dieRequired} 
-                onValueChange={(value) => handleInputChange("dieRequired", value)}
-              >
+              <Select value={state.dieRequired} onValueChange={value => handleInputChange("dieRequired", value)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Die Required" />
                 </SelectTrigger>
@@ -426,13 +364,9 @@ const FoldingCartonsCalculator: React.FC = () => {
               </Select>
             </div>
             
-            {showGlueRequiredField && (
-              <div className="form-group">
+            {showGlueRequiredField && <div className="form-group">
                 <Label htmlFor="glueRequired">Glue Required?</Label>
-                <Select 
-                  value={state.glueRequired} 
-                  onValueChange={(value) => handleInputChange("glueRequired", value)}
-                >
+                <Select value={state.glueRequired} onValueChange={value => handleInputChange("glueRequired", value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select Glue Required" />
                   </SelectTrigger>
@@ -441,45 +375,24 @@ const FoldingCartonsCalculator: React.FC = () => {
                     <SelectItem value="No">No</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            )}
+              </div>}
             
-            {showGlueFlaps && (
-              <div className="form-group">
+            {showGlueFlaps && <div className="form-group">
                 <Label htmlFor="glueFlaps">Number of Glue Flaps</Label>
-                <Input 
-                  type="number" 
-                  value={state.glueFlaps} 
-                  onChange={(e) => handleInputChange("glueFlaps", parseInt(e.target.value) || 0)}
-                  className="bg-background"
-                />
-              </div>
-            )}
+                <Input type="number" value={state.glueFlaps} onChange={e => handleInputChange("glueFlaps", parseInt(e.target.value) || 0)} className="bg-background" />
+              </div>}
           </div>
         </Card>
 
-        <GlobalPriceMarkup 
-          markup={markup}
-          onMarkupChange={handleMarkupChange}
-          isSets={state.isSets}
-          onSetsChange={(checked) => handleInputChange("isSets", checked)}
-          onAddCustomQty={handleAddCustomQty}
-        />
+        <GlobalPriceMarkup markup={markup} onMarkupChange={handleMarkupChange} isSets={state.isSets} onSetsChange={checked => handleInputChange("isSets", checked)} onAddCustomQty={handleAddCustomQty} />
 
-        {!state.isSets && (
-          <Card className="p-4">
+        {!state.isSets && <Card className="p-4">
             <h2 className="section-title">Quantity Variations</h2>
             
             <div className="mb-4 flex items-center gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  type="text"
-                  placeholder="Search quantities..." 
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+                <Input type="text" placeholder="Search quantities..." className="pl-8" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
               </div>
             </div>
             
@@ -496,46 +409,30 @@ const FoldingCartonsCalculator: React.FC = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredQuantities.map((qty, index) => {
-                    const cost = (state.cost * qty / state.quantity).toFixed(2);
-                    const price = (state.price * qty / state.quantity).toFixed(2);
-                    const unitPrice = (parseFloat(price) / qty).toFixed(4);
-                    
-                    return (
-                      <TableRow key={qty} className={index % 2 === 0 ? "bg-muted/30" : ""}>
+                const cost = (state.cost * qty / state.quantity).toFixed(2);
+                const price = (state.price * qty / state.quantity).toFixed(2);
+                const unitPrice = (parseFloat(price) / qty).toFixed(4);
+                return <TableRow key={qty} className={index % 2 === 0 ? "bg-muted/30" : ""}>
                         <TableCell className="font-medium border-r">{qty.toLocaleString()}</TableCell>
                         <TableCell className="border-r">{cost}</TableCell>
                         <TableCell className="border-r font-semibold text-print-primary">{price}</TableCell>
                         <TableCell className="border-r">{unitPrice}</TableCell>
                         <TableCell>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="flex items-center gap-1 hover:bg-print-success hover:text-white hover:border-print-success transition-colors"
-                            onClick={() => handleAddFromTable(qty)}
-                          >
+                          <Button size="sm" variant="outline" className="flex items-center gap-1 hover:bg-print-success hover:text-white hover:border-print-success transition-colors" onClick={() => handleAddFromTable(qty)}>
                             <Plus className="h-4 w-4" /> Add
                           </Button>
                         </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      </TableRow>;
+              })}
                 </TableBody>
               </Table>
             </div>
-          </Card>
-        )}
+          </Card>}
       </div>
 
-      <div className="summary-content">
-        <OrderSummary
-          productConfig={productConfig}
-          orderItems={orderItems}
-          onRemoveItem={handleRemoveItem}
-          isSets={state.isSets}
-        />
+      <div className="summary-content py-0">
+        <OrderSummary productConfig={productConfig} orderItems={orderItems} onRemoveItem={handleRemoveItem} isSets={state.isSets} />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default FoldingCartonsCalculator;
