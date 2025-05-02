@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -48,6 +49,7 @@ export interface ProductConfig {
   sidesLaminated: string;
   ganging: string;
   paperCost: string;
+  foldingType?: string;
 }
 
 const PrintCalculator: React.FC = () => {
@@ -162,6 +164,14 @@ const PrintCalculator: React.FC = () => {
               <QuotesTab />
             </DialogContent>
           </Dialog>
+          <Button 
+            variant="outline" 
+            className="flex items-center gap-2 dark:bg-[#0FA0CE] dark:text-white dark:hover:bg-[#0FA0CE]/90"
+            onClick={() => setIsSalesforceDialogOpen(true)}
+          >
+            <ArrowRightLeft className="h-5 w-5" />
+            Sync with Salesforce
+          </Button>
         </div>
       </div>
       

@@ -61,7 +61,12 @@ const SalesforceDialog: React.FC<SalesforceDialogProps> = ({ isOpen, onOpenChang
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button variant="cta" onClick={handleSync} disabled={isLoading}>
+          <Button 
+            className="dark:bg-[#0FA0CE] dark:hover:bg-[#0FA0CE]/90" 
+            variant="cta" 
+            onClick={handleSync} 
+            disabled={isLoading}
+          >
             {isLoading ? "Syncing..." : (
               <>
                 <ArrowRightLeft className="h-4 w-4 mr-2" />

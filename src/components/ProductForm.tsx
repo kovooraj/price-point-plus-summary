@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ProductFormProps {
   productConfig: ProductConfig;
@@ -17,7 +18,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
   const [materialCost, setMaterialCost] = useState("");
   const [showCoatingFields, setShowCoatingFields] = useState(false);
   const [showLaminationFields, setShowLaminationFields] = useState(false);
-  const [paperCostUOM, setPaperCostUOM] = useState("sheet");
+  const [showFoldingFields, setShowFoldingFields] = useState(false);
+  const [showShippedSize, setShowShippedSize] = useState(false);
+  const [includeDieCost, setIncludeDieCost] = useState(false);
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
 
   useEffect(() => {
     // Update visibility based on selected coating
@@ -32,9 +37,41 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
     setShowMaterialCost(productConfig.material === "Other");
   }, [productConfig.material]);
 
+  useEffect(() => {
+    // Show folding type field if Folding is selected as an option
+    setShowFoldingFields(productConfig.option === "Folding");
+    // Show shipped size if Folding is selected
+    setShowShippedSize(productConfig.option === "Folding");
+  }, [productConfig.option]);
+
+  useEffect(() => {
+    // Parse current item size into width and height
+    if (productConfig.itemSize) {
+      const [w, h] = productConfig.itemSize.split(" x ");
+      setWidth(w || "");
+      setHeight(h || "");
+    }
+  }, []);
+
+  // Handle size change when width or height is updated
+  const handleSizeChange = (dimension: 'width' | 'height', value: string) => {
+    if (dimension === 'width') {
+      setWidth(value);
+    } else {
+      setHeight(value);
+    }
+    
+    const newSize = `${width === '' ? '0' : width} x ${height === '' ? '0' : height}`;
+    onConfigChange("itemSize", newSize);
+  };
+
+  const handleDieCostChange = (checked: boolean) => {
+    setIncludeDieCost(checked);
+    // Logic to add die cost to order summary would go in the parent component
+  };
+
   const productTypes = ["Flyers", "Brochures", "Business Cards", "Posters"];
   const options = ["None", "Rounded Corners", "Die Cut", "Folding"];
-  const sizes = ["8.5 x 3.5", "8.5 x 11", "11 x 17", "5 x 7"];
   const materials = ["Other", "16pt Gloss Cover", "100lb Gloss Text", "14pt Matte Cover", "80lb Uncoated Text"];
   const sidesPrinted = [
     "0/0", "1/0", "2/0", "3/0", "4/0", "5/0", "6/0", "7/0", 
@@ -43,8 +80,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
   const coatings = ["No_Coating", "Aqueous Coating", "UV Coating", "Lamination"];
   const sidesOptions = ["0", "1", "2"];
   const laminations = ["Matte_Lamination", "Glossy Lamination", "None"];
-  const yesNo = ["Yes", "No"];
-  const paperCosts = ["Current Price", "Custom Price"];
+  const foldingTypes = ["half fold", "3 panel fold", "z fold", "gate fold", "accordion fold", "4 page fold"];
   const materialUOMs = ["sheet", "M", "Roll"];
   
   return (
@@ -67,46 +103,46 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
         </div>
 
         <div className="form-group">
-          <Label htmlFor="option">Option(s)</Label>
-          <Select value={productConfig.option} onValueChange={(value) => onConfigChange("option", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select option" />
-            </SelectTrigger>
-            <SelectContent>
-              {options.map(option => (
-                <SelectItem key={option} value={option}>{option}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label htmlFor="width">Width</Label>
+          <Input
+            id="width"
+            type="number"
+            step="0.01"
+            value={width}
+            onChange={(e) => handleSizeChange('width', e.target.value)}
+            className="w-full"
+            placeholder="Enter width"
+          />
         </div>
 
         <div className="form-group">
-          <Label htmlFor="itemSize">Item Size</Label>
-          <Select value={productConfig.itemSize} onValueChange={(value) => onConfigChange("itemSize", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select size" />
-            </SelectTrigger>
-            <SelectContent>
-              {sizes.map(size => (
-                <SelectItem key={size} value={size}>{size}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label htmlFor="height">Height</Label>
+          <Input
+            id="height"
+            type="number"
+            step="0.01"
+            value={height}
+            onChange={(e) => handleSizeChange('height', e.target.value)}
+            className="w-full"
+            placeholder="Enter height"
+          />
         </div>
 
-        <div className="form-group">
-          <Label htmlFor="shippedSize">Shipped Size</Label>
-          <Select value={productConfig.shippedSize} onValueChange={(value) => onConfigChange("shippedSize", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select shipped size" />
-            </SelectTrigger>
-            <SelectContent>
-              {sizes.map(size => (
-                <SelectItem key={size} value={size}>{size}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {showShippedSize && (
+          <div className="form-group">
+            <Label htmlFor="shippedSize">Shipped Size</Label>
+            <Select value={productConfig.shippedSize} onValueChange={(value) => onConfigChange("shippedSize", value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select shipped size" />
+              </SelectTrigger>
+              <SelectContent>
+                {["8.5 x 3.5", "8.5 x 11", "11 x 17", "5 x 7"].map(size => (
+                  <SelectItem key={size} value={size}>{size}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         <div className="form-group">
           <Label htmlFor="material">Material</Label>
@@ -225,38 +261,23 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
           </>
         )}
 
-        <div className="form-group">
-          <Label htmlFor="ganging">Ganging</Label>
-          <Select value={productConfig.ganging} onValueChange={(value) => onConfigChange("ganging", value)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select ganging" />
-            </SelectTrigger>
-            <SelectContent>
-              {yesNo.map(option => (
-                <SelectItem key={option} value={option}>{option}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
         {!showMaterialCost && (
           <div className="form-group">
             <Label htmlFor="paperCost">Paper Cost</Label>
             <div className="flex items-center gap-2">
+              <Input
+                id="paperCost"
+                type="number"
+                min="0"
+                placeholder="Enter paper cost"
+                value={productConfig.paperCost}
+                onChange={(e) => onConfigChange("paperCost", e.target.value)}
+                className="flex-1"
+              />
               <Select 
-                value={productConfig.paperCost} 
-                onValueChange={(value) => onConfigChange("paperCost", value)}
+                value={materialUOM}
+                onValueChange={setMaterialUOM}
               >
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Select paper cost" />
-                </SelectTrigger>
-                <SelectContent>
-                  {paperCosts.map(cost => (
-                    <SelectItem key={cost} value={cost}>{cost}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={paperCostUOM} onValueChange={setPaperCostUOM}>
                 <SelectTrigger className="w-28">
                   <SelectValue placeholder="UOM" />
                 </SelectTrigger>
@@ -267,6 +288,52 @@ const ProductForm: React.FC<ProductFormProps> = ({ productConfig, onConfigChange
                 </SelectContent>
               </Select>
             </div>
+          </div>
+        )}
+
+        <div className="form-group">
+          <Label htmlFor="option">Option(s)</Label>
+          <Select value={productConfig.option} onValueChange={(value) => onConfigChange("option", value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select option" />
+            </SelectTrigger>
+            <SelectContent>
+              {options.map(option => (
+                <SelectItem key={option} value={option}>{option}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {showFoldingFields && (
+          <div className="form-group">
+            <Label htmlFor="foldingType">Folding Type</Label>
+            <Select 
+              value={productConfig.foldingType || "half fold"} 
+              onValueChange={(value) => onConfigChange("foldingType", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select folding type" />
+              </SelectTrigger>
+              <SelectContent>
+                {foldingTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        
+        {productConfig.option === "Die Cut" && (
+          <div className="form-group col-span-1 md:col-span-2 lg:col-span-3 flex items-center gap-2">
+            <Checkbox 
+              id="includeDieCost" 
+              checked={includeDieCost}
+              onCheckedChange={handleDieCostChange}
+            />
+            <Label htmlFor="includeDieCost" className="cursor-pointer">
+              Include die cost ($500)
+            </Label>
           </div>
         )}
       </div>

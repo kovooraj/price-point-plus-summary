@@ -25,9 +25,7 @@ interface FoldingCartonsState {
   sidesCoated: string;
   lamination: string;
   sidesLaminated: string;
-  ganging: string;
   printMethod: string;
-  passes: string;
   dieRequired: string;
   glueRequired: string;
   glueFlaps: number;
@@ -55,9 +53,7 @@ const FoldingCartonsCalculator: React.FC = () => {
     sidesCoated: "1",
     lamination: "No_Coating",
     sidesLaminated: "0",
-    ganging: "No",
     printMethod: "Offset",
-    passes: "1",
     dieRequired: "No",
     glueRequired: "Yes",
     glueFlaps: 3,
@@ -72,7 +68,30 @@ const FoldingCartonsCalculator: React.FC = () => {
   
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showCoatingFields, setShowCoatingFields] = useState(false);
+  const [showLaminationFields, setShowLaminationFields] = useState(false);
+  const [showGlueFlaps, setShowGlueFlaps] = useState(true);
+  const [showGlueRequiredField, setShowGlueRequiredField] = useState(false);
   
+  // Effect to handle coating fields visibility
+  React.useEffect(() => {
+    const isAqOrUV = state.coating === "Gloss_AQ" || state.coating === "Matte_AQ" || state.coating === "UV_Coating";
+    const isLamination = state.coating === "Gloss_Lamination" || state.coating === "Matte_Lamination";
+    
+    setShowCoatingFields(isAqOrUV);
+    setShowLaminationFields(isLamination);
+  }, [state.coating]);
+
+  // Effect to handle glue flaps visibility
+  React.useEffect(() => {
+    setShowGlueFlaps(state.glueRequired === "Yes");
+  }, [state.glueRequired]);
+
+  // Effect to handle glue required field visibility
+  React.useEffect(() => {
+    setShowGlueRequiredField(state.productType === "Custom Box");
+  }, [state.productType]);
+
   const handleInputChange = (field: keyof FoldingCartonsState, value: any) => {
     setState({
       ...state,
@@ -164,8 +183,9 @@ const FoldingCartonsCalculator: React.FC = () => {
     coverage: "",
     lamination: state.lamination,
     sidesLaminated: state.sidesLaminated,
-    ganging: state.ganging,
+    ganging: "Yes",
     paperCost: "",
+    foldingType: "",
   };
   
   const markup = {
@@ -189,6 +209,15 @@ const FoldingCartonsCalculator: React.FC = () => {
       handleInputChange("cost", Number(value));
     }
   };
+
+  const coatingOptions = [
+    { value: "Gloss_AQ", label: "Gloss AQ" },
+    { value: "Matte_AQ", label: "Matte AQ" },
+    { value: "UV_Coating", label: "UV Coating" },
+    { value: "Gloss_Lamination", label: "Gloss Lamination" },
+    { value: "Matte_Lamination", label: "Matte Lamination" },
+    { value: "No_Coating", label: "No Coating" }
+  ];
   
   return (
     <div className="print-calculator-layout">
@@ -197,6 +226,22 @@ const FoldingCartonsCalculator: React.FC = () => {
           <h2 className="section-title">Product Configuration</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="form-group">
+              <Label htmlFor="printMethod">Print Method</Label>
+              <Select 
+                value={state.printMethod} 
+                onValueChange={(value) => handleInputChange("printMethod", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Print Method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Offset">Offset</SelectItem>
+                  <SelectItem value="Digital">Digital</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="form-group">
               <Label htmlFor="productType">Product Type</Label>
               <Select 
@@ -302,113 +347,68 @@ const FoldingCartonsCalculator: React.FC = () => {
                   <SelectValue placeholder="Select Coating" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Gloss_AQ">Gloss AQ</SelectItem>
-                  <SelectItem value="Matte_AQ">Matte AQ</SelectItem>
-                  <SelectItem value="Soft_Touch">Soft Touch</SelectItem>
-                  <SelectItem value="No_Coating">No Coating</SelectItem>
+                  {coatingOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             
-            <div className="form-group">
-              <Label htmlFor="sidesCoated">Sides Coated</Label>
-              <Select 
-                value={state.sidesCoated} 
-                onValueChange={(value) => handleInputChange("sidesCoated", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Sides Coated" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">0</SelectItem>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {showCoatingFields && (
+              <div className="form-group">
+                <Label htmlFor="sidesCoated">Sides Coated</Label>
+                <Select 
+                  value={state.sidesCoated} 
+                  onValueChange={(value) => handleInputChange("sidesCoated", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Sides Coated" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">0</SelectItem>
+                    <SelectItem value="1">1</SelectItem>
+                    <SelectItem value="2">2</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             
-            <div className="form-group">
-              <Label htmlFor="lamination">Lamination</Label>
-              <Select 
-                value={state.lamination} 
-                onValueChange={(value) => handleInputChange("lamination", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Lamination" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="No_Coating">No Lamination</SelectItem>
-                  <SelectItem value="Gloss_Lamination">Gloss Lamination</SelectItem>
-                  <SelectItem value="Matte_Lamination">Matte Lamination</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="sidesLaminated">Sides Laminated</Label>
-              <Select 
-                value={state.sidesLaminated} 
-                onValueChange={(value) => handleInputChange("sidesLaminated", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Sides Laminated" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="0">0</SelectItem>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="ganging">Ganging</Label>
-              <Select 
-                value={state.ganging} 
-                onValueChange={(value) => handleInputChange("ganging", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Ganging" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="printMethod">Print Method</Label>
-              <Select 
-                value={state.printMethod} 
-                onValueChange={(value) => handleInputChange("printMethod", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Print Method" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Offset">Offset</SelectItem>
-                  <SelectItem value="Digital">Digital</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="passes">Number of Passes</Label>
-              <Select 
-                value={state.passes} 
-                onValueChange={(value) => handleInputChange("passes", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Passes" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1</SelectItem>
-                  <SelectItem value="2">2</SelectItem>
-                  <SelectItem value="3">3</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {showLaminationFields && (
+              <>
+                <div className="form-group">
+                  <Label htmlFor="lamination">Lamination Type</Label>
+                  <Select 
+                    value={state.lamination} 
+                    onValueChange={(value) => handleInputChange("lamination", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Lamination" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Gloss_Lamination">Gloss Lamination</SelectItem>
+                      <SelectItem value="Matte_Lamination">Matte Lamination</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="form-group">
+                  <Label htmlFor="sidesLaminated">Sides Laminated</Label>
+                  <Select 
+                    value={state.sidesLaminated} 
+                    onValueChange={(value) => handleInputChange("sidesLaminated", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Sides Laminated" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </>
+            )}
             
             <div className="form-group">
               <Label htmlFor="dieRequired">Die Required?</Label>
@@ -426,31 +426,35 @@ const FoldingCartonsCalculator: React.FC = () => {
               </Select>
             </div>
             
-            <div className="form-group">
-              <Label htmlFor="glueRequired">Glue Required?</Label>
-              <Select 
-                value={state.glueRequired} 
-                onValueChange={(value) => handleInputChange("glueRequired", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Glue Required" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Yes">Yes</SelectItem>
-                  <SelectItem value="No">No</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {showGlueRequiredField && (
+              <div className="form-group">
+                <Label htmlFor="glueRequired">Glue Required?</Label>
+                <Select 
+                  value={state.glueRequired} 
+                  onValueChange={(value) => handleInputChange("glueRequired", value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Glue Required" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes</SelectItem>
+                    <SelectItem value="No">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
             
-            <div className="form-group">
-              <Label htmlFor="glueFlaps">Number of Glue Flaps</Label>
-              <Input 
-                type="number" 
-                value={state.glueFlaps} 
-                onChange={(e) => handleInputChange("glueFlaps", parseInt(e.target.value) || 0)}
-                className="bg-background"
-              />
-            </div>
+            {showGlueFlaps && (
+              <div className="form-group">
+                <Label htmlFor="glueFlaps">Number of Glue Flaps</Label>
+                <Input 
+                  type="number" 
+                  value={state.glueFlaps} 
+                  onChange={(e) => handleInputChange("glueFlaps", parseInt(e.target.value) || 0)}
+                  className="bg-background"
+                />
+              </div>
+            )}
           </div>
         </Card>
 

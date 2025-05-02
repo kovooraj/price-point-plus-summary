@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -51,6 +52,9 @@
     /* CTA color */
     --cta: #FD100A;
     --cta-foreground: #FFFFFF;
+    
+    /* Salesforce blue */
+    --salesforce-blue: #0FA0CE;
   }
 
   .dark {
@@ -332,6 +336,16 @@ input.bg-blue-50,
   background-color: rgba(253, 16, 10, 0.9);
 }
 
+/* Salesforce button specific styling */
+.salesforce-button {
+  background-color: var(--salesforce-blue);
+  color: white;
+}
+
+.salesforce-button:hover {
+  background-color: rgba(15, 160, 206, 0.9);
+}
+
 /* Dark mode styling - direct values instead of @apply to avoid circular dependency */
 .dark {
   background-color: #1A1F2C;
@@ -366,23 +380,15 @@ input.bg-blue-50,
   color: white;
 }
 
+/* Tab styling for inactive state in dark mode */
+.dark [data-radix-tabs-trigger]:not([data-state=active]) {
+  background-color: var(--dark-bg);
+  color: var(--dark-field-text);
+}
+
 /* Override for the data-state=active background in dark mode */
 .dark [data-state=active].bg-background {
   background-color: #FD100A;
-}
-
-/* Salesforce button styling in dark mode */
-.dark .bg-cta.text-cta-foreground,
-.dark button[variant="cta"],
-.dark [class*="bg-cta"] {
-  background-color: var(--salesforce-blue);
-}
-
-/* Dark mode Salesforce button hover state */
-.dark .bg-cta:hover,
-.dark button[variant="cta"]:hover,
-.dark [class*="bg-cta"]:hover {
-  background-color: rgba(15, 160, 206, 0.9);
 }
 
 /* No quantities section styling in dark mode */
