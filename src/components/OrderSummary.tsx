@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -81,6 +80,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         // Add specifications if available
         if (item.specifications) {
           summaryText += `\n   Specifications: ${item.specifications}`;
+        } else {
+          summaryText += `\n   Specifications: ${getProductSpecifications(productConfig)}`;
         }
         summaryText += `\n   Price: ${item.currency} ${item.totalPrice.toFixed(2)}`;
         summaryText += `\n   Unit Price: ${item.currency} ${(item.totalPrice / item.quantity).toFixed(5)} each\n`;
@@ -156,7 +157,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                     
                     {/* Show detailed specifications for this line item */}
                     <div className="text-xs text-gray-600 mb-2 leading-relaxed">
-                      {getProductSpecifications(productConfig)}
+                      {item.specifications || getProductSpecifications(productConfig)}
                     </div>
                     
                     <div className="mt-1.5 text-sm font-medium">
