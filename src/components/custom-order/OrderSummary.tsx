@@ -51,8 +51,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       <div className="space-y-3">
         <div className="space-y-1">
           <SummaryRow label="Product" value={jobDetails.productType === 'commercial' ? 'Commercial Print' : jobDetails.productType} />
-          {jobDetails.finishedSize && <SummaryRow label="Size" value={jobDetails.finishedSize} />}
-          {jobDetails.material && <SummaryRow label="Material" value={jobDetails.material} />}
           <SummaryRow 
             label="Quantities" 
             value={jobDetails.quantities.map(q => q.toLocaleString()).join(', ')} 
@@ -61,10 +59,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         
         {segments.length > 0 && (
           <div className="space-y-1 pt-2 border-t">
-            <h3 className="text-sm font-medium mb-1">Segments:</h3>
+            <h3 className="text-sm font-medium mb-1">Selected Quantities:</h3>
             {segments.map(segment => (
-              <div key={segment.id} className="text-sm pl-2 py-0.5">
-                • {segment.type}
+              <div key={segment.id} className="text-sm pl-2 py-1 bg-gray-50 rounded">
+                <div className="font-medium">{segment.type}</div>
+                <div className="text-xs text-gray-600 mt-1">
+                  {/* Add detailed specifications here based on segment data */}
+                  {jobDetails.finishedSize && `Size: ${jobDetails.finishedSize}`}
+                  {jobDetails.material && ` • Material: ${jobDetails.material}`}
+                </div>
               </div>
             ))}
           </div>
