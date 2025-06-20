@@ -14,16 +14,17 @@ interface RollLabelsState {
   productType: string;
   material: string;
   shape: string;
-  size: string;
+  width: number;
+  height: number;
   ink: string;
   coating: string;
   coverage: string;
-  lamination: string;
   windDirection: string;
   labelsPerCoreOption: string;
   perforation: string;
   cutMethod: string;
   purchaseDie: string;
+  dieRequired: string;
   quantity: number;
   cores: number;
   coreWidth: number;
@@ -51,16 +52,17 @@ const RollLabelsCalculator: React.FC = () => {
     productType: "BOPP",
     material: "White Gloss BOPP Freezer",
     shape: "Circle",
-    size: "3 x 3",
+    width: 3,
+    height: 3,
     ink: "CMYK",
     coating: "No_Coating",
     coverage: "",
-    lamination: "Matte_Lamination",
     windDirection: "WD 2 = Bottom off First",
     labelsPerCoreOption: "Does Not Matter",
     perforation: "No",
     cutMethod: "Does_Not_M",
     purchaseDie: "",
+    dieRequired: "No",
     quantity: 1000,
     cores: 48,
     coreWidth: 3.25,
@@ -139,8 +141,8 @@ const RollLabelsCalculator: React.FC = () => {
   const productConfig: ProductConfig = {
     productType: "Roll Labels",
     option: state.shape,
-    itemSize: state.size,
-    shippedSize: state.size,
+    itemSize: `${state.width} x ${state.height}`,
+    shippedSize: `${state.width} x ${state.height}`,
     material: state.material,
     sidesPrinted: "1/0",
     pmsColors: "0",
@@ -148,7 +150,7 @@ const RollLabelsCalculator: React.FC = () => {
     thickness: "", 
     sidesCoated: "1",
     coverage: state.coverage || "100%",
-    lamination: state.lamination,
+    lamination: "",
     sidesLaminated: "1",
     ganging: "Yes",
     paperCost: "Current Price",
@@ -236,20 +238,27 @@ const RollLabelsCalculator: React.FC = () => {
             </div>
             
             <div className="form-group">
-              <Label htmlFor="size">Size</Label>
-              <Select 
-                value={state.size} 
-                onValueChange={(value) => handleInputChange("size", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Size" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="3 x 3">3 x 3</SelectItem>
-                  <SelectItem value="4 x 4">4 x 4</SelectItem>
-                  <SelectItem value="2 x 2">2 x 2</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="width">Width</Label>
+              <Input
+                id="width"
+                type="number"
+                step="0.01"
+                value={state.width}
+                onChange={(e) => handleInputChange("width", parseFloat(e.target.value) || 0)}
+                placeholder="Enter width"
+              />
+            </div>
+            
+            <div className="form-group">
+              <Label htmlFor="height">Height</Label>
+              <Input
+                id="height"
+                type="number"
+                step="0.01"
+                value={state.height}
+                onChange={(e) => handleInputChange("height", parseFloat(e.target.value) || 0)}
+                placeholder="Enter height"
+              />
             </div>
             
             <div className="form-group">
@@ -282,23 +291,8 @@ const RollLabelsCalculator: React.FC = () => {
                   <SelectItem value="No_Coating">No Coating</SelectItem>
                   <SelectItem value="Gloss">Gloss</SelectItem>
                   <SelectItem value="Matte">Matte</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="form-group">
-              <Label htmlFor="lamination">Lamination</Label>
-              <Select 
-                value={state.lamination} 
-                onValueChange={(value) => handleInputChange("lamination", value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Lamination" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Matte_Lamination">Matte Lamination</SelectItem>
-                  <SelectItem value="Gloss_Lamination">Gloss Lamination</SelectItem>
-                  <SelectItem value="No_Lamination">No Lamination</SelectItem>
+                  <SelectItem value="Gloss Lamination">Gloss Lamination</SelectItem>
+                  <SelectItem value="Matte Lamination">Matte Lamination</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -349,6 +343,22 @@ const RollLabelsCalculator: React.FC = () => {
                 <SelectContent>
                   <SelectItem value="No">No</SelectItem>
                   <SelectItem value="Yes">Yes</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="form-group">
+              <Label htmlFor="dieRequired">Die Required</Label>
+              <Select 
+                value={state.dieRequired} 
+                onValueChange={(value) => handleInputChange("dieRequired", value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Die Required" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Yes">Yes</SelectItem>
+                  <SelectItem value="No">No</SelectItem>
                 </SelectContent>
               </Select>
             </div>

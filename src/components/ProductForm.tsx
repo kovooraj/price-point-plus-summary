@@ -24,14 +24,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [showCoatingFields, setShowCoatingFields] = useState(false);
   const [showFoldingFields, setShowFoldingFields] = useState(false);
   const [showShippedSize, setShowShippedSize] = useState(false);
+  const [showLaminationFields, setShowLaminationFields] = useState(false);
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
   useEffect(() => {
     // Update visibility based on selected coating
     const isAqOrUV = productConfig.coating === "Aqueous Coating" || productConfig.coating === "UV Coating";
+    const isLamination = productConfig.coating === "Gloss Lamination" || productConfig.coating === "Matte Lamination" || productConfig.coating === "Soft Touch Lamination";
     
     setShowCoatingFields(isAqOrUV);
+    setShowLaminationFields(isLamination);
   }, [productConfig.coating]);
 
   useEffect(() => {
@@ -84,14 +87,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
     "Aqueous Coating", 
     "UV Coating", 
     "Gloss Lamination", 
-    "Matte Lamination", 
+    "Matte Lamination",
     "Soft Touch Lamination"
   ];
   const sidesOptions = ["0", "1", "2"];
   const foldingTypes = ["half fold", "3 panel fold", "z fold", "gate fold", "accordion fold", "4 page fold"];
   
   return (
-    <Card className="p-4 bg-background shadow-sm">
+    <Card className="p-4 bg-card shadow-sm">
       <h2 className="section-title">Product Configuration</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -199,6 +202,22 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <Select value={productConfig.sidesCoated} onValueChange={(value) => onConfigChange("sidesCoated", value)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select sides coated" />
+              </SelectTrigger>
+              <SelectContent>
+                {sidesOptions.map(side => (
+                  <SelectItem key={side} value={side}>{side}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {showLaminationFields && (
+          <div className="form-group">
+            <Label htmlFor="sidesLaminated">Sides Laminated</Label>
+            <Select value={productConfig.sidesLaminated || "1"} onValueChange={(value) => onConfigChange("sidesLaminated", value)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select sides laminated" />
               </SelectTrigger>
               <SelectContent>
                 {sidesOptions.map(side => (
