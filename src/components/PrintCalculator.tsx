@@ -95,7 +95,8 @@ const PrintCalculator: React.FC = () => {
       ...item,
       id: Date.now().toString(),
       currency: markup.currency,
-      versions: isSets ? markup.versions : undefined
+      versions: isSets ? markup.versions : undefined,
+      specifications: item.specifications || getProductSpecifications(productConfig)
     };
     
     setOrderSummary([...orderSummary, newItem]);
@@ -104,6 +105,23 @@ const PrintCalculator: React.FC = () => {
       title: "Added to order summary",
       description: `Quantity: ${item.quantity} - Price: ${markup.currency} ${item.totalPrice.toFixed(2)}`
     });
+  };
+
+  const handleAddShippingCharge = (charge: OrderItem) => {
+    setOrderSummary([...orderSummary, charge]);
+  };
+
+  const getProductSpecifications = (config: ProductConfig) => {
+    const specs = [];
+    if (config.itemSize) specs.push(`Size: ${config.itemSize}`);
+    if (config.material && config.material !== "Other") specs.push(`Material: ${config.material}`);
+    if (config.sidesPrinted) specs.push(`Printing: ${config.sidesPrinted} Sides`);
+    if (config.coating && config.coating !== "No_Coating") specs.push(`Coating: ${config.coating.replace("_", " ")}`);
+    if (config.sidesCoated && config.sidesCoated !== "0") specs.push(`Sides Coated: ${config.sidesCoated}`);
+    if (config.sidesLaminated && config.sidesLaminated !== "0") specs.push(`Sides Laminated: ${config.sidesLaminated}`);
+    if (config.option && config.option !== "None") specs.push(`Option: ${config.option}`);
+    if (config.foldingType) specs.push(`Folding: ${config.foldingType}`);
+    return specs.join(" • ");
   };
   
   const handleAddCustomQty = () => {
@@ -205,10 +223,12 @@ const PrintCalculator: React.FC = () => {
                 onAddCustomQty={handleAddCustomQty}
               />
 
-              {!isSets && <Card className="p-4 bg-background">
+              {!isSets && (
+                <Card className="p-4 bg-background">
                   <h2 className="section-title">Quantity Variations</h2>
                   <QuantityTable onAddToSummary={handleAddToSummary} currency={markup.currency} />
-                </Card>}
+                </Card>
+              )}
             </div>
 
             <div className="summary-content">
@@ -218,6 +238,7 @@ const PrintCalculator: React.FC = () => {
                 onRemoveItem={handleRemoveFromSummary} 
                 isSets={isSets}
                 includeDieCost={includeDieCost}
+                onAddShippingCharge={handleAddShippingCharge}
               />
             </div>
           </div>

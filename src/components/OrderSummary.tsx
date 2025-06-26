@@ -11,6 +11,7 @@ import { generateQuotePDF } from "../utils/generateQuote";
 import OrderNotes from "./OrderNotes";
 import { useToast } from "@/components/ui/use-toast";
 import SalesforceDialog from "./custom-order/SalesforceDialog";
+import ShippingCalculator from "./ShippingCalculator";
 
 interface OrderSummaryProps {
   productConfig: ProductConfig;
@@ -19,6 +20,7 @@ interface OrderSummaryProps {
   isSets?: boolean;
   showSpecSheet?: boolean;
   includeDieCost?: boolean;
+  onAddShippingCharge?: (charge: OrderItem) => void;
 }
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
@@ -27,7 +29,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   onRemoveItem,
   isSets = false,
   showSpecSheet = true,
-  includeDieCost = false
+  includeDieCost = false,
+  onAddShippingCharge
 }) => {
   const { toast } = useToast();
   const [quoteDialogOpen, setQuoteDialogOpen] = useState(false);
@@ -114,6 +117,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
     });
   };
 
+  const handleAddShipping = (charge: OrderItem) => {
+    if (onAddShippingCharge) {
+      onAddShippingCharge(charge);
+    }
+  };
+
   const getProductSpecifications = (config: ProductConfig) => {
     const specs = [];
     if (config.itemSize) specs.push(`Size: ${config.itemSize}`);
@@ -122,7 +131,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
     if (config.coating && config.coating !== "No_Coating") specs.push(`Coating: ${config.coating.replace("_", " ")}`);
     if (config.sidesCoated && config.sidesCoated !== "0") specs.push(`Sides Coated: ${config.sidesCoated}`);
     if (config.sidesLaminated && config.sidesLaminated !== "0") specs.push(`Sides Laminated: ${config.sidesLaminated}`);
-    if (config.option && config.option !== "None") specs.push(`Option: ${config.option}`);
+    if (config.option) specs.push(`Option: ${config.option}`);
     if (config.foldingType) specs.push(`Folding: ${config.foldingType}`);
     return specs.join(" • ");
   };
@@ -221,9 +230,16 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           <ArrowRightLeft className="h-4 w-4" /> Sync with Salesforce
         </Button>
         
-        {showSpecSheet && <Button className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-print-primary font-bold flex items-center justify-center gap-2" onClick={() => setSpecSheetDialogOpen(true)}>
+        {showSpecSheet && (
+          <Button className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-print-primary font-bold flex items-center justify-center gap-2" onClick={() => setSpecSheetDialogOpen(true)}>
             <FileSpreadsheet className="h-4 w-4" /> Download Spec Sheet
-          </Button>}
+          </Button>
+        )}
+
+        <ShippingCalculator 
+          onAddShippingCharge={handleAddShipping}
+          currency={orderItems.length > 0 ? orderItems[0].currency : "CAD"}
+        />
       </div>
 
       <QuotePopupDialog open={quoteDialogOpen} onOpenChange={setQuoteDialogOpen} onSubmit={handleDownloadQuote} />
