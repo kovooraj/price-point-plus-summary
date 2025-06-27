@@ -33,14 +33,14 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({ onAddShippingCh
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [shippingForm, setShippingForm] = useState({
-    fromZip: '',
-    toZip: '',
-    weight: '',
-    dimensions: {
-      length: '',
-      width: '',
-      height: ''
-    }
+    name: '',
+    streetAddress: '',
+    company: '',
+    country: '',
+    stateProvince: '',
+    city: '',
+    zipcode: '',
+    phoneNumber: ''
   });
   const [selectedShipping, setSelectedShipping] = useState<string>('');
   const [showOptions, setShowOptions] = useState(false);
@@ -69,26 +69,15 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({ onAddShippingCh
     }
   ];
 
-  const handleFormChange = (field: string, value: string) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      setShippingForm(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof typeof prev],
-          [child]: value
-        }
-      }));
-    } else {
-      setShippingForm(prev => ({
-        ...prev,
-        [field]: value
-      }));
-    }
+  const handleFormChange = (field: keyof typeof shippingForm, value: string) => {
+    setShippingForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   const handleCalculateShipping = () => {
-    if (!shippingForm.fromZip || !shippingForm.toZip || !shippingForm.weight) {
+    if (!shippingForm.name || !shippingForm.streetAddress || !shippingForm.city || !shippingForm.zipcode) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required shipping fields",
@@ -109,7 +98,7 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({ onAddShippingCh
       totalCost: selectedOption.price * 0.8, // Assuming 80% cost
       totalPrice: selectedOption.price,
       currency: currency,
-      specifications: `Shipping: ${selectedOption.name} - ${selectedOption.estimatedDays} (${shippingForm.fromZip} to ${shippingForm.toZip})`
+      specifications: `Shipping: ${selectedOption.name} - ${selectedOption.estimatedDays} (${shippingForm.city}, ${shippingForm.stateProvince})`
     };
 
     onAddShippingCharge(shippingCharge);
@@ -121,10 +110,14 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({ onAddShippingCh
 
     // Reset form
     setShippingForm({
-      fromZip: '',
-      toZip: '',
-      weight: '',
-      dimensions: { length: '', width: '', height: '' }
+      name: '',
+      streetAddress: '',
+      company: '',
+      country: '',
+      stateProvince: '',
+      city: '',
+      zipcode: '',
+      phoneNumber: ''
     });
     setSelectedShipping('');
     setShowOptions(false);
@@ -138,61 +131,90 @@ const ShippingCalculator: React.FC<ShippingCalculatorProps> = ({ onAddShippingCh
           <Truck className="h-4 w-4" /> Shipping Calculator
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Shipping Calculator</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="fromZip">From ZIP Code *</Label>
-              <Input
-                id="fromZip"
-                value={shippingForm.fromZip}
-                onChange={(e) => handleFormChange('fromZip', e.target.value)}
-                placeholder="12345"
-              />
-            </div>
-            <div>
-              <Label htmlFor="toZip">To ZIP Code *</Label>
-              <Input
-                id="toZip"
-                value={shippingForm.toZip}
-                onChange={(e) => handleFormChange('toZip', e.target.value)}
-                placeholder="67890"
-              />
-            </div>
-          </div>
-
           <div>
-            <Label htmlFor="weight">Weight (lbs) *</Label>
+            <Label htmlFor="name">Name *</Label>
             <Input
-              id="weight"
-              type="number"
-              value={shippingForm.weight}
-              onChange={(e) => handleFormChange('weight', e.target.value)}
-              placeholder="10"
+              id="name"
+              value={shippingForm.name}
+              onChange={(e) => handleFormChange('name', e.target.value)}
+              placeholder="Full Name"
             />
           </div>
 
           <div>
-            <Label>Dimensions (inches)</Label>
-            <div className="grid grid-cols-3 gap-2 mt-1">
+            <Label htmlFor="streetAddress">Street Address *</Label>
+            <Input
+              id="streetAddress"
+              value={shippingForm.streetAddress}
+              onChange={(e) => handleFormChange('streetAddress', e.target.value)}
+              placeholder="123 Main Street"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="company">Company</Label>
+            <Input
+              id="company"
+              value={shippingForm.company}
+              onChange={(e) => handleFormChange('company', e.target.value)}
+              placeholder="Company Name (Optional)"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="country">Country</Label>
+            <Input
+              id="country"
+              value={shippingForm.country}
+              onChange={(e) => handleFormChange('country', e.target.value)}
+              placeholder="Country"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="stateProvince">State/Province</Label>
               <Input
-                value={shippingForm.dimensions.length}
-                onChange={(e) => handleFormChange('dimensions.length', e.target.value)}
-                placeholder="L"
+                id="stateProvince"
+                value={shippingForm.stateProvince}
+                onChange={(e) => handleFormChange('stateProvince', e.target.value)}
+                placeholder="State/Province"
               />
+            </div>
+            <div>
+              <Label htmlFor="city">City *</Label>
               <Input
-                value={shippingForm.dimensions.width}
-                onChange={(e) => handleFormChange('dimensions.width', e.target.value)}
-                placeholder="W"
+                id="city"
+                value={shippingForm.city}
+                onChange={(e) => handleFormChange('city', e.target.value)}
+                placeholder="City"
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="zipcode">Zipcode/Postal Code *</Label>
               <Input
-                value={shippingForm.dimensions.height}
-                onChange={(e) => handleFormChange('dimensions.height', e.target.value)}
-                placeholder="H"
+                id="zipcode"
+                value={shippingForm.zipcode}
+                onChange={(e) => handleFormChange('zipcode', e.target.value)}
+                placeholder="12345"
+              />
+            </div>
+            <div>
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input
+                id="phoneNumber"
+                value={shippingForm.phoneNumber}
+                onChange={(e) => handleFormChange('phoneNumber', e.target.value)}
+                placeholder="(123) 456-7890"
               />
             </div>
           </div>
